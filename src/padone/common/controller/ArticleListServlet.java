@@ -39,7 +39,7 @@ public class ArticleListServlet extends HttpServlet {
         response.setContentType("application/json; charset=utf-8");
         DataSource datasource = (DataSource)getServletContext().getAttribute("db");
 
-        String option = request.getParameter("option");
+        String option = request.getParameter("pattern");
         String target;
         Gson gson;
 
