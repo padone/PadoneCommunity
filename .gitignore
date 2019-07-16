@@ -24,4 +24,10 @@ hs_err_pid*
 # ignore intellij project files
 .idea
 *.iml
-out
+out/
+
+# ignore eclipse project files
+.project
+.classpath
+build/
+.settings/
