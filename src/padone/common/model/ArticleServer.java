@@ -43,7 +43,7 @@ public class ArticleServer {
         return resultList;
     }
 
-    public static ArrayList<Article> getAuthorArticle(DataSource datasource, String name){
+    public static ArrayList<Article> getAuthorArticle(DataSource datasource, String authorID){
         resultList = new ArrayList<>();
         Connection conn;
         Article temp;
@@ -51,13 +51,13 @@ public class ArticleServer {
         try{
             conn = datasource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT articleID as aId, title, DATE(posttime) as post_time, department as category, description as content FROM article WHERE author = '"+ name + "' ORDER BY posttime DESC";
+            String sql = "SELECT articleID as aId, title, DATE(posttime) as post_time, department as category, description as content FROM article WHERE author = '"+ authorID + "' ORDER BY posttime DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
                 temp = new Article();
-                temp.setArticleID(rs.getString("aId"));
-                temp.setAuthor(name);
+                temp.setArticleID(authorID);
+                //temp.setAuthor(); set user name in
                 temp.setTitle(rs.getString("title"));
                 temp.setDepartment(rs.getString("category"));
                 temp.setPostTime(rs.getString("post_time"));

@@ -3,6 +3,7 @@ public class Article {
 	private String articleID;
 	private String title;
 	private String author;
+	private String authorID;
 	private String department;
 	private String postTime;
 	private String lastUpdateTime;
@@ -18,6 +19,7 @@ public class Article {
 	public void setAuthor(String author) {
 		this.author=author;
 	}
+	public void setAuthorID(String authorID){ this.authorID = authorID; }
 	public void setImage(String image) {
 		this.image=image;
 	}
@@ -39,9 +41,10 @@ public class Article {
 	public Article() {
 		
 	}
-	public Article(String articleID,String author,String department,String postTime,String lastUpdateTime,String description,String tag) {
+	public Article(String articleID,String author, String authorID,String department,String postTime,String lastUpdateTime,String description,String tag) {
 		setArticleID(articleID);
 		setAuthor(author);
+		setAuthorID(authorID);
 		setPostTime(postTime);
 		setLastUpdateTime(lastUpdateTime);
 		setDescription(description);
@@ -50,7 +53,7 @@ public class Article {
 		
 	}
 	void tostring() {
-		System.out.println("articleID:"+articleID+",author:"+author+",department:"+department+",postTime:"+postTime+",lastUpdateTime:"+lastUpdateTime+",description:"+description+",tag:"+tag+",image:"+image+",title:"+title);
+		System.out.println("articleID:"+articleID+",author:"+author+", authorID:"+ authorID + ",department:"+department+",postTime:"+postTime+",lastUpdateTime:"+lastUpdateTime+",description:"+description+",tag:"+tag+",image:"+image+",title:"+title);
 	}
 	
 }
