@@ -23,7 +23,7 @@ public class ArticleServer {
         try{
             conn = datasource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT articleID as aId, title, author, DATE(posttime) as post_time, department as category, description as content FROM article ORDER BY posttime DESC";
+            String sql = "SELECT articleID as aId, title, author, authorID, DATE(posttime) as post_time, department as category, description as content FROM article ORDER BY posttime DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
@@ -31,6 +31,7 @@ public class ArticleServer {
                 temp.setArticleID(rs.getString("aId"));
                 temp.setTitle(rs.getString("title"));
                 temp.setAuthor(rs.getString("author"));
+                temp.setAuthorID(rs.getString("authorID"));
                 temp.setPostTime(rs.getString("post_time"));
                 temp.setDepartment(rs.getString("category"));
                 temp.setDescription(rs.getString("content"));
@@ -43,7 +44,7 @@ public class ArticleServer {
         return resultList;
     }
 
-    public static ArrayList<Article> getAuthorArticle(DataSource datasource, String name){
+    public static ArrayList<Article> getAuthorArticle(DataSource datasource, String authorID){
         resultList = new ArrayList<>();
         Connection conn;
         Article temp;
@@ -51,13 +52,14 @@ public class ArticleServer {
         try{
             conn = datasource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT articleID as aId, title, DATE(posttime) as post_time, department as category, description as content FROM article WHERE author = '"+ name + "' ORDER BY posttime DESC";
+            String sql = "SELECT articleID as aId, author, title, DATE(posttime) as post_time, department as category, description as content FROM article WHERE authorID = '"+ authorID + "' ORDER BY posttime DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
                 temp = new Article();
                 temp.setArticleID(rs.getString("aId"));
-                temp.setAuthor(name);
+                temp.setAuthor(rs.getString("author"));
+                temp.setAuthorID(authorID);
                 temp.setTitle(rs.getString("title"));
                 temp.setDepartment(rs.getString("category"));
                 temp.setPostTime(rs.getString("post_time"));
@@ -78,7 +80,7 @@ public class ArticleServer {
         try{
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT articleID as aId, title, author, DATE(posttime) as post_time, description as content FROM article WHERE department = '" + typ + "' ORDER BY posttime DESC";
+            String sql = "SELECT articleID as aId, title, author, authorID, DATE(posttime) as post_time, description as content FROM article WHERE department = '" + typ + "' ORDER BY posttime DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
@@ -86,6 +88,7 @@ public class ArticleServer {
                 temp.setArticleID(rs.getString("aId"));
                 temp.setTitle(rs.getString("title"));
                 temp.setAuthor(rs.getString("author"));
+                temp.setAuthorID(rs.getString("authorID"));
                 temp.setDepartment(typ);
                 temp.setPostTime(rs.getString("post_time"));
                 temp.setDescription(rs.getString("content"));
@@ -106,12 +109,13 @@ public class ArticleServer {
         try{
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT title, author, department, DATE(posttime) as post_time, description as content FROM article WHERE articleID = '" + id + "'";
+            String sql = "SELECT title, author, authorID, department, DATE(posttime) as post_time, description as content FROM article WHERE articleID = '" + id + "'";
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
                 temp.setArticleID(id);
                 temp.setTitle(rs.getString("title"));
                 temp.setAuthor(rs.getString("author"));
+                temp.setAuthorID(rs.getString("authorID"));
                 temp.setDepartment(rs.getString("department"));
                 temp.setPostTime(rs.getString("post_time"));
                 temp.setDescription(rs.getString("content"));
@@ -130,12 +134,13 @@ public class ArticleServer {
         try{
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT title, author, department, DATE(posttime) as post_time, description as content FROM article WHERE articleID = '" + id + "'";
+            String sql = "SELECT title, author, authorID, department, DATE(posttime) as post_time, description as content FROM article WHERE articleID = '" + id + "'";
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
                 temp.setArticleID(id);
                 temp.setTitle(rs.getString("title"));
                 temp.setAuthor(rs.getString("author"));
+                temp.setAuthorID(rs.getString("authorID"));
                 temp.setDepartment(rs.getString("department"));
                 temp.setPostTime(rs.getString("post_time"));
                 temp.setDescription(rs.getString("content"));
