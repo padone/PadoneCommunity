@@ -1,7 +1,7 @@
-package padone.common.controller;
+package padone.common.controller.Article;
 
 import com.google.gson.Gson;
-import padone.common.model.ArticleServer;
+import padone.common.model.Article.ArticleServer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -11,18 +11,18 @@ import java.io.IOException;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 
-public class DepartmentArticleListServlet extends HttpServlet {
-    public DepartmentArticleListServlet(){ super(); }
+public class AuthorArticleListServlet extends HttpServlet {
+    public AuthorArticleListServlet(){ super(); }
 
     @Override
-    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException{
+    public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
         response.setContentType("application/json; charset=utf-8");
         DataSource dataSource = (DataSource)getServletContext().getAttribute("db");
         Gson gson;
 
-        String department = request.getParameter("department");
+        String authorID = request.getParameter("id");
 
         gson = new Gson();
-        response.getWriter().print(gson.toJson(ArticleServer.getCategoryArticle(dataSource, department)));
+        response.getWriter().print(gson.toJson(ArticleServer.getAuthorArticle(dataSource, authorID)));
     }
 }

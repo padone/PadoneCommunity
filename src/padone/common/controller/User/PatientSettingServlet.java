@@ -1,4 +1,4 @@
-package padone.common.controller;
+package padone.common.controller.User;
 
 import java.io.*;
 import java.sql.Connection;
@@ -16,7 +16,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import com.google.gson.Gson;
 
-import padone.common.model.PatientSettingServer;
+import padone.common.model.User.PatientSettingServer;
 
 @SuppressWarnings("serial")
 @WebServlet("/PatientSettingServlet")

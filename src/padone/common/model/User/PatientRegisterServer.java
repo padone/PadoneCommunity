@@ -1,4 +1,4 @@
-package padone.common.model;
+package padone.common.model.User;
 
 import java.sql.*;
 import java.util.HashMap;
@@ -8,11 +8,11 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 
 import padone.encryption.base64.BBDPBase64;
 
-public class DoctorRegisterServer
+public class PatientRegisterServer
 {
-	@SuppressWarnings({ "rawtypes", "unchecked" })
-	synchronized public HashMap registerAdd(DataSource datasource, String account, String password, int gender, String name,
-			String mail, String phone, String backUpPhone)
+	@SuppressWarnings({ "rawtypes", "unchecked", "resource" })
+	synchronized public HashMap registerAdd(DataSource datasource, String account, String password, int gender,
+			String name, String mail)
 	{
 		HashMap register = new HashMap();
 		Connection con = null;
@@ -32,21 +32,36 @@ public class DoctorRegisterServer
 			{
 				String QRCode = QRCodeIconGeneratorHandler(account);
 				/************************************
-				 * 新增doctor(開始)
+				 * 新增patient(開始)
 				 *****************************************************/
-				String insertdbSQL = "insert into doctor(doctorID, QRCode, account, password, name, gender, mail, phone, backUpPhone, hospital, department, notification) "
-						+ "select ifNULL(max(doctorID+0), 0)+1, '" + QRCode + "', '" + account + "','" + password + "','"
-						+ name + "','" + gender + "','" + mail + "','" + phone + "','" + backUpPhone
-						+ "', 'Nothing', 'Nothing', 'yes' FROM doctor";
+				String insertdbSQL = "insert into patient"
+						+ "(userID, QRCode, account, password, name, gender, mail, birthday, notification)"
+						+ "select ifNULL(max(userID+0), 0)+1, '" + QRCode + "', '" + account + "', '" + password + "', '"
+						+ name + "', " + gender + ", '" + mail + "', '2015-01-01', 'yes' FROM patient";
 
 				int userInsert = st.executeUpdate(insertdbSQL);
 				st.close();
 				/************************************
-				 * 新增doctor(結束)
+				 * 新增patient(結束)
 				 *****************************************************/
+				/************************************
+				 * 新增patient權限(開始)
+				 *****************************************************/
+				con = datasource.getConnection();
+			    st = con.createStatement();
+			    insertdbSQL = "insert into patientpermission"
+						+ "(userID, track, birthday, mail, introduction, global, familyOnly, followers, myFamily, collaborative, notification)"
+						+ "select max(userID+0), '1', '1', '1', '1', '1', '1', '1', '1', '1', '1' FROM patient";
 
-				if (userInsert > 0)
+				int userPermission = st.executeUpdate(insertdbSQL);
+				st.close();//關閉st
+				/************************************
+				 * 新增patient權限(結束)
+				 *****************************************************/
+				if (userInsert > 0 && userPermission > 0)
 					result = "註冊成功";
+				else
+					result = "註冊失敗";
 			}
 		}
 		catch (SQLException e)
@@ -72,6 +87,7 @@ public class DoctorRegisterServer
 	}
 
 	// 失敗!使用者帳號已註冊過!//已關資料庫
+
 	private boolean isInvalidUsername(String account, DataSource datasource)
 	{
 		Connection con = null;
@@ -79,15 +95,15 @@ public class DoctorRegisterServer
 		{
 			con = datasource.getConnection();
 			Statement st = con.createStatement();
-			ResultSet rs = st.executeQuery("select account from doctor where account = '" + account + "' ");
+			ResultSet rs = st.executeQuery("select account from patient where account = '" + account + "' ");
 
 			while (rs.next())
 			{
 				return true; // true 代表已有此使用者
 			}
-			rs.close();
+			rs.close();// 關閉rs
 
-			st.close();
+			st.close();// 關閉st
 		}
 		catch (SQLException e)
 		{
@@ -111,10 +127,10 @@ public class DoctorRegisterServer
 	}
 
 	// QRcode產生
-		private String QRCodeIconGeneratorHandler(String account)
-		{
-			String QRCode = "https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl="
-					+ BBDPBase64.encode(account) + "&choe=UTF-8";
-			return QRCode;
-		}
+	private String QRCodeIconGeneratorHandler(String account)
+	{
+		String QRCode = "https://chart.googleapis.com/chart?chs=300x300&cht=qr&chl="
+				+ BBDPBase64.encode(account) + "&choe=UTF-8";
+		return QRCode;
+	}
 }

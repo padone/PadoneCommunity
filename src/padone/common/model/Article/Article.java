@@ -1,4 +1,4 @@
-package padone.common.model;
+package padone.common.model.Article;
 public class Article {
 	private String articleID;
 	private String title;

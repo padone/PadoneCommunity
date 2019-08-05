@@ -1,7 +1,7 @@
-package padone.common.controller;
+package padone.common.controller.Article;
 
 import com.google.gson.Gson;
-import padone.common.model.ArticleServer;
+import padone.common.model.Article.ArticleServer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;

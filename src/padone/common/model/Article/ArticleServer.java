@@ -1,4 +1,4 @@
-package padone.common.model;
+package padone.common.model.Article;
 
 import java.util.ArrayList;
 
@@ -7,7 +7,6 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import com.mysql.fabric.xmlrpc.base.Array;
 import org.apache.tomcat.jdbc.pool.DataSource;
 
 public class ArticleServer {

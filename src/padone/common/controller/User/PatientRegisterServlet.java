@@ -1,4 +1,4 @@
-package padone.common.controller;
+package padone.common.controller.User;
 
 import java.io.*;
 import java.sql.Connection;
@@ -16,34 +16,35 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import com.google.gson.Gson;
 
-import padone.common.model.DoctorRegisterServer;
+import padone.common.model.User.PatientRegisterServer;
 
 @SuppressWarnings("serial")
-@WebServlet("/DoctorRegisterServlet")
-public class DoctorRegisterServlet extends HttpServlet
+@WebServlet("/PatientRegisterServlet")
+
+public class PatientRegisterServlet extends HttpServlet
 {
-	public DoctorRegisterServlet()
+	public PatientRegisterServlet()
 	{
 		super();
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		response.getWriter().write("doctor connection testing\n");
+		response.getWriter().write("patient connection testing\n");
 
 		DataSource dataSource = (DataSource) getServletContext().getAttribute("db");
 		try
 		{
 			Connection conn = dataSource.getConnection();
-			if (!conn.isClosed())
+			if(!conn.isClosed())
 			{
 				response.getWriter().write("connected");
 				Statement stmt = conn.createStatement();
-				ResultSet rs = stmt.executeQuery("select patientID FROM healthtracking WHERE healthTrackingID = 1");
+				ResultSet rs = stmt.executeQuery("select userID FROM patient WHERE account = 'A123456789'");
 				PrintWriter out = response.getWriter();
-				while (rs.next())
+				while(rs.next())
 				{
-					out.println("\n" + rs.getString("patientID"));
+					out.println("\n" + rs.getString("userID"));
 				}
 			}
 		}
@@ -60,15 +61,13 @@ public class DoctorRegisterServlet extends HttpServlet
 		Gson gson = new Gson();
 		// 連接資料庫
 		DataSource datasource = (DataSource) getServletContext().getAttribute("db");
-		DoctorRegisterServer register = new DoctorRegisterServer();
+		PatientRegisterServer register = new PatientRegisterServer();
 		/*******************************************************************************************/
 		String account = request.getParameter("account");
 		String password = request.getParameter("Password");
 		String name = request.getParameter("name");
 		String gender = request.getParameter("gender");
 		String mail = request.getParameter("mail");
-		String phone = request.getParameter("phone");
-		String backUpPhone = request.getParameter("backUpPhone");
 		/*******************************************************************************************/
 		@SuppressWarnings("rawtypes")
 		HashMap registerAdd = new HashMap(); // 新增紀錄結果
@@ -80,11 +79,11 @@ public class DoctorRegisterServlet extends HttpServlet
 			genderNum = 2;
 		else
 			genderNum = 3;
-
-		registerAdd = register.registerAdd(datasource, account, password, genderNum, name, mail, phone, backUpPhone);
+		
+		registerAdd = register.registerAdd(datasource, account, password, genderNum, name, mail);
 
 		System.out.println("在servlet中的registerAdd: " + registerAdd);
-
+		
 		response.getWriter().write(gson.toJson(registerAdd));
 	}
 }
