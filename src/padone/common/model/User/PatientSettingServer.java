@@ -1,4 +1,4 @@
-package padone.common.model;
+package padone.common.model.User;
 
 import java.sql.*;
 import java.util.HashMap;

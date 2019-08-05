@@ -1,4 +1,4 @@
-package padone.common.controller;
+package padone.common.controller.User;
 
 import java.io.IOException;
 
@@ -12,7 +12,7 @@ import com.google.gson.Gson;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 
-import padone.common.model.LoginServer;
+import padone.common.model.User.LoginServer;
 
 @SuppressWarnings("serial")
 @WebServlet("/LoginServlet")
