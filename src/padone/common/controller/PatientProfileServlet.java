@@ -31,6 +31,11 @@ public class PatientProfileServlet extends HttpServlet
 	@SuppressWarnings("unchecked")
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
+		response.setCharacterEncoding("UTF-8");
+		request.setCharacterEncoding("UTF-8");
+		response.setContentType("application/json");
+		response.setContentType("text/html");
+		
 		DataSource dataSource = (DataSource) getServletContext().getAttribute("db");
 		try
 		{
@@ -39,8 +44,8 @@ public class PatientProfileServlet extends HttpServlet
 			{
 				Gson gson = new Gson();
 				Statement stmt = conn.createStatement();
-				//String userID = request.getParameter("userID");
-				String userID = "1003";
+				String userID = request.getParameter("userID");
+				//String userID = "1000";
 				ResultSet rs = stmt.executeQuery(
 						"select name, birthday, mail, introduction FROM patient WHERE userID = '" + userID + "'");
 
