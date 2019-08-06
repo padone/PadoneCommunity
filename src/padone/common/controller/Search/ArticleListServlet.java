@@ -1,4 +1,4 @@
-package padone.common.controller.Article;
+package padone.common.controller.Search;
 
 import javax.servlet.ServletException;
 import java.io.IOException;
@@ -8,7 +8,7 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
-import padone.common.model.Article.ArticleServer;
+import padone.common.model.Search.ArticleListServer;
 import com.google.gson.Gson;
 import org.apache.tomcat.jdbc.pool.DataSource;
 
@@ -25,6 +25,6 @@ public class ArticleListServlet extends HttpServlet {
 
         // get all article from database
         gson = new Gson();
-        response.getWriter().print(gson.toJson(ArticleServer.getAllArticle(datasource)));
+        response.getWriter().print(gson.toJson(ArticleListServer.getAllArticle(datasource)));
     }
 }

@@ -1,7 +1,7 @@
-package padone.common.controller.Article;
+package padone.common.controller.Search;
 
 import com.google.gson.Gson;
-import padone.common.model.Article.ArticleServer;
+import padone.common.model.Search.ArticleListServer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -22,6 +22,6 @@ public class SpecificArticleListServlet extends HttpServlet {
         Gson gson = new Gson();
         String articleID = request.getParameter("articleID");
 
-        response.getWriter().print(gson.toJson(ArticleServer.getSpecificArticle(dataSource, articleID)));
+        response.getWriter().print(gson.toJson(ArticleListServer.getSpecificArticle(dataSource, articleID)));
     }
 }

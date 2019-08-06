@@ -1,7 +1,7 @@
-package padone.common.controller.Article;
+package padone.common.controller.Search;
 
 import com.google.gson.Gson;
-import padone.common.model.Article.ArticleServer;
+import padone.common.model.Search.ArticleListServer;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
@@ -23,6 +23,6 @@ public class AuthorArticleListServlet extends HttpServlet {
         String authorID = request.getParameter("id");
 
         gson = new Gson();
-        response.getWriter().print(gson.toJson(ArticleServer.getAuthorArticle(dataSource, authorID)));
+        response.getWriter().print(gson.toJson(ArticleListServer.getAuthorArticle(dataSource, authorID)));
     }
 }

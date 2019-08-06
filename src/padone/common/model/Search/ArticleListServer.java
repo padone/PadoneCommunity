@@ -1,4 +1,4 @@
-package padone.common.model.Article;
+package padone.common.model.Search;
 
 import java.util.ArrayList;
 
@@ -8,8 +8,9 @@ import java.sql.SQLException;
 import java.sql.Statement;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
+import padone.common.model.Article.Article;
 
-public class ArticleServer {
+public class ArticleListServer {
     private static ArrayList<Article> resultList;
 
     /** get all article, sort by update time **/
