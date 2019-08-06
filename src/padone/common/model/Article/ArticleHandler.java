@@ -1,4 +1,4 @@
-package PadoneArticleMod;
+package padone.common.model.Article;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -54,8 +54,7 @@ public class ArticleHandler {
 			Statement st = con.createStatement();
 			
 			for(int i=0;i<tagNumber;i++) {
-				int insert = st.executeUpdate("insert into tag(articleID,tagName)" 
-			+ articleID + "','" + tags.get(i) + "' FROM newtag");
+				int insert = st.executeUpdate("insert into tag(articleID,tagName)" + articleID + "','" + tags.get(i) + "' FROM newtag");
 				st.close();//關閉st
 				if(insert <= 0) return false;
 			}

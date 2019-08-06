@@ -1,4 +1,5 @@
-package PadoneArticleMod;
+package padone.common.controller.Article;
+import padone.common.model.Article.*;
 
 import java.io.IOException;
 import java.io.PrintWriter;

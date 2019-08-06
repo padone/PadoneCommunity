@@ -1,4 +1,4 @@
-package PadoneDiaryMod;
+package padone.common.model.Diary;
 
 import java.sql.Connection;
 import java.sql.ResultSet;

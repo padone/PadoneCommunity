@@ -1,4 +1,5 @@
-package PadoneDiaryMod;
+package padone.common.controller.Diary;
+import padone.common.model.Diary.DiaryHandler;
 
 import java.io.IOException;
 import javax.servlet.ServletException;

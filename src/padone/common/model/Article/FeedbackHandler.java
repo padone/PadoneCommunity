@@ -1,4 +1,4 @@
-package PadoneArticleMod;
+package padone.common.model.Article;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
