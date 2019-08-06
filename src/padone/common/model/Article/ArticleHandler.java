@@ -54,7 +54,8 @@ public class ArticleHandler {
 			Statement st = con.createStatement();
 			
 			for(int i=0;i<tagNumber;i++) {
-				int insert = st.executeUpdate("insert into tag(articleID,tagName)" + articleID + "','" + tags.get(i) + "' FROM newtag");
+				//int insert = st.executeUpdate("insert into tag(articleID,tagName)" + articleID + "','" + tags.get(i) + "' FROM newtag");
+				int insert = st.executeUpdate("insert into tag(articleID, tagName) values ('" + articleID + "', '" + tags.get(i) + "')");
 				st.close();//關閉st
 				if(insert <= 0) return false;
 			}
