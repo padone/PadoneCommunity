@@ -1,4 +1,4 @@
-package PadoneArticleMod;
+package padone.common.controller.Article;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,6 +12,8 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.tomcat.jdbc.pool.DataSource;
 
 import com.google.gson.Gson;
+
+import padone.common.model.Article.ArticleHandler;
 
 /**
  * Servlet implementation class DeleteArticleServlet

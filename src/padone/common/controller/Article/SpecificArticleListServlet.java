@@ -4,6 +4,7 @@ import com.google.gson.Gson;
 import padone.common.model.Article.ArticleServer;
 
 import javax.servlet.ServletException;
+import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
@@ -11,7 +12,7 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.tomcat.jdbc.pool.DataSource;
 
 import java.io.IOException;
-
+@WebServlet("/SpecificArticleListServlet")
 public class SpecificArticleListServlet extends HttpServlet {
     public SpecificArticleListServlet(){ super(); }
 

@@ -1,4 +1,4 @@
-package PadoneDiaryMod;
+package padone.common.controller.Diary;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -10,6 +10,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.tomcat.jdbc.pool.DataSource;
 
 import com.google.gson.Gson;
+
+import padone.common.model.Diary.DiaryHandler;
+import padone.common.model.Diary.PatientDiary;
 
 /**
  * Servlet implementation class GetPatientDiaryServlet

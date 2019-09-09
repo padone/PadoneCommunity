@@ -1,4 +1,4 @@
-package PadoneArticleMod;
+package padone.common.controller.Article;
 
 import java.util.*;
 import java.io.*;
@@ -12,6 +12,8 @@ import java.sql.SQLException;
 import org.apache.tomcat.jdbc.pool.DataSource;
 
 import com.google.gson.Gson;
+
+import padone.common.model.Article.ArticleHandler;
 
 
 @WebServlet("/WriteArticleServlet")

@@ -1,4 +1,4 @@
-package PadoneArticleMod;
+package padone.common.model.Article;
 
 import java.sql.Connection;
 import java.sql.ResultSet;
@@ -47,27 +47,7 @@ public class ArticleHandler {
 		}
 		return true;
 	}
-	public boolean newtag(DataSource datasource, String articleID, int tagNumber, ArrayList<String> tags) {
-		Connection con = null;
-		try {
-			con = datasource.getConnection();
-			Statement st = con.createStatement();
-			
-			for(int i=0;i<tagNumber;i++) {
-				int insert = st.executeUpdate("insert into tag(articleID,tagName)" 
-			+ articleID + "','" + tags.get(i) + "' FROM newtag");
-				st.close();//關閉st
-				if(insert <= 0) return false;
-			}
-			return true;
-		} catch (SQLException e) {
-			System.out.println("PatientInstructionServer newInstruction Exception :" + e.toString());
-			e.printStackTrace();
-		}finally {
-		      if (con!=null) try {con.close();}catch (Exception ignore) {}
-		}
-		return true;
-	}
+
 	public boolean deleteArticle(DataSource datasource,String articleID,String userID) {
 		Connection con = null;
 		try {
@@ -96,6 +76,8 @@ public class ArticleHandler {
 		}
 		return true;
 	}
-	
+	public boolean editArticle(DataSource datasource,String articleID,String userID) {
+		return true;
+	}
 
 }

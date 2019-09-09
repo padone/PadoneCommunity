@@ -1,4 +1,4 @@
-package PadoneArticleMod;
+package padone.common.controller.Article;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,6 +12,9 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.tomcat.jdbc.pool.DataSource;
 
 import com.google.gson.Gson;
+
+import padone.common.model.Article.ArticleHandler;
+import padone.common.model.Article.FeedbackHandler;
 
 /**
  * Servlet implementation class WriteFeedbackServlet
@@ -32,14 +35,6 @@ public class WriteFeedbackServlet extends HttpServlet {
 	 * @see HttpServlet#doGet(HttpServletRequest request, HttpServletResponse response)
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-		// TODO Auto-generated method stub
-		response.getWriter().append("Served at: ").append(request.getContextPath());
-	}
-
-	/**
-	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
-	 */
-	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String author=null;
 		String message;
@@ -62,6 +57,15 @@ public class WriteFeedbackServlet extends HttpServlet {
 				response.getWriter().write(gson.toJson(false));
 			}
 		}
+	}
+
+	/**
+	 * @see HttpServlet#doPost(HttpServletRequest request, HttpServletResponse response)
+	 */
+	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
+		// TODO Auto-generated method stub
+		doGet(request, response);
+		
 	}
 
 }

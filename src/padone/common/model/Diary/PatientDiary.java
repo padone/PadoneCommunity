@@ -1,4 +1,4 @@
-package PadoneDiaryMod;
+package padone.common.model.Diary;
 
 public class PatientDiary {
 	private String patientID;

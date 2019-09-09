@@ -1,4 +1,4 @@
-package PadoneArticleMod;
+package padone.common.model.Article;
 
 public class Feedback {
 	private String articleID;
