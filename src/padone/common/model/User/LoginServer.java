@@ -26,7 +26,7 @@ public class LoginServer
 			
 			while (rs.next())
 			{
-				s = rs.getString("account");
+				s = rs.getString("account"); 
 				p = rs.getString("password");
 				if (account.equals(s) == true)
 				{// true 代表已有此使用者
