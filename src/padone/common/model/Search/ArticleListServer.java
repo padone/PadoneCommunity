@@ -23,7 +23,7 @@ public class ArticleListServer {
         try{
             conn = datasource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT articleID as aId, title, author, authorID, DATE(posttime) as post_time, department as category, description as content, hospital FROM article ORDER BY posttime DESC";
+            String sql = "SELECT articleID as aId, title, p.name as author, authorID, DATE(posttime) as post_time, department as category, description as content, hospital FROM article as a LEFT OUTER JOIN paitent as p ON a.author=p.author ORDER BY posttime DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
@@ -53,7 +53,7 @@ public class ArticleListServer {
         try{
             conn = datasource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT articleID as aId, author, title, DATE(posttime) as post_time, department as category, description as content, hospital FROM article WHERE authorID = '"+ authorID + "' ORDER BY posttime DESC";
+            String sql = "SELECT articleID as aId, p.name as author, title, DATE(posttime) as post_time, department as category, description as content, hospital FROM article as a LEFT OUTER JOIN patient as p ON p.userID = '"+ authorID + "' ORDER BY posttime DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
@@ -82,7 +82,7 @@ public class ArticleListServer {
         try{
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT articleID as aId, title, author, authorID, DATE(posttime) as post_time, description as content, hospital FROM article WHERE department = '" + typ + "' ORDER BY posttime DESC";
+            String sql = "SELECT articleID as aId, title, p.name as author, authorID, DATE(posttime) as post_time, description as content, hospital FROM article as a LEFT OUTER JOIN patient as p WHERE a.department = '" + typ + "' ORDER BY posttime DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
@@ -112,7 +112,7 @@ public class ArticleListServer {
         try{
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT title, author, authorID, department, DATE(posttime) as post_time, description as content, hospital FROM article WHERE articleID = '" + id + "'";
+            String sql = "SELECT title, p.name as author, authorID, department, DATE(posttime) as post_time, description as content, hospital FROM article as a LEFT OUTER JOIN patient as p WHERE a.articleID = '" + id + "'";
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
                 temp.setArticleID(id);
@@ -138,7 +138,7 @@ public class ArticleListServer {
         try{
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT title, author, authorID, department, DATE(posttime) as post_time, description as content, hospital FROM article WHERE articleID = '" + id + "'";
+            String sql = "SELECT title, p.name as author, authorID, department, DATE(posttime) as post_time, description as content, hospital FROM article as a LEFT OUTER JOIN patient as p WHERE a.articleID = '" + id + "'";
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
                 temp.setArticleID(id);
@@ -189,7 +189,7 @@ public class ArticleListServer {
         try{
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT articleID as aId, title, author, authorID, DATE(posttime) as post_time, department as category, description as content FROM article WHERE hospital = '" + position + "' ORDER BY posttime DESC";
+            String sql = "SELECT articleID as aId, title, p.name as author, authorID, DATE(posttime) as post_time, department as category, description as content FROM article as a LEFT OUTER JOIN patient as p WHERE a.hospital = '" + position + "' ORDER BY posttime DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
