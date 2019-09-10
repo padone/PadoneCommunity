@@ -26,7 +26,7 @@ public class LoginServlet extends HttpServlet
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
 		response.setContentType("text/html;charset=UTF-8");
-		response.setHeader("Access-Control-Allow-Origin", "*");
+		response.setHeader("Access-Control-Allow-Origin", "*"); 
 		Gson gson = new Gson();
 		// 連接資料庫
 		DataSource datasource = (DataSource) getServletContext().getAttribute("db");
