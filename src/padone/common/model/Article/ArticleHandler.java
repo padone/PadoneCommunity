@@ -10,27 +10,23 @@ import java.util.Date;
 import org.apache.tomcat.jdbc.pool.DataSource;
 
 public class ArticleHandler {
-	public boolean newArticle(DataSource datasource, String articleID, String title, String author, Date date,
-			String department,String description,String image,String tag) {
+	public boolean newArticle(DataSource datasource, String articleID, String title, String authorID, Date date,
+			String department,String description,String image,String tag,String hospital) {
 		Connection con = null;
 		try {
 			con = datasource.getConnection();
 			Statement st = con.createStatement();
 			Object param = new java.sql.Timestamp(date.getTime());
 			System.out.println("HI");
-			String result="insert into article"+"(articleID,title,author,department,description,posttime,lastupdatetime,image,tag)values('" 
-				    + articleID + "','" + title + "','"+ author + "','" + department + "','" + description + "','"+ param + "','" + param + "','"+image+"','"+tag+"' )";
+			String result="insert into article(articleID,title,authorID,department,description,posttime,lastupdatetime,image,tag,hospital)values('" 
+				    + articleID + "','" + title + "','"+ authorID + "','" + department + "','" + description + "','"+ param + "','" + param + "','"+image+"','"+tag+"','"+hospital+"' )";
 			System.out.println(result);
 			int articleInsert = st.executeUpdate(result);
 			
 			String resultII="insert into tag"+"(articleID,tagName)values('" + articleID + "','" + tag + "' )";
 			System.out.println(resultII);
 			int tagInsert = st.executeUpdate(resultII);//
-		   /* int insert = st.executeUpdate("insert into patientinstruction"
-		    		+ "(patientInstructionID,doctorID,symptom,type,date,title,content,editDate) "
-		    		+ "select ifNULL(max(patientInstructionID+0),0)+1,'" 
-		    		+ doctorID + "','" + symptom + "','"+ type + "','" + date + "','" + title + "','"+ html + "','" + date +
-		    		"' FROM patientinstruction");*/
+		   
 		    
 		    st.close();//關閉st
 			if(tagInsert > 0&&articleInsert>0){
@@ -54,19 +50,9 @@ public class ArticleHandler {
 			con = datasource.getConnection();
 			Statement st = con.createStatement();
 			String author="";
-			ResultSet rs=st.executeQuery("select * from article where articleID='"+articleID+"'");
-			while(rs.next()){
-				author=""+rs.getString("author");
-			}
-			if(userID.equals(author)) {
-				String sql="delete from article where articleID='"+articleID+"'";
-				st.executeUpdate(sql);
-				return true;
-			}
-			else {
-				return false;
-			}
-				
+			String sql="delete from article where articleID='"+articleID+"' and authorID='"+userID+"'";
+			st.executeUpdate(sql);
+			return true;
 			
 		} catch (SQLException e) {
 			System.out.println("PatientInstructionServer newInstruction Exception :" + e.toString());
@@ -76,7 +62,29 @@ public class ArticleHandler {
 		}
 		return true;
 	}
-	public boolean editArticle(DataSource datasource,String articleID,String userID) {
+	public boolean editArticle(DataSource datasource,String articleID, String title, String author, Date date,
+			String department,String description,String image,String tag) {
+		Connection con = null;
+		try {
+			con = datasource.getConnection();
+			Statement st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE,ResultSet.CONCUR_UPDATABLE);
+			Object param = new java.sql.Timestamp(date.getTime());
+			System.out.println("HI");
+			
+		    
+		    st.close();//關閉st
+			if(true){
+				return true;
+			}
+			else{
+				return false;
+			}
+		} catch (SQLException e) {
+			System.out.println("Exception :" + e.toString());
+			e.printStackTrace();
+		}finally {
+		      if (con!=null) try {con.close();}catch (Exception ignore) {}
+		}
 		return true;
 	}
 

@@ -50,7 +50,8 @@ public class WriteArticleServlet extends HttpServlet {
     	description=request.getParameter("description");
     	Image=request.getParameter("Image");
     	tag=request.getParameter("tag");
-    	if(writeAreicle.newArticle(datasource, articleID, title, author, date, department, description, Image,tag)) {
+    	String hospital =request.getParameter("hospital");
+    	if(writeAreicle.newArticle(datasource, articleID, title, author, date, department, description, Image,tag,hospital)) {
     		response.getWriter().write(gson.toJson(true));
     	}
     	else {
