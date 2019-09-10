@@ -23,7 +23,7 @@ public class ArticleListServer {
         try{
             conn = datasource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT articleID as aId, title, author, authorID, DATE(posttime) as post_time, department as category, description as content FROM article ORDER BY posttime DESC";
+            String sql = "SELECT articleID as aId, title, author, authorID, DATE(posttime) as post_time, department as category, description as content, hospital FROM article ORDER BY posttime DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
@@ -35,6 +35,7 @@ public class ArticleListServer {
                 temp.setPostTime(rs.getString("post_time"));
                 temp.setDepartment(rs.getString("category"));
                 temp.setDescription(rs.getString("content"));
+                temp.setHospital(rs.getString("hospital"));
                 resultList.add(temp);
             }
 
@@ -52,7 +53,7 @@ public class ArticleListServer {
         try{
             conn = datasource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT articleID as aId, author, title, DATE(posttime) as post_time, department as category, description as content FROM article WHERE authorID = '"+ authorID + "' ORDER BY posttime DESC";
+            String sql = "SELECT articleID as aId, author, title, DATE(posttime) as post_time, department as category, description as content, hospital FROM article WHERE authorID = '"+ authorID + "' ORDER BY posttime DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
@@ -64,6 +65,7 @@ public class ArticleListServer {
                 temp.setDepartment(rs.getString("category"));
                 temp.setPostTime(rs.getString("post_time"));
                 temp.setDescription(rs.getString("content"));
+                temp.setHospital(rs.getString("hospital"));
                 resultList.add(temp);
             }
         }catch(SQLException e){
@@ -80,7 +82,7 @@ public class ArticleListServer {
         try{
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT articleID as aId, title, author, authorID, DATE(posttime) as post_time, description as content FROM article WHERE department = '" + typ + "' ORDER BY posttime DESC";
+            String sql = "SELECT articleID as aId, title, author, authorID, DATE(posttime) as post_time, description as content, hospital FROM article WHERE department = '" + typ + "' ORDER BY posttime DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
@@ -92,6 +94,7 @@ public class ArticleListServer {
                 temp.setDepartment(typ);
                 temp.setPostTime(rs.getString("post_time"));
                 temp.setDescription(rs.getString("content"));
+                temp.setHospital(rs.getString("hospital"));
                 resultList.add(temp);
             }
 
@@ -109,7 +112,7 @@ public class ArticleListServer {
         try{
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT title, author, authorID, department, DATE(posttime) as post_time, description as content FROM article WHERE articleID = '" + id + "'";
+            String sql = "SELECT title, author, authorID, department, DATE(posttime) as post_time, description as content, hospital FROM article WHERE articleID = '" + id + "'";
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
                 temp.setArticleID(id);
@@ -119,6 +122,7 @@ public class ArticleListServer {
                 temp.setDepartment(rs.getString("department"));
                 temp.setPostTime(rs.getString("post_time"));
                 temp.setDescription(rs.getString("content"));
+                temp.setHospital(rs.getString("hospital"));
                 resultList.add(temp);
             }
         }catch (SQLException e){
@@ -134,7 +138,7 @@ public class ArticleListServer {
         try{
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT title, author, authorID, department, DATE(posttime) as post_time, description as content FROM article WHERE articleID = '" + id + "'";
+            String sql = "SELECT title, author, authorID, department, DATE(posttime) as post_time, description as content, hospital FROM article WHERE articleID = '" + id + "'";
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
                 temp.setArticleID(id);
@@ -144,6 +148,7 @@ public class ArticleListServer {
                 temp.setDepartment(rs.getString("department"));
                 temp.setPostTime(rs.getString("post_time"));
                 temp.setDescription(rs.getString("content"));
+                temp.setHospital(rs.getString("hospital"));
             }
         }catch (SQLException e){
             e.printStackTrace();
@@ -171,6 +176,35 @@ public class ArticleListServer {
                 resultList.add(temp);
             }
         }catch (SQLException e){
+            e.printStackTrace();
+        }
+        return resultList;
+    }
+
+    public static ArrayList<Article> getHospitalArticle(DataSource dataSource, String position){
+        resultList = new ArrayList<>();
+        Connection conn;
+        Article temp;
+
+        try{
+            conn = dataSource.getConnection();
+            Statement stmt = conn.createStatement();
+            String sql = "SELECT articleID as aId, title, author, authorID, DATE(posttime) as post_time, department as category, description as content FROM article WHERE hospital = '" + position + "' ORDER BY posttime DESC";
+            ResultSet rs = stmt.executeQuery(sql);
+
+            while(rs.next()){
+                temp = new Article();
+                temp.setArticleID(rs.getString("aId"));
+                temp.setTitle(rs.getString("title"));
+                temp.setAuthor(rs.getString("author"));
+                temp.setAuthorID(rs.getString("authorID"));
+                temp.setPostTime(rs.getString("post_time"));
+                temp.setDepartment(rs.getString("category"));
+                temp.setDescription(rs.getString("content"));
+                temp.setHospital(position);
+                resultList.add(temp);
+            }
+        }catch(SQLException e) {
             e.printStackTrace();
         }
         return resultList;
