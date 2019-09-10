@@ -10,6 +10,7 @@ public class Article {
 	private String description;
 	private String tag;
 	private String image;
+	private String hospital;
 	public void setArticleID(String articleID) {
 		this.articleID=articleID;
 	}
@@ -38,10 +39,11 @@ public class Article {
 	public void setDepartment(String department) {
 		this.department=department;
 	}
+	public void setHospital(String hospital){ this.hospital = hospital; }
 	public Article() {
 		
 	}
-	public Article(String articleID,String author, String authorID,String department,String postTime,String lastUpdateTime,String description,String tag) {
+	public Article(String articleID,String author, String authorID,String department,String postTime,String lastUpdateTime,String description,String tag, String hospital) {
 		setArticleID(articleID);
 		setAuthor(author);
 		setAuthorID(authorID);
@@ -50,7 +52,7 @@ public class Article {
 		setDescription(description);
 		setTag(tag);
 		setDepartment(department);
-		
+		setHospital(hospital);
 	}
 	void tostring() {
 		System.out.println("articleID:"+articleID+",author:"+author+", authorID:"+ authorID + ",department:"+department+",postTime:"+postTime+",lastUpdateTime:"+lastUpdateTime+",description:"+description+",tag:"+tag+",image:"+image+",title:"+title);
