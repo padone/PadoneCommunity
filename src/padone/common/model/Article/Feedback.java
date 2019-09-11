@@ -2,8 +2,8 @@ package padone.common.model.Article;
 
 public class Feedback {
 	private String articleID;
-	private String ID;
-	private String author;
+	private String ID;     // feedback id
+	private String author; // author id
 	private String message;
 	private String updateTime;
 	public void SetArticleID(String articleID) {
