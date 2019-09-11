@@ -78,8 +78,6 @@ public class FeedbackHandler {
 				String authorName = rs.getString("authorName");
 				temp.feedback(articleID, id, authorName, author, message, updateTime);
 				result.add(temp);
-				
-				
 			}
 				
 			
