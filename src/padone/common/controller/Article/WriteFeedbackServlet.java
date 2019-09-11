@@ -1,4 +1,5 @@
 package padone.common.controller.Article;
+import padone.common.model.Article.*;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -12,9 +13,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.tomcat.jdbc.pool.DataSource;
 
 import com.google.gson.Gson;
-
-import padone.common.model.Article.ArticleHandler;
-import padone.common.model.Article.FeedbackHandler;
 
 /**
  * Servlet implementation class WriteFeedbackServlet
@@ -36,27 +34,7 @@ public class WriteFeedbackServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String userID=null;
-		String message;
-		String articleID;
-		response.setContentType("text/html;charset=UTF-8");
-    	PrintWriter out = response.getWriter();
-    	FeedbackHandler writefeedback=new FeedbackHandler();
-    	Gson gson = new Gson();	
-    	userID=request.getParameter("userID");
-    	message=request.getParameter("message");
-    	articleID=request.getParameter("articleID");
-		//連接資料庫
-		DataSource datasource = (DataSource) getServletContext().getAttribute("db");
-		if(userID!=null) {
-			ArticleHandler writeAreicle=new ArticleHandler();
-			if(writefeedback.newFeedback(datasource, userID, articleID, message)) {
-				response.getWriter().write(gson.toJson(true));
-			}
-			else {
-				response.getWriter().write(gson.toJson(false));
-			}
-		}
+		response.getWriter().append("Served at: ").append(request.getContextPath());
 	}
 
 	/**
@@ -64,8 +42,27 @@ public class WriteFeedbackServlet extends HttpServlet {
 	 */
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		doGet(request, response);
-		
+		String author=null;
+		String message;
+		String articleID;
+		response.setContentType("text/html;charset=UTF-8");
+    	PrintWriter out = response.getWriter();
+    	FeedbackHandler writefeedback=new FeedbackHandler();
+    	Gson gson = new Gson();	
+    	author=request.getParameter("author");
+    	message=request.getParameter("message");
+    	articleID=request.getParameter("articleID");
+		//連接資料庫
+		DataSource datasource = (DataSource) getServletContext().getAttribute("db");
+		if(author!=null) {
+			ArticleHandler writeAreicle=new ArticleHandler();
+			if(writefeedback.newFeedback(datasource, author, articleID, message)) {
+				response.getWriter().write(gson.toJson(true));
+			}
+			else {
+				response.getWriter().write(gson.toJson(false));
+			}
+		}
 	}
 
 }

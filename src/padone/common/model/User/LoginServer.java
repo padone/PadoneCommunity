@@ -19,12 +19,14 @@ public class LoginServer
 			ResultSet rs;
 			if(identity == "醫生")
 				rs = st.executeQuery("select doctorID, account, password, name from doctor");
+			else if(identity == "管理員")
+				rs = st.executeQuery("select managerID, account, password, name from manager");
 			else
 				rs = st.executeQuery("select userID, account, password, name from patient");
 			
 			while (rs.next())
 			{
-				s = rs.getString("account");
+				s = rs.getString("account"); 
 				p = rs.getString("password");
 				if (account.equals(s) == true)
 				{// true 代表已有此使用者
@@ -34,6 +36,11 @@ public class LoginServer
 						if(identity == "醫生")
 						{
 							ID = rs.getString("doctorID");
+							name = rs.getString("name");
+						}
+						else if(identity == "管理員")
+						{
+							ID = rs.getString("managerID");
 							name = rs.getString("name");
 						}
 						else

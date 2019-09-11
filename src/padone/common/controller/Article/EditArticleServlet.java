@@ -37,7 +37,7 @@ public class EditArticleServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		String articleID=request.getParameter("articleID");
 		String title=request.getParameter("title");
-		String author=request.getParameter("author");
+		String authorID=request.getParameter("authorID");
 		String department=request.getParameter("deppartment");
 		String description=request.getParameter("description");
 		String Image=request.getParameter("Image");
@@ -46,12 +46,12 @@ public class EditArticleServlet extends HttpServlet {
 		Gson gson=new Gson();
 		ArticleHandler writeAreicle=new ArticleHandler();
 		Date date= new Date();
-		if(writeAreicle.editArticle(datasource, articleID, title,  tag, date, department, description, Image,tag)) {
+		/*if(writeAreicle.editArticle(datasource, articleID, title,  tag, date, department, description, Image,tag)) {
     		response.getWriter().write(gson.toJson(true));
     	}
     	else {
     		response.getWriter().write(gson.toJson(false));
-    	}
+    	}*/
 	}
 
 	/**

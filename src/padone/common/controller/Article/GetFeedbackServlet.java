@@ -1,4 +1,5 @@
 package padone.common.controller.Article;
+import padone.common.model.Article.*;
 
 import java.io.IOException;
 import java.io.PrintWriter;
@@ -13,9 +14,6 @@ import javax.servlet.http.HttpServletResponse;
 import org.apache.tomcat.jdbc.pool.DataSource;
 
 import com.google.gson.Gson;
-
-import padone.common.model.Article.Feedback;
-import padone.common.model.Article.FeedbackHandler;
 
 /**
  * Servlet implementation class GetFeedbackServlet

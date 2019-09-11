@@ -1,4 +1,5 @@
 package padone.common.controller.Article;
+import padone.common.model.Article.*;
 
 import java.util.*;
 import java.io.*;
@@ -13,8 +14,6 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 
 import com.google.gson.Gson;
 
-import padone.common.model.Article.ArticleHandler;
-
 
 @WebServlet("/WriteArticleServlet")
 public class WriteArticleServlet extends HttpServlet {
@@ -22,7 +21,7 @@ public class WriteArticleServlet extends HttpServlet {
 	String author="";
 	String department="";
 	String description="";
-	String Image="";
+	String[] image;
 	String tag = "";
 	int tagNumber;
 	public WriteArticleServlet() {
@@ -38,20 +37,17 @@ public class WriteArticleServlet extends HttpServlet {
 		DataSource datasource = (DataSource) getServletContext().getAttribute("db");
 		ArticleHandler writeAreicle=new ArticleHandler();
 		/*******************************/
-		Date date= new Date();
+		
 		String articleID="";
-		if(date.getMonth()+1>10&&date.getDate()>10)articleID=date.getYear()+""+(date.getMonth()+1)+""+date.getDate()+set();
-		if(date.getMonth()+1<10&&date.getDate()>10)articleID=date.getYear()+"0"+(date.getMonth()+1)+""+date.getDate()+set();
-		if(date.getMonth()+1>10&&date.getDate()<10)articleID=date.getYear()+""+(date.getMonth()+1)+"0"+date.getDate()+set();
-		if(date.getMonth()+1<10&&date.getDate()<10)articleID=date.getYear()+"0"+(date.getMonth()+1)+"0"+date.getDate()+set();
+	
 		title=request.getParameter("title");
-    	author=request.getParameter("author");
+    	author=request.getParameter("userID");
     	department=request.getParameter("department");
     	description=request.getParameter("description");
-    	Image=request.getParameter("Image");
+    	image=request.getParameterValues("image");
+    	String hospital=request.getParameter("hospital");
     	tag=request.getParameter("tag");
-    	String hospital =request.getParameter("hospital");
-    	if(writeAreicle.newArticle(datasource, articleID, title, author, date, department, description, Image,tag,hospital)) {
+    	if(writeAreicle.newArticle(datasource,  title, author,  department, description, image,tag,hospital)) {
     		response.getWriter().write(gson.toJson(true));
     	}
     	else {
@@ -62,13 +58,9 @@ public class WriteArticleServlet extends HttpServlet {
     }
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		
-		//response.getWriter().println("HI");
+	
 		DataSource d = (DataSource) getServletContext().getAttribute("db");
-		/*response.getWriter().println(title);
-		response.getWriter().println(author);
-		response.getWriter().println(department);
-		response.getWriter().println(description);
-		response.getWriter().println(Image);*/
+		
 		try {
 			response.getWriter().println("test1");
 			Connection conn = d.getConnection();
@@ -90,15 +82,5 @@ public class WriteArticleServlet extends HttpServlet {
 			response.getWriter().println("error");
 			e.printStackTrace();
 		}
-	}
-	public String set() {
-		char[] p = {
-				'a','b','c','d','e','f','g','h','i','j','k','l','m','n','o','p','q','r','s','t','u','v','w','x','y','z',
-				'A','B','C','D','E','F','G','H','I','J','K','L','M','N','O','P','Q','R','S','T','U','V','W','X','Y','Z',
-				'0','1','2','3','4','5','6','7','8','9'
-				};
-		Random ran = new Random();
-		return p[ran.nextInt(62)]+""+p[ran.nextInt(62)]+""+p[ran.nextInt(62)];
-	
 	}
 }
