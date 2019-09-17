@@ -9,6 +9,7 @@ import java.util.Date;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 
+// TODO : fix image resource error
 public class ArticleHandler {
 	public boolean newArticle(DataSource datasource,  String title, String authorID, 
 			String department,String description,String[] image,String tag,String hospital) {

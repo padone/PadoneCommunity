@@ -21,7 +21,7 @@ public class WriteArticleServlet extends HttpServlet {
 	String author="";
 	String department="";
 	String description="";
-	String[] image;
+	String[] imageURL;
 	String tag = "";
 	int tagNumber;
 	public WriteArticleServlet() {
@@ -35,7 +35,7 @@ public class WriteArticleServlet extends HttpServlet {
     	Gson gson = new Gson();	
 		//連接資料庫
 		DataSource datasource = (DataSource) getServletContext().getAttribute("db");
-		ArticleHandler writeAreicle=new ArticleHandler();
+		ArticleHandler writeArticle=new ArticleHandler();
 		/*******************************/
 		
 		String articleID="";
@@ -44,10 +44,10 @@ public class WriteArticleServlet extends HttpServlet {
     	author=request.getParameter("userID");
     	department=request.getParameter("department");
     	description=request.getParameter("description");
-    	image=request.getParameterValues("image");
+    	imageURL=request.getParameterValues("image");
     	String hospital=request.getParameter("hospital");
     	tag=request.getParameter("tag");
-    	if(writeAreicle.newArticle(datasource,  title, author,  department, description, image,tag,hospital)) {
+    	if(writeArticle.newArticle(datasource,  title, author,  department, description, imageURL,tag,hospital)) {
     		response.getWriter().write(gson.toJson(true));
     	}
     	else {

@@ -9,7 +9,8 @@ public class Article {
 	private String lastUpdateTime;
 	private String description;
 	private String tag;
-	private String image;
+	private int imageNum = 0;
+  
 	private String hospital;
 	public void setArticleID(String articleID) {
 		this.articleID=articleID;
@@ -21,8 +22,8 @@ public class Article {
 		this.author=author;
 	}
 	public void setAuthorID(String authorID){ this.authorID = authorID; }
-	public void setImage(String image) {
-		this.image=image;
+	public void setImage(int imageNum) {
+		this.imageNum=imageNum;
 	}
 	public void setPostTime(String postTime) {
 		this.postTime=postTime;
@@ -55,7 +56,7 @@ public class Article {
 		setHospital(hospital);
 	}
 	void tostring() {
-		System.out.println("articleID:"+articleID+",author:"+author+", authorID:"+ authorID + ",department:"+department+",postTime:"+postTime+",lastUpdateTime:"+lastUpdateTime+",description:"+description+",tag:"+tag+",image:"+image+",title:"+title);
+		System.out.println("articleID:"+articleID+",author:"+author+", authorID:"+ authorID + ",department:"+department+",postTime:"+postTime+",lastUpdateTime:"+lastUpdateTime+",description:"+description+",tag:"+tag+",imageNum:"+imageNum+",title:"+title);
 	}
 	
 }
