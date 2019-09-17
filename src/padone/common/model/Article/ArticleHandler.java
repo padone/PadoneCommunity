@@ -12,7 +12,7 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 // TODO : fix image resource error
 public class ArticleHandler {
 	public boolean newArticle(DataSource datasource, String articleID, String title, String author, Date date,
-			String department,String description,String image,String tag) {
+			String department,String description,int image,String tag) {
 		Connection con = null;
 		try {
 			con = datasource.getConnection();
@@ -20,7 +20,7 @@ public class ArticleHandler {
 			Object param = new java.sql.Timestamp(date.getTime());
 			System.out.println("HI");
 			String result="insert into article"+"(articleID,title,author,department,description,posttime,lastupdatetime,image,tag)values('" 
-				    + articleID + "','" + title + "','"+ author + "','" + department + "','" + description + "','"+ param + "','" + param + "','"+image+"','"+tag+"' )";
+				    + articleID + "','" + title + "','"+ author + "','" + department + "','" + description + "','"+ param + "','" + param + "',"+image+",'"+tag+"' )";
 			System.out.println(result);
 			int articleInsert = st.executeUpdate(result);
 			
