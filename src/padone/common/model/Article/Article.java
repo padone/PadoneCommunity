@@ -10,6 +10,7 @@ public class Article {
 	private String description;
 	private String tag;
 	private int imageNum = 0;
+  
 	private String hospital;
 	public void setArticleID(String articleID) {
 		this.articleID=articleID;
