@@ -45,8 +45,9 @@ public class TrackArticleServlet extends HttpServlet {
 		articleID=request.getParameter("articleID");
 		userID=request.getParameter("userID");
 		title=request.getParameter("title");
+		String tableName=request.getParameter("tableName");
 		if(articleID!=null) {
-			if (track.newTrackArticle(datasource, articleID, userID, title)) {
+			if (track.newTrackArticle(datasource, articleID, userID, tableName)) {
 				out.write(gson.toJson(true));
 			} else {
 				out.write(gson.toJson(false));

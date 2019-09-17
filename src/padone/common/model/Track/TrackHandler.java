@@ -10,15 +10,15 @@ import java.util.Date;
 import org.apache.tomcat.jdbc.pool.DataSource;
 
 public class TrackHandler {
-	public boolean newTrackArticle(DataSource datasource, String articleID, String userID,String title) {
+	public boolean newTrackArticle(DataSource datasource, String articleID, String userID,String tableName) {
 		Connection con = null;
 		try {
 			con = datasource.getConnection();
 			Statement st = con.createStatement();
 			
 			System.out.println("HI");
-			String result="insert into trackarticle"+"(articleID,title,userID)values('" 
-			+ articleID + "','" + title + "','"+userID+"' )";
+			String result="insert into "+tableName+"(articleID,userID)values('" 
+			+ articleID +  "','"+userID+"' )";
 			System.out.println(result);
 			int articleInsert = st.executeUpdate(result);
 			
@@ -42,12 +42,12 @@ public class TrackHandler {
 		}
 		
 	}
-    public boolean deleteTrackArticle(DataSource datasource, String articleID, String userID) {
+    public boolean deleteTrackArticle(DataSource datasource, String articleID, String userID,String tableName) {
     	Connection con = null;
 		try {
 			con = datasource.getConnection();
 			Statement st = con.createStatement();
-			String sql="delete from trackarticle where articleID='"+articleID+"' and  userID='"+userID+"'";
+			String sql="delete from "+tableName+" where articleID='"+articleID+"' and  userID='"+userID+"'";
 			System.out.println(sql);
 			st.executeUpdate(sql);
 		} catch (SQLException e) {
@@ -66,7 +66,7 @@ public class TrackHandler {
 			Statement st = con.createStatement();
 			
 			System.out.println("HI");
-			String result="insert into tracktarget"+"(target,follow)values('" 
+			String result="insert into tracktarget(target,follow)values('" //SQL刪除
 			+ target + "','"+follow+"' )";
 			System.out.println(result);
 			int targetInsert = st.executeUpdate(result);

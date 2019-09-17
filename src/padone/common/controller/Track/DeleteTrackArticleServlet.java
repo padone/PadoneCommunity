@@ -43,11 +43,13 @@ public class DeleteTrackArticleServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		String articleID;
 		String userID;
+		String tableName;
 		
 		articleID=request.getParameter("articleID");
 		userID=request.getParameter("userID");
+		tableName=request.getParameter("tableName");
 		if(articleID!=null) {
-			if (track.deleteTrackArticle(datasource, articleID, userID)) {
+			if (track.deleteTrackArticle(datasource, articleID, userID,tableName)) {
 				out.write(gson.toJson(true));
 			} else {
 				out.write(gson.toJson(false));
