@@ -47,7 +47,7 @@ public class WriteArticleServlet extends HttpServlet {
     	imageURL=request.getParameterValues("image");
     	String hospital=request.getParameter("hospital");
     	tag=request.getParameter("tag");
-    	if(writeArticle.newArticle(datasource,  title, author,  department, description, imageURL,tag,hospital)) {
+    	if(writeArticle.newArticle(datasource, title, author, department, description, imageURL, tag, hospital)) {
     		response.getWriter().write(gson.toJson(true));
     	}
     	else {
