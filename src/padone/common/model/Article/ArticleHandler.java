@@ -26,8 +26,8 @@ public class ArticleHandler {
 				articleID=(rs.getInt(1))+1;
 				System.out.println(articleID);
 			}
-			String insertsql="insert into article(articleID,title,authorID,department,description,hospital,posttime,lastupdatetime)value('"
-		    +articleID+"','"+title+"','"+authorID+"','"+department+"','"+description+"','"+hospital+"','"+param+"','"+param+"')";
+			String insertsql="insert into article(articleID,title,authorID,department,description,hospital,posttime,lastupdatetime, image)value('"
+		    +articleID+"','"+title+"','"+authorID+"','"+department+"','"+description+"','"+hospital+"','"+param+"','"+param+"', " + image.length +")";
 		    int insertset=st.executeUpdate(insertsql);
 		    for(int i=0;image.length>i;i++) {
 		    	String insertImageSql="insert into picture(imageURL,source,sourceID)value('"+image[i]+"','article','"+articleID+"')";

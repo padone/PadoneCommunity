@@ -1,4 +1,7 @@
 package padone.common.model.Article;
+
+import java.util.ArrayList;
+
 public class Article {
 	private String articleID;
 	private String title;
@@ -10,6 +13,7 @@ public class Article {
 	private String description;
 	private String tag;
 	private int imageNum = 0;
+	private ArrayList<String> imageURL;
   
 	private String hospital;
 	public void setArticleID(String articleID) {
@@ -41,6 +45,18 @@ public class Article {
 		this.department=department;
 	}
 	public void setHospital(String hospital){ this.hospital = hospital; }
+	public void setImageURL(ArrayList<String> imageURL){
+		this.imageURL = imageURL;
+	}
+
+	public String getArticleID() {
+		return articleID;
+	}
+
+	public int getImageNum() {
+		return imageNum;
+	}
+
 	public Article() {
 		
 	}

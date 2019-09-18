@@ -34,7 +34,7 @@ public class ArticleFinder {
 				String lastUpdateTime=""+rs.getString("lastUpdateTime");
 				System.out.println("lastUpdateTime:"+lastUpdateTime);
 				a.setLastUpdateTime(lastUpdateTime);
-				String image=""+rs.getString("image");
+				int image= rs.getInt("image");
 				System.out.println("image:"+image);
 				a.setImage(image);
 				String tag=""+rs.getString("tag");
