@@ -10,7 +10,6 @@ import java.sql.Statement;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import padone.common.model.Article.Article;
 
-// TODO: add image url array
 public class ArticleListServer {
     private static ArrayList<Article> resultList;
 
@@ -23,7 +22,7 @@ public class ArticleListServer {
         try{
             conn = datasource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT articleID as aId, title, p.name as author, authorID, DATE(posttime) as post_time, department as category, description as content, hospital, image FROM article as a LEFT JOIN patient as p ON a.authorID=p.userID ORDER BY posttime DESC";
+            String sql = "SELECT articleID as aId, title, p.name as author, authorID, DATE(posttime) as post_time, department as category, description as content, hospital, image FROM article as a INNER JOIN patient as p ON a.authorID=p.userID ORDER BY posttime DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
@@ -55,7 +54,7 @@ public class ArticleListServer {
         try{
             conn = datasource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT articleID as aId, p.name as author, title, DATE(posttime) as post_time, department as category, description as content, hospital, image FROM article as a LEFT JOIN patient as p ON p.userID = '"+ authorID + "' ORDER BY posttime DESC";
+            String sql = "SELECT articleID as aId, p.name as author, title, DATE(posttime) as post_time, department as category, description as content, hospital, image FROM article as a INNER JOIN patient as p ON p.userID = '"+ authorID + "' and a.authorID = '" + authorID + "' ORDER BY posttime DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
@@ -86,7 +85,7 @@ public class ArticleListServer {
         try{
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT articleID as aId, title, p.name as author, authorID, DATE(posttime) as post_time, description as content, hospital, image FROM article as a LEFT JOIN patient as p WHERE a.department = '" + typ + "' ORDER BY posttime DESC";
+            String sql = "SELECT n.articleID as aId, n.title, n.name as author, n.authorID, DATE(n.posttime) as post_time, n.description as content, n.hospital, n.image FROM (SELECT * FROM article as a INNER JOIN patinet as p ON a.authorID=p.userID) as n WHERE n.department='" + typ + "'ORDER BY posttime DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
@@ -118,7 +117,7 @@ public class ArticleListServer {
         try{
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT title, p.name as author, authorID, department, DATE(posttime) as post_time, description as content, hospital, image FROM article as a LEFT JOIN patient as p WHERE a.articleID = '" + id + "'";
+            String sql = "SELECT n.title, n.name as author, n.authorID, n.department, DATE(n.posttime) as post_time, n.description as content, n.hospital, n.image FROM (SELECT * FROM article as a INNER JOIN patient as p ON a.authorID=p.userID) as n WHERE n.articleID = '" + id + "'";
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
                 temp.setArticleID(id);
@@ -146,7 +145,7 @@ public class ArticleListServer {
         try{
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT title, p.name as author, authorID, department, DATE(posttime) as post_time, description as content, hospital, image FROM article as a LEFT JOIN patient as p WHERE a.articleID = '" + id + "'";
+            String sql = "SELECT n.title, n.name as author, n.authorID, n.department, DATE(n.posttime) as post_time, n.description as content, n.hospital, n.image FROM (SELECT * FROM article as a INNER JOIN patient as p ON a.authorID=p.userID) as n WHERE n.articleID = '" + id + "'";
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
                 temp.setArticleID(id);
@@ -199,7 +198,7 @@ public class ArticleListServer {
         try{
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT articleID as aId, title, p.name as author, authorID, DATE(posttime) as post_time, department as category, description as content, image FROM article as a LEFT JOIN patient as p WHERE a.hospital = '" + position + "' ORDER BY posttime DESC";
+            String sql = "SELECT articleID as aId, title, p.name as author, authorID, DATE(posttime) as post_time, department as category, description as content, image FROM article as a INNER JOIN patient as p WHERE a.hospital = '" + position + "' and a.authorID=p.userID ORDER BY posttime DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
