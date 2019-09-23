@@ -19,11 +19,10 @@ public class ArticleListServer {
         Connection conn;
         Article temp;
 
-
         try{
             conn = datasource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT articleID as aId, title, p.name as author, authorID, DATE(posttime) as post_time, department as category, description as content, hospital FROM article as a LEFT JOIN paitent as p ON a.authorID=p.userID ORDER BY posttime DESC";
+            String sql = "SELECT articleID as aId, title, p.name as author, authorID, DATE(posttime) as post_time, department as category, description as content, hospital, image FROM article as a INNER JOIN patient as p ON a.authorID=p.userID ORDER BY posttime DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
@@ -36,12 +35,14 @@ public class ArticleListServer {
                 temp.setDepartment(rs.getString("category"));
                 temp.setDescription(rs.getString("content"));
                 temp.setHospital(rs.getString("hospital"));
+                temp.setImage(rs.getInt("image"));
                 resultList.add(temp);
             }
 
         }catch(SQLException e){
             e.printStackTrace();
         }
+        setImage(resultList, datasource);
         return resultList;
     }
 
@@ -53,7 +54,7 @@ public class ArticleListServer {
         try{
             conn = datasource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT articleID as aId, p.name as author, title, DATE(posttime) as post_time, department as category, description as content, hospital FROM article as a LEFT JOIN patient as p ON p.userID = '"+ authorID + "' ORDER BY posttime DESC";
+            String sql = "SELECT articleID as aId, p.name as author, title, DATE(posttime) as post_time, department as category, description as content, hospital, image FROM article as a INNER JOIN patient as p ON p.userID = '"+ authorID + "' and a.authorID = '" + authorID + "' ORDER BY posttime DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
@@ -66,11 +67,13 @@ public class ArticleListServer {
                 temp.setPostTime(rs.getString("post_time"));
                 temp.setDescription(rs.getString("content"));
                 temp.setHospital(rs.getString("hospital"));
+                temp.setImage(rs.getInt("image"));
                 resultList.add(temp);
             }
         }catch(SQLException e){
             e.printStackTrace();
         }
+        setImage(resultList, datasource);
         return resultList;
     }
 
@@ -82,7 +85,7 @@ public class ArticleListServer {
         try{
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT articleID as aId, title, p.name as author, authorID, DATE(posttime) as post_time, description as content, hospital FROM article as a LEFT JOIN patient as p WHERE a.department = '" + typ + "' ORDER BY posttime DESC";
+            String sql = "SELECT n.articleID as aId, n.title, n.name as author, n.authorID, DATE(n.posttime) as post_time, n.description as content, n.hospital, n.image FROM (SELECT * FROM article as a INNER JOIN patinet as p ON a.authorID=p.userID) as n WHERE n.department='" + typ + "'ORDER BY posttime DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
@@ -95,12 +98,14 @@ public class ArticleListServer {
                 temp.setPostTime(rs.getString("post_time"));
                 temp.setDescription(rs.getString("content"));
                 temp.setHospital(rs.getString("hospital"));
+                temp.setImage(rs.getInt("image"));
                 resultList.add(temp);
             }
 
         }catch (SQLException e){
             e.printStackTrace();
         }
+        setImage(resultList, dataSource);
         return resultList;
     }
 
@@ -112,7 +117,7 @@ public class ArticleListServer {
         try{
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT title, p.name as author, authorID, department, DATE(posttime) as post_time, description as content, hospital FROM article as a LEFT JOIN patient as p WHERE a.articleID = '" + id + "'";
+            String sql = "SELECT n.title, n.name as author, n.authorID, n.department, DATE(n.posttime) as post_time, n.description as content, n.hospital, n.image FROM (SELECT * FROM article as a INNER JOIN patient as p ON a.authorID=p.userID) as n WHERE n.articleID = '" + id + "'";
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
                 temp.setArticleID(id);
@@ -123,11 +128,13 @@ public class ArticleListServer {
                 temp.setPostTime(rs.getString("post_time"));
                 temp.setDescription(rs.getString("content"));
                 temp.setHospital(rs.getString("hospital"));
+                temp.setImage(rs.getInt("image"));
                 resultList.add(temp);
             }
         }catch (SQLException e){
             e.printStackTrace();
         }
+        setImage(resultList, dataSource);
         return resultList;
     }
 
@@ -138,7 +145,7 @@ public class ArticleListServer {
         try{
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT title, p.name as author, authorID, department, DATE(posttime) as post_time, description as content, hospital FROM article as a LEFT JOIN patient as p WHERE a.articleID = '" + id + "'";
+            String sql = "SELECT n.title, n.name as author, n.authorID, n.department, DATE(n.posttime) as post_time, n.description as content, n.hospital, n.image FROM (SELECT * FROM article as a INNER JOIN patient as p ON a.authorID=p.userID) as n WHERE n.articleID = '" + id + "'";
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
                 temp.setArticleID(id);
@@ -149,6 +156,7 @@ public class ArticleListServer {
                 temp.setPostTime(rs.getString("post_time"));
                 temp.setDescription(rs.getString("content"));
                 temp.setHospital(rs.getString("hospital"));
+                temp.setImage(rs.getInt("image"));
             }
         }catch (SQLException e){
             e.printStackTrace();
@@ -178,6 +186,7 @@ public class ArticleListServer {
         }catch (SQLException e){
             e.printStackTrace();
         }
+        setImage(resultList, dataSource);
         return resultList;
     }
 
@@ -189,7 +198,7 @@ public class ArticleListServer {
         try{
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT articleID as aId, title, p.name as author, authorID, DATE(posttime) as post_time, department as category, description as content FROM article as a LEFT JOIN patient as p WHERE a.hospital = '" + position + "' ORDER BY posttime DESC";
+            String sql = "SELECT articleID as aId, title, p.name as author, authorID, DATE(posttime) as post_time, department as category, description as content, image FROM article as a INNER JOIN patient as p WHERE a.hospital = '" + position + "' and a.authorID=p.userID ORDER BY posttime DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
@@ -202,11 +211,41 @@ public class ArticleListServer {
                 temp.setDepartment(rs.getString("category"));
                 temp.setDescription(rs.getString("content"));
                 temp.setHospital(position);
+                temp.setImage(rs.getInt("image"));
                 resultList.add(temp);
             }
         }catch(SQLException e) {
             e.printStackTrace();
         }
+        setImage(resultList, dataSource);
         return resultList;
+    }
+
+    private static void setImage(ArrayList<Article> list, DataSource dataSource){
+        int length = list.size();
+        ArrayList<String> imgSet;
+        Connection conn;
+        Statement stmt;
+        String cmd;
+        ResultSet rs;
+        Article temp;
+
+        for(int i=0; i<length; i++){
+            temp = list.get(i);
+            if(temp.getImageNum() <= 0){ continue; }
+            imgSet = new ArrayList<>();
+            try{
+                conn = dataSource.getConnection();
+                stmt = conn.createStatement();
+                cmd = "SELECT imageUrl as url FROM picture WHERE source = 'article' AND sourceID = '" + temp.getArticleID() + "'";
+                rs = stmt.executeQuery(cmd);
+                while(rs.next()){ imgSet.add(rs.getString("url")); }
+
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+            temp.setImageURL(imgSet);
+            list.set(i, temp);
+        }
     }
 }

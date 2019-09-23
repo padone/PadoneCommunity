@@ -49,7 +49,7 @@ public class WriteFeedbackServlet extends HttpServlet {
     	PrintWriter out = response.getWriter();
     	FeedbackHandler writefeedback=new FeedbackHandler();
     	Gson gson = new Gson();	
-    	author=request.getParameter("author");
+    	author=request.getParameter("authorID");//
     	message=request.getParameter("message");
     	articleID=request.getParameter("articleID");
 		//連接資料庫
