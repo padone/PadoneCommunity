@@ -41,13 +41,13 @@ public class WriteArticleServlet extends HttpServlet {
 		String articleID="";
 	
 		title=request.getParameter("title");
-    	author=request.getParameter("userID");
+    	author=request.getParameter("authorID");
     	department=request.getParameter("department");
     	description=request.getParameter("description");
-    	imageURL=request.getParameterValues("image");
+    	imageURL=request.getParameterValues("picture");
     	String hospital=request.getParameter("hospital");
     	tag=request.getParameter("tag");
-    	if(writeArticle.newArticle(datasource, title, author, department, description, imageURL, tag, hospital)) {
+    	if(writeArticle.newArticle(datasource,  title, author,  department, description, imageURL,tag,hospital)) {
     		response.getWriter().write(gson.toJson(true));
     	}
     	else {

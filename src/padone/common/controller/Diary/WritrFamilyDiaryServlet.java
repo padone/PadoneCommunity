@@ -45,7 +45,7 @@ public class WritrFamilyDiaryServlet extends HttpServlet {
 		userID=request.getParameter("userID");
 		date=request.getParameter("date");
 		description=request.getParameter("description");
-		image=request.getParameter("image");
+		image=request.getParameter("picture");
 		if (userID != null) {
 			if (writeFamilyDiary.writeFamilyDiary(datasource, userID, date, image, description)) {
 				response.getWriter().write(gson.toJson(true));
