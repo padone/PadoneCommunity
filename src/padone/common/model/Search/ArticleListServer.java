@@ -247,5 +247,4 @@ public class ArticleListServer {
             list.set(i, temp);
         }
     }
-
 }
