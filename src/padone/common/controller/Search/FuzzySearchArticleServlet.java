@@ -10,12 +10,18 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
 
 @WebServlet("/FuzzySearchArticleServlet")
 public class FuzzySearchArticleServlet extends HttpServlet {
+    public FuzzySearchArticleServlet(){
+        super();
+    }
 
     @Override
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
         resp.setContentType("application/json; charset=utf-8");
 
         DataSource dataSource = (DataSource) getServletContext().getAttribute("db");
@@ -31,5 +37,22 @@ public class FuzzySearchArticleServlet extends HttpServlet {
         }else if(searchMode.equals("content")){
             resp.getWriter().print(gson.toJson(FuzzySearchServer.searchArticleViaContent(dataSource, fragment)));
         }
+    }
+
+    @Override
+    public void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.getWriter().print("connection test\n");
+/*
+        DataSource dataSource = (DataSource)getServletContext().getAttribute("db");
+
+        String sql = "SELECT userID as id FROM patient WHERE account='testaccoun'";
+        try{
+            ResultSet rs = dataSource.getConnection().createStatement().executeQuery(sql);
+            resp.getWriter().print(rs.getString("id"));
+        }catch (SQLException e){
+            e.printStackTrace();
+        }
+
+        resp.getWriter().print("\nclose\n");*/
     }
 }

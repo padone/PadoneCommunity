@@ -21,7 +21,6 @@ public class ArticleListServlet extends HttpServlet {
         response.setContentType("application/json; charset=utf-8");
         DataSource datasource = (DataSource)getServletContext().getAttribute("db");
         Gson gson;
-        //super.doGet(req, resp);
 
         // get all article from database
         gson = new Gson();
