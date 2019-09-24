@@ -26,11 +26,13 @@ public class ArticleHandler {
 				articleID=(rs.getInt(1))+1;
 				System.out.println(articleID);
 			}
+
 			int length=0;
 			if((image[0].isEmpty()))length=image.length;
 			
 			String insertsql="insert into article(articleID,title,authorID,department,description,hospital,posttime,lastupdatetime, image)value('"
 		    +articleID+"','"+title+"','"+authorID+"','"+department+"','"+description+"','"+hospital+"','"+param+"','"+param+"', " + length +")";
+      
 		    int insertset=st.executeUpdate(insertsql);
 		    for(int i=0;length>i;i++) {
 		    	String insertImageSql="insert into picture(imageURL,source,sourceID)value('"+image[i]+"','article','"+articleID+"')";
