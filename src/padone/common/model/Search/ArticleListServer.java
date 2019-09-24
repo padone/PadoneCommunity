@@ -240,7 +240,6 @@ public class ArticleListServer {
                 cmd = "SELECT imageUrl as url FROM picture WHERE source = 'article' AND sourceID = '" + temp.getArticleID() + "'";
                 rs = stmt.executeQuery(cmd);
                 while(rs.next()){ imgSet.add(rs.getString("url")); }
-
             }catch (SQLException e){
                 e.printStackTrace();
             }
