@@ -27,7 +27,7 @@ public class ArticleHandler {
 				System.out.println(articleID);
 			}
 			int length=0;
-			if((image[0].isEmpty()))length=image.length;
+			if(image!=null)length=image.length;
 			
 			String insertsql="insert into article(articleID,title,authorID,department,description,hospital,posttime,lastupdatetime, image)value('"
 		    +articleID+"','"+title+"','"+authorID+"','"+department+"','"+description+"','"+hospital+"','"+param+"','"+param+"', " + length +")";
@@ -55,17 +55,16 @@ public class ArticleHandler {
 		
 	}
 
-	public boolean deleteArticle(DataSource datasource,String articleID,String userID) {
+	public boolean deleteArticle(DataSource datasource,String articleID) {
 		Connection con = null;
 		try {
 			con = datasource.getConnection();
 			Statement st = con.createStatement();
-			String sqlarticle="delete from article where articleID = '"+articleID+"' and authorID = '"+userID+"'";
+			String sqlarticle="delete from article where articleID = '"+articleID+"'";
 			String sqlimage="delete from picture where source = 'article' and sourceID = '"+articleID+"'";
 			System.out.println(sqlarticle);
 			st.executeUpdate(sqlarticle);
 			st.executeUpdate(sqlimage);
-			return true;
 		} catch (SQLException e) {
 			System.out.println("PatientInstructionServer newInstruction Exception :" + e.toString());
 			e.printStackTrace();
