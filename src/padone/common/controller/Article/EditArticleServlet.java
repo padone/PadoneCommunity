@@ -40,18 +40,20 @@ public class EditArticleServlet extends HttpServlet {
 		String authorID=request.getParameter("authorID");
 		String department=request.getParameter("deppartment");
 		String description=request.getParameter("description");
-		String image=request.getParameter("picture");
+		String[] image=request.getParameterValues("picture");
 		String tag = request.getParameter("tag");
+		String hospital=request.getParameter("hospital");
 		DataSource datasource = (DataSource) getServletContext().getAttribute("db");
 		Gson gson=new Gson();
 		ArticleHandler writeAreicle=new ArticleHandler();
 		Date date= new Date();
-		/*if(writeAreicle.editArticle(datasource, articleID, title,  tag, date, department, description, Image,tag)) {
+		if(writeAreicle.editArticle(datasource,title,articleID,department,
+				 description,image,tag,hospital)) {
     		response.getWriter().write(gson.toJson(true));
     	}
     	else {
     		response.getWriter().write(gson.toJson(false));
-    	}*/
+    	}
 	}
 
 	/**
