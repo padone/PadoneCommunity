@@ -47,7 +47,7 @@ public class WritePatientDiaryServlet extends HttpServlet {
 		identity=request.getParameter("identity");
 		date=request.getParameter("date");
 		patientDescription=request.getParameter("patientDescription");
-		image=request.getParameter("image");
+		image=request.getParameter("picture");
 		if (userID != null) {
 			if (writePatientDiary.writePatientDiary(datasource, userID, date, image, patientDescription)) {
 				response.getWriter().write(gson.toJson(true));

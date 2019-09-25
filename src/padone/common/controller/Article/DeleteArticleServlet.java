@@ -35,17 +35,15 @@ public class DeleteArticleServlet extends HttpServlet {
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
 		String articleID=null;
-		String userID=null;
 		response.setContentType("text/html;charset=UTF-8");
     	PrintWriter out = response.getWriter();
     	Gson gson = new Gson();	
     	articleID=request.getParameter("articleID");
-    	userID=request.getParameter("userID");
     	ArticleHandler deleteArticle=new ArticleHandler();
 		//連接資料庫
 		DataSource datasource = (DataSource) getServletContext().getAttribute("db");
 		if (articleID != null) {
-			if (deleteArticle.deleteArticle(datasource, articleID, userID)) {
+			if (deleteArticle.deleteArticle(datasource, articleID)) {
 				response.getWriter().write(gson.toJson(true));
 			} else {
 				response.getWriter().write(gson.toJson(false));
