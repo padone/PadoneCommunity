@@ -37,8 +37,7 @@ public class EditArticleServlet extends HttpServlet {
 		// TODO Auto-generated method stub
 		String articleID=request.getParameter("articleID");
 		String title=request.getParameter("title");
-		String authorID=request.getParameter("authorID");
-		String department=request.getParameter("deppartment");
+		String department=request.getParameter("department");
 		String description=request.getParameter("description");
 		String[] image=request.getParameterValues("picture");
 		String tag = request.getParameter("tag");

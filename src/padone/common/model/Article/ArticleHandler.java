@@ -112,7 +112,7 @@ public class ArticleHandler {
 			res.updateString("hospital",hospital );
 			res.updateTimestamp("lastupdatetime", param);
 			res.updateRow();
-			String del="delete * from picture where source = article and sourceID = '"+articleID+"'";
+			String del="delete from picture where source = 'article' and sourceID = '"+articleID+"'";
 			st.executeUpdate(del);
 			for (int i = 0; length > i; i++) {
 				String insertImageSql = "insert into picture(imageURL,source,sourceID)value('" + image[i]
