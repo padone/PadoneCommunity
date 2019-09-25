@@ -67,7 +67,7 @@ public class FeedbackHandler {
     	try {
 			con = datasource.getConnection();
 			Statement st = con.createStatement();
-			ResultSet rs=st.executeQuery("SELECT feedbackID, f.authorID as authorID, f.updateTime as updatetime, f.message as message, p.name as authorName FROM (SELECT * FROM feedback as t1 WHERE t1.articleID = '" + articleID +"') as f LEFT JOIN patient as p ON p.userID = f.authorID");
+			ResultSet rs=st.executeQuery("SELECT feedbackID, f.authorID as authorID, f.updateTime as updatetime, f.message as message, p.name as authorName FROM (SELECT * FROM feedback as t1 WHERE t1.articleID = '" + articleID +"') as f INNER JOIN patient as p ON p.userID = f.authorID");
 			//select * from feedback where articleID='"+articleID+"'
 			while(rs.next()) {
 				Feedback temp=new Feedback();
