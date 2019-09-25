@@ -4,7 +4,7 @@ public class FamilyDiary {
 	private String familyID;
 	private String date;
 	private String description;
-	private String photo;
+	private String picture;
 	public void SetFamilyID(String ID){
 		familyID=ID;
 	}
@@ -14,8 +14,8 @@ public class FamilyDiary {
 	public void SetDescription(String des){
 		description=des;
 	}
-	public void SetPhoto(String Photo){
-		this.photo=photo;
+	public void Setpicture(String picture){
+		this.picture=picture;
 	}
 	
 	public String GetFamilyID(){
@@ -27,9 +27,14 @@ public class FamilyDiary {
 	public String GetDescription(){
 		return description;
 	}
-	public String GetPhoto(){
-		return photo;
+	public String Getpicture(){
+		return picture;
 	}
 	
-	
+	public void FamilyDiary(String userID,String date,String description,String picture) {
+		SetFamilyID(userID);
+		SetDescription(description);
+		Setpicture(picture);
+		SetDate(date);
+	}
 }
