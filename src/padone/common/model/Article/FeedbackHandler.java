@@ -27,6 +27,7 @@ public class FeedbackHandler {
 			} catch (SQLException e) {
 				System.out.println("Exception :" + e.toString());
 				e.printStackTrace();
+				return false;
 			}finally {
 			      if (con!=null) try {con.close();}catch (Exception ignore) {}
 			}
