@@ -1,5 +1,6 @@
 package padone.common.controller.Diary;
 import padone.common.model.Diary.DiaryHandler;
+import padone.common.model.Diary.FamilyDiary;
 
 import java.io.IOException;
 import javax.servlet.ServletException;
@@ -32,12 +33,16 @@ public class GetFamilyDiaryServlet extends HttpServlet {
 	 */
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
 		// TODO Auto-generated method stub
-		String userID=null;
-		String date;
+		String userID=request.getParameter("userID");
+		String date=request.getParameter("date");
 		response.setContentType("text/html;charset=UTF-8");
 		Gson gson = new Gson();
 		DataSource datasource = (DataSource) getServletContext().getAttribute("db");
 		DiaryHandler getFamilyDiary=new DiaryHandler();
+		FamilyDiary diary=new FamilyDiary();
+		diary=getFamilyDiary.getFamilyDiary(datasource, userID, date);
+		String res=gson.toJson(diary);
+		response.getWriter().println(res);
 	}
 
 	/**

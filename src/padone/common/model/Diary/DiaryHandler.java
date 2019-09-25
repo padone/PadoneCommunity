@@ -126,4 +126,31 @@ public class DiaryHandler {
 		}
 		return true;
 	}
+	
+	public FamilyDiary getFamilyDiary(DataSource datasource, String userID,String date) {
+		Connection con = null;
+		FamilyDiary diary=new FamilyDiary();
+		try {
+			con = datasource.getConnection();
+			Statement st = con.createStatement();
+			
+			 String result="select * from patientdiary where patientID ='"+userID+"' and date ='"+date+"'";
+		   ResultSet rs= st.executeQuery(result);
+		   while(rs.next()) {
+			   String patientDescription=rs.getString("patientDescription");
+			   String familyDescription=rs.getString("familyDescription");
+			   String familyID=rs.getString("familyID");
+			   String picture=rs.getString("photo");
+			   diary.FamilyDiary(familyID, date, familyDescription,picture);
+		   }
+			 st.close();//關閉st		    
+		} catch (SQLException  e) {
+			System.out.println("Exception :" + e.toString());
+			e.printStackTrace();
+		}finally {
+		      if (con!=null) try {con.close();}catch (Exception ignore) {}
+		}
+		return diary;
+		
+	}
 }

@@ -39,23 +39,15 @@ public class FeedbackHandler {
 			con = datasource.getConnection();
 			Statement st = con.createStatement();
 			String author="";
-			ResultSet rs=st.executeQuery("select * from feedback where feedbackID='"+feedbackID+"'");
-			while(rs.next()){
-				author=""+rs.getString("author");
-			}
-			if(userID.equals(author)) {
-				String sql="delete from feedback where feedbackID='"+feedbackID+"'";
-				st.executeUpdate(sql);
-				return true;
-			}
-			else {
-				return false;
-			}
+
+			String sql = "delete from feedback where feedbackID='" + feedbackID + "' and authorID = '"+userID+"'";
+			st.executeUpdate(sql);
 				
 			
 		} catch (SQLException e) {
 			System.out.println("PatientInstructionServer newInstruction Exception :" + e.toString());
 			e.printStackTrace();
+			return false;
 		}finally {
 		      if (con!=null) try {con.close();}catch (Exception ignore) {}
 		}
@@ -67,7 +59,7 @@ public class FeedbackHandler {
     	try {
 			con = datasource.getConnection();
 			Statement st = con.createStatement();
-			ResultSet rs=st.executeQuery("select feedbackID, f.authorID as authorID, f.updateTime as updatetime, f.message as message, p.name as authorName from feedback as f LEFT JOIN patient as p ON articleID = '" + articleID + "' and p.userID = f.authorID");
+			ResultSet rs=st.executeQuery("SELECT feedbackID, f.authorID as authorID, f.updateTime as updatetime, f.message as message, p.name as authorName FROM (SELECT * FROM feedback as t1 WHERE t1.articleID = '" + articleID +"') as f INNER JOIN patient as p ON p.userID = f.authorID");
 			//select * from feedback where articleID='"+articleID+"'
 			while(rs.next()) {
 				Feedback temp=new Feedback();
@@ -91,3 +83,4 @@ public class FeedbackHandler {
     	
     }
 }
+

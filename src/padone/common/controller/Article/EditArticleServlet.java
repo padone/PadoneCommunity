@@ -40,7 +40,7 @@ public class EditArticleServlet extends HttpServlet {
 		String authorID=request.getParameter("authorID");
 		String department=request.getParameter("deppartment");
 		String description=request.getParameter("description");
-		String Image=request.getParameter("Image");
+		String image=request.getParameter("picture");
 		String tag = request.getParameter("tag");
 		DataSource datasource = (DataSource) getServletContext().getAttribute("db");
 		Gson gson=new Gson();

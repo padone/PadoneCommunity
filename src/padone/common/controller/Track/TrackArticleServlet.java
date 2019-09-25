@@ -41,10 +41,8 @@ public class TrackArticleServlet extends HttpServlet {
 		PrintWriter out = response.getWriter();
 		String articleID;
 		String userID;
-		String title;
 		articleID=request.getParameter("articleID");
 		userID=request.getParameter("userID");
-		title=request.getParameter("title");
 		String tableName=request.getParameter("tableName");
 		if(articleID!=null) {
 			if (track.newTrackArticle(datasource, articleID, userID, tableName)) {
