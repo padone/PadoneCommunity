@@ -13,7 +13,7 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 // TODO : fix image resource error
 public class ArticleHandler {
 	public boolean newArticle(DataSource datasource, String title, String authorID, String department,
-			String description, String[] image, String tag, String hospital) {
+			String description, String[] image, String[] tag, String hospital) {
 		Connection con = null;
 		try {
 			con = datasource.getConnection();
@@ -28,9 +28,9 @@ public class ArticleHandler {
 				System.out.println(articleID);
 			}
 			int length = 0;
-			if (image != null)
-				length = image.length;
-
+			if (image != null)length = image.length;
+			int taglength=0;
+			if(tag!=null)taglength=tag.length;
 			String insertsql = "insert into article(articleID,title,authorID,department,description,hospital,posttime,lastupdatetime, image)value('"
 					+ articleID + "','" + title + "','" + authorID + "','" + department + "','" + description + "','"
 					+ hospital + "','" + param + "','" + param + "', " + length + ")";
@@ -41,6 +41,16 @@ public class ArticleHandler {
 				int insertimage = st.executeUpdate(insertImageSql);
 				if (insertimage < 0) {
 					st.executeUpdate("delete from article where articleID= '" + articleID + "'");
+					return false;
+				}
+			}
+			for (int i = 0; length > i; i++) {
+				String insertImageSql = "insert into tag(articleID,tagName)value('" + articleID
+						+ "','" + tag[i]+ "')";
+				int inserttag = st.executeUpdate(insertImageSql);
+				if (inserttag < 0) {
+					st.executeUpdate("delete from article where articleID= '" + articleID + "'");
+					st.executeUpdate("delete from picture where sourceID= '" + articleID + "' and source ='article'");
 					return false;
 				}
 			}
