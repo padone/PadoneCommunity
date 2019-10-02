@@ -24,7 +24,8 @@ public class TrackingArticleListServlet extends HttpServlet {
         DataSource dataSource = (DataSource)getServletContext().getAttribute("db");
         Gson gson = new Gson();
         String userID = req.getParameter("id");
+        String tableName = req.getParameter("tableName");
 
-        resp.getWriter().print(gson.toJson(TrackingTargetServer.getTrackingArticle(dataSource, userID)));
+        resp.getWriter().print(gson.toJson(TrackingTargetServer.getTrackingArticle(dataSource, userID, tableName)));
     }
 }
