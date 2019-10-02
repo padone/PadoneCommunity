@@ -71,6 +71,7 @@ public class ArticleHandler {
 			String sqlarticle = "delete from article where articleID = '" + articleID + "'";
 			String sqlimage = "delete from picture where source = 'article' and sourceID = '" + articleID + "'";
 			String deletetrack="delete from trackarticle where articleID = '"+articleID+"'";
+      
 			System.out.println(sqlarticle);
 			st.executeUpdate(sqlarticle);
 			st.executeUpdate(deletetrack);
@@ -114,6 +115,7 @@ public class ArticleHandler {
 			res.updateString("hospital",hospital );
 			res.updateTimestamp("lastupdatetime", param);
 			res.updateRow();
+
 			String del="delete from picture where source = 'article' and sourceID = '"+articleID+"'";
 			st.executeUpdate(del);
 			for (int i = 0; length > i; i++) {
