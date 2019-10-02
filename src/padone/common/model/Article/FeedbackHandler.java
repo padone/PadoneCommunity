@@ -21,12 +21,13 @@ public class FeedbackHandler {
 				Object param = new java.sql.Timestamp(date.getTime());
 				System.out.println(param);
 				 int insert = st.executeUpdate("insert into feedback(feedbackID,articleID,authorID,updatetime,message) select ifNULL(max(feedbackID+0),0)+1,'" + articleID + "','" + authorID + "','"+ param + "','" + message + "' FROM feedback");
-				//int insert = st.executeUpdate("insert into feedback"+"(feedbackID,articleID,author,updatetime,message))select ifNULL(max(feedbackID+0),0)+1,'"+ articleID + "','"+ author + "','" + param + "','" + message+"' FROM feedback");
+				
 
 			    st.close();//關閉st
 			} catch (SQLException e) {
 				System.out.println("Exception :" + e.toString());
 				e.printStackTrace();
+				return false;
 			}finally {
 			      if (con!=null) try {con.close();}catch (Exception ignore) {}
 			}

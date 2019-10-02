@@ -16,7 +16,11 @@ public class TrackHandler {
 			con = datasource.getConnection();
 			Statement st = con.createStatement();
 			
-			System.out.println("HI");
+			
+			String check="select * from "+tableName+" where articleID = '"+articleID+"' and userID = '"+userID+"'";
+			System.out.println(check);
+			ResultSet rs =st.executeQuery(check);
+			if(rs.next())return true;
 			String result="insert into "+tableName+"(articleID,userID)values('" 
 			+ articleID +  "','"+userID+"' )";
 			System.out.println(result);

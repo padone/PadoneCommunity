@@ -70,8 +70,11 @@ public class ArticleHandler {
 			Statement st = con.createStatement();
 			String sqlarticle = "delete from article where articleID = '" + articleID + "'";
 			String sqlimage = "delete from picture where source = 'article' and sourceID = '" + articleID + "'";
+			String deletetrack="delete from trackarticle where articleID = '"+articleID+"'";
+      
 			System.out.println(sqlarticle);
 			st.executeUpdate(sqlarticle);
+			st.executeUpdate(deletetrack);
 			st.executeUpdate(sqlimage);
 		} catch (SQLException e) {
 			System.out.println("PatientInstructionServer newInstruction Exception :" + e.toString());
@@ -89,7 +92,7 @@ public class ArticleHandler {
 
 	}
 
-	public boolean EditArticle(DataSource datasource, String title, String articleID, String department,
+	public boolean editArticle(DataSource datasource, String title, String articleID, String department,
 			String description, String[] image, String tag, String hospital){
 		Connection con = null;
 		try {
@@ -112,9 +115,17 @@ public class ArticleHandler {
 			res.updateString("hospital",hospital );
 			res.updateTimestamp("lastupdatetime", param);
 			res.updateRow();
-			String del="delete * from picture where source = article and sourceID = '"+articleID+"'";
+
+			String del="delete from picture where source = 'article' and sourceID = '"+articleID+"'";
 			st.executeUpdate(del);
-			
+			for (int i = 0; length > i; i++) {
+				String insertImageSql = "insert into picture(imageURL,source,sourceID)value('" + image[i]
+						+ "','article','" + articleID + "')";
+				int insertimage = st.executeUpdate(insertImageSql);
+				if (insertimage < 0) {
+					return false;
+				}
+			}
 			st.close();// 關閉st
 		} catch (SQLException e) {
 			System.out.println("Exception :" + e.toString());

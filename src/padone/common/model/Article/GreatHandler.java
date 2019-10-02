@@ -11,6 +11,9 @@ public class GreatHandler {
 		try {
 			con = datasource.getConnection();
 			Statement st = con.createStatement();
+			String check="select * from great where articleID = '"+articleID+"' and userID = '"+userID+"'";
+			ResultSet rs =st.executeQuery(check);
+			if(rs.next())return true;
 			String result="insert into great"+"(articleID,userID)values('" 
 				    + articleID + "','" +  userID+"' )";
 			System.out.println(result);
