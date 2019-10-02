@@ -43,6 +43,8 @@ public class ArticleListServer {
             e.printStackTrace();
         }
         setImage(resultList, datasource);
+        getGreatCount(resultList, datasource);
+        setTag(resultList, datasource);
         return resultList;
     }
 
@@ -74,6 +76,8 @@ public class ArticleListServer {
             e.printStackTrace();
         }
         setImage(resultList, datasource);
+        getGreatCount(resultList, datasource);
+        setTag(resultList, datasource);
         return resultList;
     }
 
@@ -106,6 +110,8 @@ public class ArticleListServer {
             e.printStackTrace();
         }
         setImage(resultList, dataSource);
+        getGreatCount(resultList, dataSource);
+        setTag(resultList, dataSource);
         return resultList;
     }
 
@@ -135,9 +141,13 @@ public class ArticleListServer {
             e.printStackTrace();
         }
         setImage(resultList, dataSource);
+        getGreatCount(resultList, dataSource);
+        setTag(resultList, dataSource);
         return resultList;
     }
 
+    // lack of image information, great information and tag information
+    // be careful using
     protected static Article getSpecArticle(DataSource dataSource, String id){
         Article temp = new Article();
         Connection conn;
@@ -164,6 +174,7 @@ public class ArticleListServer {
         return temp;
     }
 
+    /*
     public static ArrayList<Article> getSingleTagArticle(DataSource dataSource, String tag){
         resultList = new ArrayList<>();
         Connection conn;
@@ -173,11 +184,9 @@ public class ArticleListServer {
         try{
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
-            /** find article id by tag **/
             String sql = "SELECT articleID as aId FROM tag WHERE tagName = '" + tag + "'";
             ResultSet rs = stmt.executeQuery(sql);
 
-            /** find target article by using article id **/
             while(rs.next()){
                 id = rs.getString("aId");
                 temp = getSpecArticle(dataSource, id);
@@ -189,6 +198,7 @@ public class ArticleListServer {
         setImage(resultList, dataSource);
         return resultList;
     }
+    */
 
     public static ArrayList<Article> getHospitalArticle(DataSource dataSource, String position){
         resultList = new ArrayList<>();
@@ -218,6 +228,8 @@ public class ArticleListServer {
             e.printStackTrace();
         }
         setImage(resultList, dataSource);
+        getGreatCount(resultList, dataSource);
+        setTag(resultList, dataSource);
         return resultList;
     }
 
@@ -244,6 +256,57 @@ public class ArticleListServer {
                 e.printStackTrace();
             }
             temp.setImageURL(imgSet);
+            list.set(i, temp);
+        }
+    }
+
+    private static void getGreatCount(ArrayList<Article> list, DataSource dataSource){
+        int length = list.size();
+        Connection conn;
+        Statement stmt;
+        String cmd;
+        ResultSet rs;
+        Article temp;
+
+        for(int i=0; i<length; i++){
+            temp = list.get(i);
+            try{
+                conn = dataSource.getConnection();
+                stmt = conn.createStatement();
+                cmd = "SELECT COUNT(DISTINCT userID) as num FROM great WHERE articleID = '" + temp.getArticleID() + "'";
+                rs = stmt.executeQuery(cmd);
+
+                if(rs.next()) temp.setGreat(rs.getInt("num"));
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+            list.set(i, temp);
+        }
+    }
+
+    private static void setTag(ArrayList<Article> list, DataSource dataSource){
+        int length = list.size();
+        Connection conn;
+        Statement stmt;
+        String cmd;
+        ResultSet rs;
+        Article temp;
+        ArrayList<String> tag;
+
+        for(int i=0; i< length; i++){
+            temp = list.get(i);
+            tag = new ArrayList<>();
+            try{
+                conn = dataSource.getConnection();
+                stmt = conn.createStatement();
+                cmd = "SELECT tagName as t FROM tag WHERE articleID = '" + temp.getArticleID() + "'";
+                rs = stmt.executeQuery(cmd);
+
+                while(rs.next()){ tag.add(rs.getString("t")); }
+            }catch (SQLException e){
+                e.printStackTrace();
+            }
+            temp.setTag(tag);
             list.set(i, temp);
         }
     }
