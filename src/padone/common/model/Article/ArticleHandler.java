@@ -70,8 +70,10 @@ public class ArticleHandler {
 			Statement st = con.createStatement();
 			String sqlarticle = "delete from article where articleID = '" + articleID + "'";
 			String sqlimage = "delete from picture where source = 'article' and sourceID = '" + articleID + "'";
+			String deletetrack="delete from trackarticle where articleID = '"+articleID+"'";
 			System.out.println(sqlarticle);
 			st.executeUpdate(sqlarticle);
+			st.executeUpdate(deletetrack);
 			st.executeUpdate(sqlimage);
 		} catch (SQLException e) {
 			System.out.println("PatientInstructionServer newInstruction Exception :" + e.toString());
