@@ -22,7 +22,7 @@ public class WriteArticleServlet extends HttpServlet {
 	String department="";
 	String description="";
 	String[] imageURL;
-	String tag = "";
+	String[] tag;
 	int tagNumber;
 	public WriteArticleServlet() {
         super();
@@ -46,7 +46,7 @@ public class WriteArticleServlet extends HttpServlet {
     	description=request.getParameter("description");
     	imageURL=request.getParameterValues("picture");
     	String hospital=request.getParameter("hospital");
-    	tag=request.getParameter("tag");
+    	tag=request.getParameterValues("tag");
     	if(writeArticle.newArticle(datasource, title, author, department, description, imageURL, tag, hospital)) {
     		response.getWriter().write(gson.toJson(true));
     	}

@@ -31,7 +31,7 @@ public class TrackingTargetServer {
         return resultList;
     }
 
-    public static ArrayList<Article> getTrackingArticle(DataSource dataSource, String userID){
+    public static ArrayList<Article> getTrackingArticle(DataSource dataSource, String userID, String tableName){
         ArrayList<Article> resultList = new ArrayList<>();
         Article temp;
         Connection conn;
@@ -39,7 +39,7 @@ public class TrackingTargetServer {
         try{
             conn = dataSource.getConnection();
             Statement stmt = conn.createStatement();
-            String sql = "SELECT articleID FROM trackArticle WHERE userID = '" + userID + "'";
+            String sql = "SELECT articleID FROM " + tableName + " WHERE userID = '" + userID + "'";
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
