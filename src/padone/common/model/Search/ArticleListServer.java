@@ -16,12 +16,13 @@ public class ArticleListServer {
     /** get all article, sort by update time **/
     public static ArrayList<Article> getAllArticle(DataSource datasource){
         resultList = new ArrayList<>();
-        Connection conn;
+        Connection conn = null;
+        Statement stmt = null;
         Article temp;
 
         try{
             conn = datasource.getConnection();
-            Statement stmt = conn.createStatement();
+            stmt = conn.createStatement();
             String sql = "SELECT articleID as aId, title, p.name as author, authorID, DATE(posttime) as post_time, department as category, description as content, hospital, image FROM article as a INNER JOIN patient as p ON a.authorID=p.userID ORDER BY posttime DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -38,9 +39,20 @@ public class ArticleListServer {
                 temp.setImage(rs.getInt("image"));
                 resultList.add(temp);
             }
-
+            rs.close();
         }catch(SQLException e){
             e.printStackTrace();
+        }finally {
+            if(conn != null){
+                try{
+                    conn.close();
+                }catch (SQLException ignored){}
+            }
+            if(stmt != null){
+                try{
+                    stmt.close();
+                }catch (SQLException ignored){}
+            }
         }
         setImage(resultList, datasource);
         getGreatCount(resultList, datasource);
@@ -50,12 +62,13 @@ public class ArticleListServer {
 
     public static ArrayList<Article> getAuthorArticle(DataSource datasource, String authorID){
         resultList = new ArrayList<>();
-        Connection conn;
+        Connection conn = null;
+        Statement stmt = null;
         Article temp;
 
         try{
             conn = datasource.getConnection();
-            Statement stmt = conn.createStatement();
+            stmt = conn.createStatement();
             String sql = "SELECT articleID as aId, p.name as author, title, DATE(posttime) as post_time, department as category, description as content, hospital, image FROM article as a INNER JOIN patient as p ON p.userID = '"+ authorID + "' and a.authorID = '" + authorID + "' ORDER BY posttime DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -72,8 +85,20 @@ public class ArticleListServer {
                 temp.setImage(rs.getInt("image"));
                 resultList.add(temp);
             }
+            rs.close();
         }catch(SQLException e){
             e.printStackTrace();
+        }finally {
+            if(conn != null){
+                try{
+                    conn.close();
+                }catch (SQLException ignored){}
+            }
+            if(stmt != null){
+                try{
+                    stmt.close();
+                }catch (SQLException ignored){}
+            }
         }
         setImage(resultList, datasource);
         getGreatCount(resultList, datasource);
@@ -83,12 +108,13 @@ public class ArticleListServer {
 
     public static ArrayList<Article> getCategoryArticle(DataSource dataSource, String typ){
         resultList = new ArrayList<>();
-        Connection conn;
+        Connection conn = null;
+        Statement stmt = null;
         Article temp;
 
         try{
             conn = dataSource.getConnection();
-            Statement stmt = conn.createStatement();
+            stmt = conn.createStatement();
             String sql = "SELECT n.articleID as aId, n.title, n.name as author, n.authorID, DATE(n.posttime) as post_time, n.description as content, n.hospital, n.image FROM (SELECT * FROM article as a INNER JOIN patinet as p ON a.authorID=p.userID) as n WHERE n.department='" + typ + "'ORDER BY posttime DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -105,9 +131,20 @@ public class ArticleListServer {
                 temp.setImage(rs.getInt("image"));
                 resultList.add(temp);
             }
-
+            rs.close();
         }catch (SQLException e){
             e.printStackTrace();
+        }finally {
+            if(conn != null){
+                try{
+                    conn.close();
+                }catch (SQLException ignored){}
+            }
+            if(stmt != null){
+                try{
+                    stmt.close();
+                }catch (SQLException ignored){}
+            }
         }
         setImage(resultList, dataSource);
         getGreatCount(resultList, dataSource);
@@ -117,12 +154,13 @@ public class ArticleListServer {
 
     public static ArrayList<Article> getSpecificArticle(DataSource dataSource, String id){
         resultList = new ArrayList<>();
-        Connection conn;
+        Connection conn = null;
+        Statement stmt = null;
         Article temp = new Article();
 
         try{
             conn = dataSource.getConnection();
-            Statement stmt = conn.createStatement();
+            stmt = conn.createStatement();
             String sql = "SELECT n.title, n.name as author, n.authorID, n.department, DATE(n.posttime) as post_time, n.description as content, n.hospital, n.image FROM (SELECT * FROM article as a INNER JOIN patient as p ON a.authorID=p.userID) as n WHERE n.articleID = '" + id + "'";
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
@@ -137,8 +175,20 @@ public class ArticleListServer {
                 temp.setImage(rs.getInt("image"));
                 resultList.add(temp);
             }
+            rs.close();
         }catch (SQLException e){
             e.printStackTrace();
+        }finally {
+            if(conn != null){
+                try{
+                    conn.close();
+                }catch (SQLException ignored){}
+            }
+            if(stmt != null){
+                try{
+                    stmt.close();
+                }catch (SQLException ignored){}
+            }
         }
         setImage(resultList, dataSource);
         getGreatCount(resultList, dataSource);
@@ -150,11 +200,12 @@ public class ArticleListServer {
     // be careful using
     protected static Article getSpecArticle(DataSource dataSource, String id){
         Article temp = new Article();
-        Connection conn;
+        Connection conn = null;
+        Statement stmt = null;
 
         try{
             conn = dataSource.getConnection();
-            Statement stmt = conn.createStatement();
+            stmt = conn.createStatement();
             String sql = "SELECT n.title, n.name as author, n.authorID, n.department, DATE(n.posttime) as post_time, n.description as content, n.hospital, n.image FROM (SELECT * FROM article as a INNER JOIN patient as p ON a.authorID=p.userID) as n WHERE n.articleID = '" + id + "'";
             ResultSet rs = stmt.executeQuery(sql);
             if(rs.next()){
@@ -168,8 +219,20 @@ public class ArticleListServer {
                 temp.setHospital(rs.getString("hospital"));
                 temp.setImage(rs.getInt("image"));
             }
+            rs.close();
         }catch (SQLException e){
             e.printStackTrace();
+        }finally {
+            if(conn != null){
+                try{
+                    conn.close();
+                }catch (SQLException ignored){}
+            }
+            if(stmt != null){
+                try{
+                    stmt.close();
+                }catch (SQLException ignored){}
+            }
         }
         return temp;
     }
@@ -202,12 +265,13 @@ public class ArticleListServer {
 
     public static ArrayList<Article> getHospitalArticle(DataSource dataSource, String position){
         resultList = new ArrayList<>();
-        Connection conn;
+        Connection conn = null;
+        Statement stmt = null;
         Article temp;
 
         try{
             conn = dataSource.getConnection();
-            Statement stmt = conn.createStatement();
+            stmt = conn.createStatement();
             String sql = "SELECT articleID as aId, title, p.name as author, authorID, DATE(posttime) as post_time, department as category, description as content, image FROM article as a INNER JOIN patient as p WHERE a.hospital = '" + position + "' and a.authorID=p.userID ORDER BY posttime DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -224,8 +288,20 @@ public class ArticleListServer {
                 temp.setImage(rs.getInt("image"));
                 resultList.add(temp);
             }
+            rs.close();
         }catch(SQLException e) {
             e.printStackTrace();
+        }finally {
+            if(conn != null){
+                try{
+                    conn.close();
+                }catch (SQLException ignored){}
+            }
+            if(stmt != null){
+                try{
+                    stmt.close();
+                }catch (SQLException ignored){}
+            }
         }
         setImage(resultList, dataSource);
         getGreatCount(resultList, dataSource);
@@ -236,8 +312,8 @@ public class ArticleListServer {
     private static void setImage(ArrayList<Article> list, DataSource dataSource){
         int length = list.size();
         ArrayList<String> imgSet;
-        Connection conn;
-        Statement stmt;
+        Connection conn = null;
+        Statement stmt = null;
         String cmd;
         ResultSet rs;
         Article temp;
@@ -252,8 +328,21 @@ public class ArticleListServer {
                 cmd = "SELECT imageUrl as url FROM picture WHERE source = 'article' AND sourceID = '" + temp.getArticleID() + "'";
                 rs = stmt.executeQuery(cmd);
                 while(rs.next()){ imgSet.add(rs.getString("url")); }
+                rs.close();
             }catch (SQLException e){
                 e.printStackTrace();
+            }finally {
+                if(conn != null){
+                    try{
+                        conn.close();
+                    }catch (SQLException ignored){}
+                }
+                if(stmt != null){
+                    try{
+                        stmt.close();
+                    }catch (SQLException ignored){}
+                }
+
             }
             temp.setImageURL(imgSet);
             list.set(i, temp);
@@ -262,8 +351,8 @@ public class ArticleListServer {
 
     private static void getGreatCount(ArrayList<Article> list, DataSource dataSource){
         int length = list.size();
-        Connection conn;
-        Statement stmt;
+        Connection conn = null;
+        Statement stmt = null;
         String cmd;
         ResultSet rs;
         Article temp;
@@ -277,8 +366,20 @@ public class ArticleListServer {
                 rs = stmt.executeQuery(cmd);
 
                 if(rs.next()) temp.setGreat(rs.getInt("num"));
+                rs.close();
             }catch (SQLException e){
                 e.printStackTrace();
+            }finally {
+                if(conn != null){
+                    try{
+                        conn.close();
+                    }catch (SQLException ignored){}
+                }
+                if(stmt != null){
+                    try{
+                        stmt.close();
+                    }catch (SQLException ignored){}
+                }
             }
             list.set(i, temp);
         }
@@ -286,8 +387,8 @@ public class ArticleListServer {
 
     private static void setTag(ArrayList<Article> list, DataSource dataSource){
         int length = list.size();
-        Connection conn;
-        Statement stmt;
+        Connection conn = null;
+        Statement stmt = null;
         String cmd;
         ResultSet rs;
         Article temp;
@@ -303,8 +404,20 @@ public class ArticleListServer {
                 rs = stmt.executeQuery(cmd);
 
                 while(rs.next()){ tag.add(rs.getString("t")); }
+                rs.close();
             }catch (SQLException e){
                 e.printStackTrace();
+            }finally {
+                if(conn != null) {
+                    try {
+                        conn.close();
+                    } catch (SQLException ignored){}
+                }
+                if(stmt != null){
+                    try{
+                        stmt.close();
+                    }catch (SQLException ignored){}
+                }
             }
             temp.setTag(tag);
             list.set(i, temp);
