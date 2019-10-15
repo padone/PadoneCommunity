@@ -11,9 +11,10 @@ public class Article {
 	private String postTime;
 	private String lastUpdateTime;
 	private String description;
-	private String tag;
+	private ArrayList<String> tag;
 	private int imageNum = 0;
 	private ArrayList<String> imageURL;
+	private int great = 0;
   
 	private String hospital;
 	public void setArticleID(String articleID) {
@@ -38,8 +39,8 @@ public class Article {
 	public void setDescription(String descriptionD) {
 		this.description=descriptionD;
 	}
-	public void setTag(String tag) {
-		this. tag= tag;
+	public void setTag(ArrayList<String> tag) {
+		this.tag= tag;
 	}
 	public void setDepartment(String department) {
 		this.department=department;
@@ -47,6 +48,9 @@ public class Article {
 	public void setHospital(String hospital){ this.hospital = hospital; }
 	public void setImageURL(ArrayList<String> imageURL){
 		this.imageURL = imageURL;
+	}
+	public void setGreat(int great) {
+		this.great = great;
 	}
 
 	public String getArticleID() {
@@ -57,10 +61,14 @@ public class Article {
 		return imageNum;
 	}
 
+	public int getGreat() {
+		return great;
+	}
+
 	public Article() {
 		
 	}
-	public Article(String articleID,String author, String authorID,String department,String postTime,String lastUpdateTime,String description,String tag, String hospital) {
+	public Article(String articleID, String author, String authorID, String department, String postTime, String lastUpdateTime, String description, ArrayList<String> tag, String hospital) {
 		setArticleID(articleID);
 		setAuthor(author);
 		setAuthorID(authorID);

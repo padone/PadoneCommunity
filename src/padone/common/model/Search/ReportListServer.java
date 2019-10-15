@@ -14,12 +14,13 @@ public class ReportListServer {
 
     public static ArrayList<ReportedFeedBack> getReportedFeedback(DataSource dataSource){
         ArrayList<ReportedFeedBack> resultList = new ArrayList<>();
-        Connection conn;
+        Connection conn = null;
+        Statement stmt = null;
         ReportedFeedBack temp;
 
         try{
             conn = dataSource.getConnection();
-            Statement stmt = conn.createStatement();
+            stmt = conn.createStatement();
             String sql = "SELECT * FROM reportFeedback";
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -28,8 +29,20 @@ public class ReportListServer {
                 temp.setValue(rs.getString("feedbackID"), rs.getString("articleID"), rs.getString("userID"), rs.getString("authorID"), rs.getString("reason"), rs.getString("description"), rs.getString("message"));
                 resultList.add(temp);
             }
+            rs.close();
         }catch(SQLException e){
             e.printStackTrace();
+        }finally {
+            if(conn != null){
+                try{
+                    conn.close();
+                }catch (SQLException ignored){}
+            }
+            if(stmt != null){
+                try{
+                    stmt.close();
+                }catch (SQLException ignored){}
+            }
         }
 
         return resultList;
@@ -37,12 +50,13 @@ public class ReportListServer {
 
     public static ArrayList<ReportedArticle> getReportedArticle(DataSource dataSource){
         ArrayList<ReportedArticle> resultList = new ArrayList<>();
-        Connection conn;
+        Connection conn = null;
+        Statement stmt = null;
         ReportedArticle temp;
 
         try{
             conn = dataSource.getConnection();
-            Statement stmt = conn.createStatement();
+            stmt = conn.createStatement();
             String sql = "SELECT * FROM reportArticle";
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -51,10 +65,20 @@ public class ReportListServer {
                 temp.setValue(rs.getString("title"), rs.getString("articleID"), rs.getString("userID"), rs.getString("authorID"), rs.getString("reason"), rs.getString("description"));
                 resultList.add(temp);
             }
-
-
+            rs.close();
         }catch (SQLException e){
             e.printStackTrace();
+        }finally {
+            if(conn != null){
+                try{
+                    conn.close();
+                }catch (SQLException ignored){}
+            }
+            if(stmt != null){
+                try{
+                    stmt.close();
+                }catch (SQLException ignored){}
+            }
         }
 
         return resultList;
@@ -62,12 +86,13 @@ public class ReportListServer {
 
     public static ArrayList<ReportedUser> getReportedUserList(DataSource dataSource){
         ArrayList<ReportedUser> resultList = new ArrayList<>();
-        Connection conn;
+        Connection conn = null;
+        Statement stmt = null;
         ReportedUser temp;
 
         try{
             conn = dataSource.getConnection();
-            Statement stmt = conn.createStatement();
+            stmt = conn.createStatement();
             String sql = "SELECT * FROM reportUser";
             ResultSet rs = stmt.executeQuery(sql);
 
@@ -76,9 +101,20 @@ public class ReportListServer {
                 temp.setValue(rs.getString("userID"), rs.getString("violatorID"), rs.getString("reason"), rs.getString("description"));
                 resultList.add(temp);
             }
-
+            rs.close();
         }catch(SQLException e){
             e.printStackTrace();
+        }finally {
+            if(conn != null){
+                try{
+                    conn.close();
+                }catch (SQLException ignored){}
+            }
+            if(stmt != null){
+                try{
+                    stmt.close();
+                }catch (SQLException ignored){}
+            }
         }
 
         return resultList;
