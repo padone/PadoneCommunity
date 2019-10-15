@@ -22,13 +22,12 @@ public class WriteArticleServlet extends HttpServlet {
 	String department="";
 	String description="";
 	String[] imageURL;
-	String[] tag;
 	int tagNumber;
 	public WriteArticleServlet() {
         super();
     }
 	protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException {
-	
+		System.out.println(getBody(request));
 		response.setContentType("text/html;charset=UTF-8");
     	PrintWriter out = response.getWriter();
     	
@@ -46,7 +45,7 @@ public class WriteArticleServlet extends HttpServlet {
     	description=request.getParameter("description");
     	imageURL=request.getParameterValues("picture");
     	String hospital=request.getParameter("hospital");
-    	tag=request.getParameterValues("tag");
+    	String[] tag=request.getParameterValues("tag");
     	if(writeArticle.newArticle(datasource, title, author, department, description, imageURL, tag, hospital)) {
     		response.getWriter().write(gson.toJson(true));
     	}
@@ -82,5 +81,38 @@ public class WriteArticleServlet extends HttpServlet {
 			response.getWriter().println("error");
 			e.printStackTrace();
 		}
+	}
+	public static String getBody(HttpServletRequest request) throws IOException {
+
+	    String body = null;
+	    StringBuilder stringBuilder = new StringBuilder();
+	    BufferedReader bufferedReader = null;
+
+	    try {
+	        InputStream inputStream = request.getInputStream();
+	        if (inputStream != null) {
+	            bufferedReader = new BufferedReader(new InputStreamReader(inputStream));
+	            char[] charBuffer = new char[128];
+	            int bytesRead = -1;
+	            while ((bytesRead = bufferedReader.read(charBuffer)) > 0) {
+	                stringBuilder.append(charBuffer, 0, bytesRead);
+	            }
+	        } else {
+	            stringBuilder.append("");
+	        }
+	    } catch (IOException ex) {
+	        throw ex;
+	    } finally {
+	        if (bufferedReader != null) {
+	            try {
+	                bufferedReader.close();
+	            } catch (IOException ex) {
+	                throw ex;
+	            }
+	        }
+	    }
+
+	    body = stringBuilder.toString();
+	    return body;
 	}
 }

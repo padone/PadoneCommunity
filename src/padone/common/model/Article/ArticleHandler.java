@@ -44,10 +44,11 @@ public class ArticleHandler {
 					return false;
 				}
 			}
-			for (int i = 0; length > i; i++) {
-				String insertImageSql = "insert into tag(articleID,tagName)value('" + articleID
+			for (int i = 0; taglength > i; i++) {
+				String insertTagSql = "insert into tag(articleID,tagName)value('" + articleID
 						+ "','" + tag[i]+ "')";
-				int inserttag = st.executeUpdate(insertImageSql);
+				System.out.println(insertTagSql);
+				int inserttag = st.executeUpdate(insertTagSql);
 				if (inserttag < 0) {
 					st.executeUpdate("delete from article where articleID= '" + articleID + "'");
 					st.executeUpdate("delete from picture where sourceID= '" + articleID + "' and source ='article'");
