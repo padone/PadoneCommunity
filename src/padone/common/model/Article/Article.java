@@ -15,6 +15,7 @@ public class Article {
 	private int imageNum = 0;
 	private ArrayList<String> imageURL;
 	private int great = 0;
+	private boolean ifEvaluted = false;
   
 	private String hospital;
 	public void setArticleID(String articleID) {
@@ -51,6 +52,9 @@ public class Article {
 	}
 	public void setGreat(int great) {
 		this.great = great;
+	}
+	public void setIfEvaluted(boolean ifEvaluted) {
+		this.ifEvaluted = ifEvaluted;
 	}
 
 	public String getArticleID() {

@@ -50,7 +50,7 @@ public class FuzzySearchServer {
         return result;
     }
 
-    public static ArrayList<Article> searchArticleViaTitle(DataSource dataSource, String fragment){
+    public static ArrayList<Article> searchArticleViaTitle(DataSource dataSource, String fragment, String userID){
         singleList = new ArrayList<>();
         Connection conn = null;
         Statement stmt = null;
@@ -66,7 +66,7 @@ public class FuzzySearchServer {
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
-                temp = ArticleListServer.getSpecificArticle(dataSource, rs.getString("id")).get(0);
+                temp = ArticleListServer.getSpecificArticle(dataSource, rs.getString("id"), userID).get(0);
                 singleList.add(temp);
             }
             rs.close();
@@ -87,7 +87,7 @@ public class FuzzySearchServer {
         return singleList;
     }
 
-    public static ArrayList<Article> searchArticleViaContent(DataSource dataSource, String fragment){
+    public static ArrayList<Article> searchArticleViaContent(DataSource dataSource, String fragment, String userID){
         singleList = new ArrayList<>();
         Connection conn = null;
         Statement stmt = null;
@@ -103,7 +103,7 @@ public class FuzzySearchServer {
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
-                temp = ArticleListServer.getSpecificArticle(dataSource, fragment).get(0);
+                temp = ArticleListServer.getSpecificArticle(dataSource, fragment, userID).get(0);
                 singleList.add(temp);
             }
             rs.close();
