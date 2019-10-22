@@ -156,11 +156,15 @@ public class ArticleListServer {
         PreparedStatement gStmt = null;
         ResultSet grs = null, trs = null;
         Article temp = new Article();
+        String sql;
 
         try{
             conn = dataSource.getConnection();
             stmt = conn.createStatement();
-            String sql = "SELECT n.title, n.name as author, n.authorID, n.department, DATE(n.posttime) as post_time, n.description as content, n.hospital, n.image FROM (SELECT * FROM article as a INNER JOIN patient as p ON a.authorID=p.userID) as n WHERE n.articleID = '" + articleID + "'";
+            if(amiadoctor(userID))
+                sql = "SELECT n.title, n.name as author, n.authorID, n.department, DATE(n.posttime) as post_time, n.description as content, n.hospital, n.image FROM (SELECT * FROM article as a INNER JOIN doctor as d ON a.authorID=d.doctorID) as n WHERE n.articleID = '" + articleID + "'";
+            else
+                sql = "SELECT n.title, n.name as author, n.authorID, n.department, DATE(n.posttime) as post_time, n.description as content, n.hospital, n.image FROM (SELECT * FROM article as a INNER JOIN patient as p ON a.authorID=p.userID) as n WHERE n.articleID = '" + articleID + "'";
             ResultSet rs = stmt.executeQuery(sql);
             gStmt = conn.prepareStatement("SELECT COUNT(DISTINCT userID) as num FROM great WHERE articleID = ? AND userID = ?");
             gStmt.setString(1, articleID);
@@ -446,5 +450,9 @@ public class ArticleListServer {
             temp.setTag(tag);
             list.set(i, temp);
         }
+    }
+
+    private static boolean amiadoctor(String id){
+        return id.contains("d");
     }
 }
