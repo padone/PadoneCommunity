@@ -1,14 +1,11 @@
 package padone.common.model.Search;
 
+import java.sql.*;
 import java.util.ArrayList;
-
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
 import padone.common.model.Article.Article;
+import padone.common.model.Article.GreatHandler;
 
 public class ArticleListServer {
     private static ArrayList<Article> resultList;
@@ -152,19 +149,57 @@ public class ArticleListServer {
         return resultList;
     }
 
-    public static ArrayList<Article> getSpecificArticle(DataSource dataSource, String id){
+    public static ArrayList<Article> getSpecificArticle(DataSource dataSource, String articleID, String userID,String identify){
         resultList = new ArrayList<>();
         Connection conn = null;
         Statement stmt = null;
+        PreparedStatement gStmt = null;
+        ResultSet grs = null, trs = null;
         Article temp = new Article();
 
         try{
             conn = dataSource.getConnection();
             stmt = conn.createStatement();
-            String sql = "SELECT n.title, n.name as author, n.authorID, n.department, DATE(n.posttime) as post_time, n.description as content, n.hospital, n.image FROM (SELECT * FROM article as a INNER JOIN patient as p ON a.authorID=p.userID) as n WHERE n.articleID = '" + id + "'";
+            String sql = "SELECT n.title, n.name as author, n.authorID, n.department, DATE(n.posttime) as post_time, n.description as content, n.hospital, n.image FROM (SELECT * FROM article as a INNER JOIN patient as p ON a.authorID=p.userID) as n WHERE n.articleID = '" + articleID + "'";
             ResultSet rs = stmt.executeQuery(sql);
+            gStmt = conn.prepareStatement("SELECT COUNT(DISTINCT userID) as num FROM great WHERE articleID = ? AND userID = ?");
+            gStmt.setString(1, articleID);
+            gStmt.setString(2, userID);
+            grs = gStmt.executeQuery();
+            
+			switch (identify) {
+			case "patient":
+				gStmt = conn.prepareStatement(
+						"SELECT COUNT(DISTINCT articleID) as num FROM trackArticle WHERE articleID = ? AND userID = ?");
+				gStmt.setString(1, articleID);
+				gStmt.setString(2, userID);
+				trs = gStmt.executeQuery();
+			case "doctor":
+				gStmt = conn.prepareStatement(
+						"SELECT COUNT(DISTINCT articleID) as num FROM recommend WHERE articleID = ? AND userID = ?");
+				gStmt.setString(1, articleID);
+				gStmt.setString(2, userID);
+				trs = gStmt.executeQuery();
+			case "family":
+				gStmt = conn.prepareStatement(
+						"SELECT COUNT(DISTINCT articleID) as num FROM suggestarticle WHERE articleID = ? AND userID = ?");
+				gStmt.setString(1, articleID);
+				gStmt.setString(2, userID);
+				trs = gStmt.executeQuery();
+			}
+           
+            
+
+            if(grs.next()){
+                if (grs.getInt("num") > 0) temp.setIfEvaluted(true);
+                else temp.setIfEvaluted(false);
+            }
+            if(trs.next()){
+                if (trs.getInt("num") > 0) temp.setIfTracked(true);
+                else temp.setIfTracked(false);
+            }
             if(rs.next()){
-                temp.setArticleID(id);
+                temp.setArticleID(articleID);
                 temp.setTitle(rs.getString("title"));
                 temp.setAuthor(rs.getString("author"));
                 temp.setAuthorID(rs.getString("authorID"));
@@ -176,6 +211,9 @@ public class ArticleListServer {
                 resultList.add(temp);
             }
             rs.close();
+
+            grs.close();
+            trs.close();
         }catch (SQLException e){
             e.printStackTrace();
         }finally {
@@ -187,6 +225,11 @@ public class ArticleListServer {
             if(stmt != null){
                 try{
                     stmt.close();
+                }catch (SQLException ignored){}
+            }
+            if(gStmt != null){
+                try{
+                    gStmt.close();
                 }catch (SQLException ignored){}
             }
         }

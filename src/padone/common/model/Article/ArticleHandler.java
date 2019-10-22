@@ -1,20 +1,19 @@
 package padone.common.model.Article;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.sql.Timestamp;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
+import org.json.JSONArray;
+import org.json.JSONException;
 
-// TODO : fix image resource error
 public class ArticleHandler {
-	public boolean newArticle(DataSource datasource, String title, String authorID, String department,
-			String description, String[] image, String[] tag, String hospital) {
+	public boolean newArticle(DataSource datasource, String title, String authorID, String department, String description, String image, String tag, String hospital) {
 		Connection con = null;
+		JSONArray jImg, jTag;
+		int imageNum = 0, tagNum = 0;
+		PreparedStatement pStmt = null;
 		try {
 			con = datasource.getConnection();
 			Statement st = con.createStatement();
@@ -27,50 +26,63 @@ public class ArticleHandler {
 				articleID = (rs.getInt(1)) + 1;
 				System.out.println(articleID);
 			}
-			int length = 0;
-			if (image != null)length = image.length;
-			int taglength=0;
-			if(tag!=null)taglength=tag.length;
-			String insertsql = "insert into article(articleID,title,authorID,department,description,hospital,posttime,lastupdatetime, image)value('"
+
+			jImg = new JSONArray(image);
+			jTag = new JSONArray(tag);
+			imageNum = jImg.length();
+			tagNum = jTag.length();
+
+			String insertSql = "insert into article(articleID,title,authorID,department,description,hospital,posttime,lastupdatetime, image)value('"
 					+ articleID + "','" + title + "','" + authorID + "','" + department + "','" + description + "','"
-					+ hospital + "','" + param + "','" + param + "', " + length + ")";
-			int insertset = st.executeUpdate(insertsql);
-			for (int i = 0; length > i; i++) {
-				String insertImageSql = "insert into picture(imageURL,source,sourceID)value('" + image[i]
-						+ "','article','" + articleID + "')";
-				int insertimage = st.executeUpdate(insertImageSql);
-				if (insertimage < 0) {
+					+ hospital + "','" + param + "','" + param + "', " + imageNum + ")";
+			int insertSet = st.executeUpdate(insertSql);
+			for (int i = 0; imageNum > i; i++) {
+				String insertImageSql = "INSERT INTO picture(imageUrl, source, sourceID) VALUES (?, 'article', ?)";
+				pStmt = con.prepareStatement(insertImageSql);
+				pStmt.setString(1, jImg.getString(i));// set image
+				pStmt.setString(2, Integer.toString(articleID));// set article id
+				int insertImage = pStmt.executeUpdate();
+				if (insertImage < 0) {
 					st.executeUpdate("delete from article where articleID= '" + articleID + "'");
 					return false;
 				}
 			}
-			for (int i = 0; taglength > i; i++) {
-				String insertImageSql = "insert into tag(articleID,tagName)value('" + articleID
-						+ "','" + tag[i]+ "')";
-				int inserttag = st.executeUpdate(insertImageSql);
-				if (inserttag < 0) {
+			for (int i = 0; tagNum > i; i++) {
+				String insertTagSql = "INSERT INTO tag(articleID, tagName) VALUES (?, ?)";
+				pStmt = con.prepareStatement(insertTagSql);
+				pStmt.setString(1, Integer.toString(articleID));// set article id
+				pStmt.setString(2, jTag.getString(i));// set tag
+				int insertTag = pStmt.executeUpdate();
+				if (insertTag < 0) {
 					st.executeUpdate("delete from article where articleID= '" + articleID + "'");
 					st.executeUpdate("delete from picture where sourceID= '" + articleID + "' and source ='article'");
 					return false;
 				}
 			}
+
 			st.close();// 關閉st
-			if (insertset < 0)
+			if(pStmt != null)
+				pStmt.close();
+			if (insertSet < 0)
 				return false;
-			return true;
 		} catch (SQLException e) {
 			System.out.println("Exception :" + e.toString());
 			e.printStackTrace();
 			return false;
+		} catch (JSONException j){
+			System.out.println("JSON parsing error");
+			j.printStackTrace();
 		} finally {
-			if (con != null)
+			if (con != null) {
 				try {
 					con.close();
 				} catch (Exception ignore) {
 					return false;
 				}
+			}
 		}
 
+		return true;
 	}
 
 	public boolean deleteArticle(DataSource datasource, String articleID) {
@@ -78,14 +90,14 @@ public class ArticleHandler {
 		try {
 			con = datasource.getConnection();
 			Statement st = con.createStatement();
-			String sqlarticle = "delete from article where articleID = '" + articleID + "'";
-			String sqlimage = "delete from picture where source = 'article' and sourceID = '" + articleID + "'";
-			String deletetrack="delete from trackarticle where articleID = '"+articleID+"'";
+			String sqlArticle = "delete from article where articleID = '" + articleID + "'";
+			String sqlImage = "delete from picture where source = 'article' and sourceID = '" + articleID + "'";
+			String deleteTrack="delete from trackarticle where articleID = '"+articleID+"'";
       
-			System.out.println(sqlarticle);
-			st.executeUpdate(sqlarticle);
-			st.executeUpdate(deletetrack);
-			st.executeUpdate(sqlimage);
+			System.out.println(sqlArticle);
+			st.executeUpdate(sqlArticle);
+			st.executeUpdate(deleteTrack);
+			st.executeUpdate(sqlImage);
 		} catch (SQLException e) {
 			System.out.println("PatientInstructionServer newInstruction Exception :" + e.toString());
 			e.printStackTrace();
