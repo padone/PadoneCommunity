@@ -42,11 +42,11 @@ public class PostBotServlet extends HttpServlet
 			{
 				response.getWriter().write("connected");
 				Statement stmt = conn.createStatement();
-				ResultSet rs = stmt.executeQuery("select userID FROM patient WHERE account = 'A123456789'");
+				ResultSet rs = stmt.executeQuery("select botID FROM postbot");
 				PrintWriter out = response.getWriter();
 				while(rs.next())
 				{
-					out.println("\n" + rs.getString("userID"));
+					out.println("\n" + rs.getString("botID"));
 				}
 			}
 		}
@@ -67,7 +67,7 @@ public class PostBotServlet extends HttpServlet
 		/*******************************************************************************************/
 		String keyword = request.getParameter("keyword");
 		String website = request.getParameter("website");
-		int frequency = Integer.parseInt(request.getParameter("frequency"));
+		String frequency = request.getParameter("frequency");
 		/*******************************************************************************************/
 		@SuppressWarnings("rawtypes")
 		HashMap crawlerSet = new HashMap();
