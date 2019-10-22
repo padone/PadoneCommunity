@@ -10,7 +10,7 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 public class PostBotSetter
 {
 	@SuppressWarnings({ "rawtypes", "unchecked" })
-	synchronized public HashMap crawlerSet(DataSource datasource, String keyword, String website, int frequency)
+	synchronized public HashMap crawlerSet(DataSource datasource, String keyword, String website, String frequency)
 	{
 		HashMap crawlerSet = new HashMap();
 		Connection con = null;
