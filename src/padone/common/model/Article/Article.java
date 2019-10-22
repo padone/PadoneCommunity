@@ -16,6 +16,7 @@ public class Article {
 	private ArrayList<String> imageURL;
 	private int great = 0;
 	private boolean ifEvaluted = false;
+	private boolean ifTracked = false;
   
 	private String hospital;
 	public void setArticleID(String articleID) {
@@ -55,6 +56,9 @@ public class Article {
 	}
 	public void setIfEvaluted(boolean ifEvaluted) {
 		this.ifEvaluted = ifEvaluted;
+	}
+	public void setIfTracked(boolean ifTracked){
+		this.ifTracked = ifTracked;
 	}
 
 	public String getArticleID() {

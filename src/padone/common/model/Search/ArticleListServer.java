@@ -154,7 +154,7 @@ public class ArticleListServer {
         Connection conn = null;
         Statement stmt = null;
         PreparedStatement gStmt = null;
-        ResultSet grs = null;
+        ResultSet grs = null, trs = null;
         Article temp = new Article();
 
         try{
@@ -166,10 +166,18 @@ public class ArticleListServer {
             gStmt.setString(1, articleID);
             gStmt.setString(2, userID);
             grs = gStmt.executeQuery();
+            gStmt = conn.prepareStatement("SELECT COUNT(DISTINCT articleID) as num FROM trackArticle WHERE articleID = ? AND userID = ?");
+            gStmt.setString(1, articleID);
+            gStmt.setString(2, userID);
+            trs = gStmt.executeQuery();
 
             if(grs.next()){
                 if (grs.getInt("num") > 0) temp.setIfEvaluted(true);
                 else temp.setIfEvaluted(false);
+            }
+            if(trs.next()){
+                if (trs.getInt("num") > 0) temp.setIfTracked(true);
+                else temp.setIfTracked(false);
             }
             if(rs.next()){
                 temp.setArticleID(articleID);
@@ -186,6 +194,7 @@ public class ArticleListServer {
             rs.close();
 
             grs.close();
+            trs.close();
         }catch (SQLException e){
             e.printStackTrace();
         }finally {
