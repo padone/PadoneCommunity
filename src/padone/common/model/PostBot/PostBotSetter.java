@@ -25,7 +25,7 @@ public class PostBotSetter
 			 * 新增PostBot(開始)
 			 *****************************************************/
 			String insertdbSQL = "insert into postbot" + "(botID, keyword, website, frequency)"
-					+ "select ifNULL(max(userID+0), 0)+1, '" + keyword + "', '" + website + "', '" + frequency
+					+ "select ifNULL(max(botID+0), 0)+, '" + keyword + "', '" + website + "', '" + frequency
 					+ "' FROM postbot";
 
 			int postBotInsert = st.executeUpdate(insertdbSQL);
