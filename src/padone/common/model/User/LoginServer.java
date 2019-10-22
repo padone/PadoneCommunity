@@ -17,9 +17,9 @@ public class LoginServer
 			con = datasource.getConnection();
 			Statement st = con.createStatement();
 			ResultSet rs;
-			if(identity.equals("醫生"))
+			if(identity.equals("doctor"))
 				rs = st.executeQuery("select doctorID, account, password, name from doctor");
-			else if(identity.equals("管理員"))
+			else if(identity.equals("manager"))
 				rs = st.executeQuery("select managerID, account, password, name from manager");
 			else
 				rs = st.executeQuery("select userID, account, password, name from patient");
@@ -33,12 +33,12 @@ public class LoginServer
 					if (password.equals(p) == true)
 					{
 						result = "登入成功";// true 代表此使用者密碼正確
-						if(identity.equals("醫生"))
+						if(identity.equals("doctor"))
 						{
 							ID = rs.getString("doctorID");
 							name = rs.getString("name");
 						}
-						else if(identity.equals("管理員"))
+						else if(identity.equals("manager"))
 						{
 							ID = rs.getString("managerID");
 							name = rs.getString("name");
