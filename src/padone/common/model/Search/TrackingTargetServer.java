@@ -49,8 +49,9 @@ public class TrackingTargetServer {
             conn = dataSource.getConnection();
             if(tableName.contains("track"))
                 pstmt = conn.prepareStatement("SELECT articleID FROM trackArticle WHERE userID = ?");
-            else
+            else if(tableName.contains("suggest"))
                 pstmt = conn.prepareStatement("SELECT articleID FROM suggestArticle WHERE userID = ?");
+
             pstmt.setString(1, userID);
             ResultSet rs = pstmt.executeQuery();
 

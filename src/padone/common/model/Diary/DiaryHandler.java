@@ -86,64 +86,24 @@ public class DiaryHandler {
 	}
 
 	public boolean writeFamilyDescription(DataSource datasource, String userID, String familyID, String date,
-			String familyDescription,String image) {
+			String familyDescription) {
 		Connection con = null;
-		JSONArray jImg;
-		int imageNum = 0;
-		PreparedStatement pStmt = null;
 		try {
+
 			con = datasource.getConnection();
 			Statement st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			
 			String result = "";
 			/* 查詢是否已有紀錄 */
-			String search = "select * from familydiary where familyID ='" + userID + "' and date = '" + date + "'";
+			String search = "select * from patientdiary where patientID ='" + userID + "' and date = '" + date + "'";
 			ResultSet res = st.executeQuery(search);
-			jImg = new JSONArray(image);
-			imageNum = jImg.length();
-			
-			// 新增資料
-			if (res.next() == false) {
-				result = "insert into familydiary(date,familyID,pdescription)values('" + date + "','"
-						+ userID + "','" + familyDescription + "')";
-				st.executeUpdate(result);
-				for (int i = 0; imageNum > i; i++) {
-					String insertImageSql = "INSERT INTO picture(imageUrl, source, sourceID) VALUES (?, 'familyDiary', ?)";
-					pStmt = con.prepareStatement(insertImageSql);
-					pStmt.setString(1, jImg.getString(i));// set image
-					pStmt.setString(2, userID+"-"+date);// set article id
-					int insertImage = pStmt.executeUpdate();
-					if (insertImage < 0) {
-						return false;
-					}
-				}
-			}
-			// 修改已有的資料
-			else {
-				res.absolute(1);
-				res.updateString("description", familyDescription);
-				res.updateRow();
-				st.executeUpdate("delete from picture where source='familyDiary' and sourceID = '"+userID+"-"+date+"'");
-				for (int i = 0; imageNum > i; i++) {
-					String insertImageSql = "INSERT INTO picture(imageUrl, source, sourceID) VALUES (?, 'familyDiary', ?)";
-					pStmt = con.prepareStatement(insertImageSql);
-					pStmt.setString(1, jImg.getString(i));// set image
-					pStmt.setString(2, userID+"-"+date);// set article id
-					int insertImage = pStmt.executeUpdate();
-					if (insertImage < 0) {
-						return false;
-					}
-				}
-			}
-
+			res.absolute(1);
+			res.updateString("familyDescription", familyDescription);
+			res.updateRow();
 			st.close();// 關閉st
 		} catch (SQLException e) {
 			System.out.println("Exception :" + e.toString());
 			e.printStackTrace();
 			return false;
-		} catch (JSONException j){
-			System.out.println("JSON parsing error");
-			j.printStackTrace();
 		} finally {
 			if (con != null)
 				try {
