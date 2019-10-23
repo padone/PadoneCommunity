@@ -30,6 +30,7 @@ public class LoginServlet extends HttpServlet
 		// 連接資料庫
 		DataSource datasource = (DataSource) getServletContext().getAttribute("db");
 		LoginServer login = new LoginServer();
+		Gson gson = new Gson();
 		/*******************************************************************************************/
 		String account = request.getParameter("account");
 		String password = request.getParameter("Password");
