@@ -40,9 +40,10 @@ public class WriteFamilyDescription extends HttpServlet {
 		String date=request.getParameter("date");
 		String familyID=request.getParameter("familyID");
 		String familyDescription=request.getParameter("familyDescription");
+		String image=request.getParameter("picture");
 		DiaryHandler writeFmilyDescription=new DiaryHandler();
 		if (userID != null) {
-			if (writeFmilyDescription.writeFamilyDescription(datasource, userID, familyID, date, familyDescription)) {
+			if (writeFmilyDescription.writeFamilyDescription(datasource, userID, familyID, date, familyDescription,image)) {
 				response.getWriter().write(gson.toJson(true));
 			} else {
 				response.getWriter().write(gson.toJson(false));

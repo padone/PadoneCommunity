@@ -1,6 +1,7 @@
 package padone.common.model.Diary;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -11,30 +12,59 @@ import java.util.ArrayList;
 import java.util.Date;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
+import org.json.JSONArray;
+import org.json.JSONException;
 
 public class DiaryHandler {
 	public boolean writePatientDiary(DataSource datasource, String userID, String date, String image,
 			String patientDescription) {
 		Connection con = null;
+		JSONArray jImg;
+		int imageNum = 0;
+		PreparedStatement pStmt = null;
 		try {
 			con = datasource.getConnection();
 			Statement st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			
 			String result = "";
 			/* 查詢是否已有紀錄 */
 			String search = "select * from patientdiary where patientID ='" + userID + "' and date = '" + date + "'";
 			ResultSet res = st.executeQuery(search);
+			jImg = new JSONArray(image);
+			imageNum = jImg.length();
+			
 			// 新增資料
 			if (res.next() == false) {
-				result = "insert into patientdiary(date,patientID,patientDescription,photo)values('" + date + "','"
-						+ userID + "','" + patientDescription + "','" + image + "')";
+				result = "insert into patientdiary(date,patientID,patientDescription)values('" + date + "','"
+						+ userID + "','" + patientDescription + "')";
 				st.executeUpdate(result);
+				for (int i = 0; imageNum > i; i++) {
+					String insertImageSql = "INSERT INTO picture(imageUrl, source, sourceID) VALUES (?, 'patientDiary', ?)";
+					pStmt = con.prepareStatement(insertImageSql);
+					pStmt.setString(1, jImg.getString(i));// set image
+					pStmt.setString(2, userID+"-"+date);// set article id
+					int insertImage = pStmt.executeUpdate();
+					if (insertImage < 0) {
+						return false;
+					}
+				}
 			}
 			// 修改已有的資料
 			else {
 				res.absolute(1);
 				res.updateString("patientDescription", patientDescription);
-				res.updateString("photo", image);
 				res.updateRow();
+				st.executeUpdate("delete from picture where source='patientDiary' and sourceID = '"+userID+"-"+date+"'");
+				for (int i = 0; imageNum > i; i++) {
+					String insertImageSql = "INSERT INTO picture(imageUrl, source, sourceID) VALUES (?, 'patientDiary', ?)";
+					pStmt = con.prepareStatement(insertImageSql);
+					pStmt.setString(1, jImg.getString(i));// set image
+					pStmt.setString(2, userID+"-"+date);// set article id
+					int insertImage = pStmt.executeUpdate();
+					if (insertImage < 0) {
+						return false;
+					}
+				}
 			}
 
 			st.close();// 關閉st
@@ -42,6 +72,9 @@ public class DiaryHandler {
 			System.out.println("Exception :" + e.toString());
 			e.printStackTrace();
 			return false;
+		} catch (JSONException j){
+			System.out.println("JSON parsing error");
+			j.printStackTrace();
 		} finally {
 			if (con != null)
 				try {
@@ -53,24 +86,64 @@ public class DiaryHandler {
 	}
 
 	public boolean writeFamilyDescription(DataSource datasource, String userID, String familyID, String date,
-			String familyDescription) {
+			String familyDescription,String image) {
 		Connection con = null;
+		JSONArray jImg;
+		int imageNum = 0;
+		PreparedStatement pStmt = null;
 		try {
-
 			con = datasource.getConnection();
 			Statement st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+			
 			String result = "";
 			/* 查詢是否已有紀錄 */
-			String search = "select * from patientdiary where patientID ='" + userID + "' and date = '" + date + "'";
+			String search = "select * from familydiary where familyID ='" + userID + "' and date = '" + date + "'";
 			ResultSet res = st.executeQuery(search);
-			res.absolute(1);
-			res.updateString("familyDescription", familyDescription);
-			res.updateRow();
+			jImg = new JSONArray(image);
+			imageNum = jImg.length();
+			
+			// 新增資料
+			if (res.next() == false) {
+				result = "insert into familydiary(date,familyID,pdescription)values('" + date + "','"
+						+ userID + "','" + familyDescription + "')";
+				st.executeUpdate(result);
+				for (int i = 0; imageNum > i; i++) {
+					String insertImageSql = "INSERT INTO picture(imageUrl, source, sourceID) VALUES (?, 'familyDiary', ?)";
+					pStmt = con.prepareStatement(insertImageSql);
+					pStmt.setString(1, jImg.getString(i));// set image
+					pStmt.setString(2, userID+"-"+date);// set article id
+					int insertImage = pStmt.executeUpdate();
+					if (insertImage < 0) {
+						return false;
+					}
+				}
+			}
+			// 修改已有的資料
+			else {
+				res.absolute(1);
+				res.updateString("description", familyDescription);
+				res.updateRow();
+				st.executeUpdate("delete from picture where source='familyDiary' and sourceID = '"+userID+"-"+date+"'");
+				for (int i = 0; imageNum > i; i++) {
+					String insertImageSql = "INSERT INTO picture(imageUrl, source, sourceID) VALUES (?, 'familyDiary', ?)";
+					pStmt = con.prepareStatement(insertImageSql);
+					pStmt.setString(1, jImg.getString(i));// set image
+					pStmt.setString(2, userID+"-"+date);// set article id
+					int insertImage = pStmt.executeUpdate();
+					if (insertImage < 0) {
+						return false;
+					}
+				}
+			}
+
 			st.close();// 關閉st
 		} catch (SQLException e) {
 			System.out.println("Exception :" + e.toString());
 			e.printStackTrace();
 			return false;
+		} catch (JSONException j){
+			System.out.println("JSON parsing error");
+			j.printStackTrace();
 		} finally {
 			if (con != null)
 				try {
@@ -96,6 +169,11 @@ public class DiaryHandler {
 				String familyID = rs.getString("familyID");
 				diary.PatientDiary(userID, familyID, date, familyDescription, patientDescription);
 			}
+			String cmd = "SELECT imageUrl as url FROM picture WHERE source = 'patientDiary' AND sourceID = '" +userID+"-"+date+ "'";
+            rs = st.executeQuery(cmd);
+            ArrayList<String> imgSet=new ArrayList();
+            while(rs.next()){ imgSet.add(rs.getString("url")); }
+            diary.setImageURL(imgSet);
 			st.close();// 關閉st
 		} catch (SQLException e) {
 			System.out.println("Exception :" + e.toString());
@@ -112,42 +190,71 @@ public class DiaryHandler {
 
 	public boolean writeFamilyDiary(DataSource datasource, String userID, String date, String image,
 			String description) {
-
-		Connection con = null;
-		try {
-			con = datasource.getConnection();
-			Statement st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
-			String result = "";
-			/* 查詢是否已有紀錄 */
-			String search = "select * from familydiary where familyID ='" + userID + "' and date = '" + date + "'";
-			ResultSet res = st.executeQuery(search);
-			// 新增資料
-			if (res.next() == false) {
-				result = "insert into familydiary(date,familyID,description,photo)values('" + date + "','" + userID
-						+ "','" + description + "','" + image + "')";
-				st.executeUpdate(result);
-			}
-			// 修改已有的資料
-			else {
-				res.absolute(1);
-				res.updateString("description", description);
-				res.updateString("photo", image);
-				res.updateRow();
-			}
-
-			st.close();// 關閉st
-		} catch (SQLException e) {
-			System.out.println("Exception :" + e.toString());
-			e.printStackTrace();
-			return false;
-		} finally {
-			if (con != null)
-				try {
-					con.close();
-				} catch (Exception ignore) {
+			Connection con = null;
+			JSONArray jImg;
+			int imageNum = 0;
+			PreparedStatement pStmt = null;
+			try {
+				con = datasource.getConnection();
+				Statement st = con.createStatement(ResultSet.TYPE_SCROLL_INSENSITIVE, ResultSet.CONCUR_UPDATABLE);
+				
+				String result = "";
+				/* 查詢是否已有紀錄 */
+				String search = "select * from familydiary where familyID ='" + userID + "' and date = '" + date + "'";
+				ResultSet res = st.executeQuery(search);
+				jImg = new JSONArray(image);
+				imageNum = jImg.length();
+				
+				// 新增資料
+				if (res.next() == false) {
+					result = "insert into familydiary(date,familyID,description)values('" + date + "','"
+							+ userID + "','" + description + "')";
+					st.executeUpdate(result);
+					for (int i = 0; imageNum > i; i++) {
+						String insertImageSql = "INSERT INTO picture(imageUrl, source, sourceID) VALUES (?, 'familyDiary', ?)";
+						pStmt = con.prepareStatement(insertImageSql);
+						pStmt.setString(1, jImg.getString(i));// set image
+						pStmt.setString(2, userID+"-"+date);// set article id
+						int insertImage = pStmt.executeUpdate();
+						if (insertImage < 0) {
+							return false;
+						}
+					}
 				}
-		}
-		return true;
+				// 修改已有的資料
+				else {
+					res.absolute(1);
+					res.updateString("description", description);
+					res.updateRow();
+					st.executeUpdate("delete from picture where source='familyDiary' and sourceID = '"+userID+"-"+date+"'");
+					for (int i = 0; imageNum > i; i++) {
+						String insertImageSql = "INSERT INTO picture(imageUrl, source, sourceID) VALUES (?, 'familyDiary', ?)";
+						pStmt = con.prepareStatement(insertImageSql);
+						pStmt.setString(1, jImg.getString(i));// set image
+						pStmt.setString(2, userID+"-"+date);// set article id
+						int insertImage = pStmt.executeUpdate();
+						if (insertImage < 0) {
+							return false;
+						}
+					}
+				}
+
+				st.close();// 關閉st
+			} catch (SQLException e) {
+				System.out.println("Exception :" + e.toString());
+				e.printStackTrace();
+				return false;
+			} catch (JSONException j){
+				System.out.println("JSON parsing error");
+				j.printStackTrace();
+			} finally {
+				if (con != null)
+					try {
+						con.close();
+					} catch (Exception ignore) {
+					}
+			}
+			return true;
 	}
 
 	public FamilyDiary getFamilyDiary(DataSource datasource, String userID, String date) {
@@ -163,9 +270,13 @@ public class DiaryHandler {
 			while (rs.next()) {
 				String familyDescription = rs.getString("description");
 				String familyID = rs.getString("familyID");
-				String picture = rs.getString("photo");
-				diary.FamilyDiary(familyID, date, familyDescription, picture);
+				diary.FamilyDiary(familyID, date, familyDescription);
 			}
+			String cmd = "SELECT imageUrl as url FROM picture WHERE source = 'familyDiary' AND sourceID = '" +userID+"-"+date+ "'";
+            rs = st.executeQuery(cmd);
+            ArrayList<String> imgSet=new ArrayList();
+            while(rs.next()){ imgSet.add(rs.getString("url")); }
+            diary.setImageURL(imgSet);
 			st.close();// 關閉st
 		} catch (SQLException e) {
 			System.out.println("Exception :" + e.toString());

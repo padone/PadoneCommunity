@@ -24,7 +24,7 @@ public class SpecificArticleListServlet extends HttpServlet {
         Gson gson = new Gson();
         String articleID = request.getParameter("articleID");
         String userID = request.getParameter("userID");
-
+        String identity=request.getParameter("identity");
         response.getWriter().print(gson.toJson(ArticleListServer.getSpecificArticle(dataSource, articleID, userID)));
     }
 }
