@@ -167,8 +167,44 @@ public class FuzzySearchServer {
         return list;
     }
 
-    public static String searchPatient(DataSource dataSource, String fragment){
-        // TODO : search patient user via id or name, notice return type
+    public static ArrayList<UserInfo> searchPatient(DataSource dataSource, String fragment){
+        // only support search by name now
+        ArrayList<UserInfo> list = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        UserInfo temp;
+        try{
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement("SELECT p.name as n, p.userID as id, p.gender as g, p.introduction as intro FROM patient as p WHERE p.name like ? ESCAPE !");
+            pstmt.setString(1, "%" + specHandle(fragment) + "%");
+            rs = pstmt.executeQuery();
+            while(rs.next()){
+                temp = new UserInfo(rs.getString("n"), rs.getString("id"), "gender", rs.getString("intro"));
+                switch(rs.getInt("g")){
+                    case 0:
+                        temp.setGender("male");
+                        break;
+                    case 1:
+                        temp.setGender("female");
+                        break;
+                    default:
+                        temp.setGender("helicopter");
+                        break;
+                }
+                list.add(temp);
+            }
+            rs.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally {
+            if(conn != null){
+                try{ conn.close(); }catch (SQLException ignored){}
+            }
+            if(pstmt != null){
+                try{ pstmt.close(); }catch (SQLException ignored){}
+            }
+        }
         return null;
     }
 
@@ -183,5 +219,24 @@ public class FuzzySearchServer {
                           .replace("_", "!_")
                           .replace("[", "![");
         return out;
+    }
+
+    static class UserInfo{
+        String name = "username";
+        String id = "myID";
+        String gender = "helicopter";
+        String intro = "nothing";
+
+        public void setGender(String gender){
+            this.gender = gender;
+        }
+
+        UserInfo(){}
+        UserInfo(String name, String id, String gender, String intro){
+            this.name = name;
+            this.id = id;
+            this.gender = gender;
+            this.intro = intro;
+        }
     }
 }

@@ -57,8 +57,9 @@ public class TrackingTargetServer {
 
             while(rs.next()){
                 //temp = ArticleListServer.getSpecArticle(dataSource, rs.getString("articleID"));
-                temp = ArticleListServer.getSpecificArticle(dataSource, rs.getString("articleID"), userID).get(0);
-                resultList.add(temp);
+                //temp = ArticleListServer.getSpecificArticle(dataSource, rs.getString("articleID"), userID).get(0);
+                //resultList.add(temp);
+                resultList.addAll(ArticleListServer.getSpecificArticle(dataSource, rs.getString("articleID"), userID));
             }
             rs.close();
         } catch(SQLException e){
