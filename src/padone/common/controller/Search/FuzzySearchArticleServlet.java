@@ -35,6 +35,11 @@ public class FuzzySearchArticleServlet extends HttpServlet {
             case "content":
                 resp.getWriter().print(gson.toJson(FuzzySearchServer.searchArticleViaContent(dataSource, fragment, userID)));
                 break;
+            case "tag":
+                break;
+            default:
+                resp.getWriter().print("-- correct search pattern required --");
+                break;
         }
     }
 }
