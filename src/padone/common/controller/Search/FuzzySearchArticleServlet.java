@@ -23,13 +23,18 @@ public class FuzzySearchArticleServlet extends HttpServlet {
 
         String searchMode = req.getParameter("mode");
         String fragment = req.getParameter("keyword");
+        String userID = req.getParameter("userID");
 
-        if(searchMode.equals("user")){
-            resp.getWriter().print(gson.toJson(FuzzySearchServer.searchArticleViaUserName(dataSource, fragment)));
-        }else if(searchMode.equals("title")){
-            resp.getWriter().print(gson.toJson(FuzzySearchServer.searchArticleViaTitle(dataSource, fragment)));
-        }else if(searchMode.equals("content")){
-            resp.getWriter().print(gson.toJson(FuzzySearchServer.searchArticleViaContent(dataSource, fragment)));
+        switch (searchMode) {
+            case "user":
+                resp.getWriter().print(gson.toJson(FuzzySearchServer.searchArticleViaUserName(dataSource, fragment)));
+                break;
+            case "title":
+                resp.getWriter().print(gson.toJson(FuzzySearchServer.searchArticleViaTitle(dataSource, fragment, userID)));
+                break;
+            case "content":
+                resp.getWriter().print(gson.toJson(FuzzySearchServer.searchArticleViaContent(dataSource, fragment, userID)));
+                break;
         }
     }
 }

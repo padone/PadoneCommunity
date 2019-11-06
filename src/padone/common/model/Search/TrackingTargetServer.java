@@ -49,7 +49,7 @@ public class TrackingTargetServer {
             conn = dataSource.getConnection();
             if(tableName.contains("track"))
                 pstmt = conn.prepareStatement("SELECT articleID FROM trackArticle WHERE userID = ?");
-            else if(tableName.contains("suggest"))
+            if(tableName.contains("suggest"))
                 pstmt = conn.prepareStatement("SELECT articleID FROM suggestArticle WHERE userID = ?");
 
             pstmt.setString(1, userID);
@@ -63,6 +63,9 @@ public class TrackingTargetServer {
             rs.close();
         } catch(SQLException e){
             e.printStackTrace();
+        } catch(ArrayIndexOutOfBoundsException a) {
+            System.out.println("Array index out of bounds !");
+            a.printStackTrace();
         }finally {
             if(conn != null){
                 try{

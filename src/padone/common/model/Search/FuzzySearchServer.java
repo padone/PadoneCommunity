@@ -5,31 +5,34 @@ import padone.common.model.Article.Article;
 import org.apache.tomcat.jdbc.pool.DataSource;
 import padone.common.model.Search.ArticleListServer;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 
+// TODO: add fragment fix, change to prepared statement, fix sql statement, check if article search work fine
 public class FuzzySearchServer {
     public static ArrayList<Article> singleList;
-    public static ArrayList<ArrayList<Article>> searchArticleViaUserName(DataSource dataSource, String fragment){
-        ArrayList<ArrayList<Article>> result = new ArrayList<>();
+    public static ArrayList<ArticleListServer.LightArticle> searchArticleViaUserName(DataSource dataSource, String fragment){
+        //ArrayList<ArrayList<Article>> result = new ArrayList<>();
+        ArrayList<ArticleListServer.LightArticle> list = new ArrayList<>();
+        String frag = specHandle(fragment);
         Connection conn = null;
-        Statement stmt = null;
+        PreparedStatement pstmt = null;
         // step :
         // fuzzy search user name -> get user id -> gather all article from user id list
         // search patient                        -> use article list server
 
         try{
             conn = dataSource.getConnection();
-            stmt = conn.createStatement();
-            String sql = "SELECT userID as id FROM patient WHERE name like '%" + fragment + "%'";
-            ResultSet rs = stmt.executeQuery(sql);
+            //stmt = conn.createStatement();
+            //String sql = "SELECT userID as id FROM patient WHERE name like '%" + fragment + "%'";
+            pstmt = conn.prepareStatement("SELECT p.userID as id FROM patient as p WHERE p.name LIKE ? ESCAPE !");
+            pstmt.setString(1, "%" + frag + "%");
+            ResultSet rs = pstmt.executeQuery();
 
             while(rs.next()){
-                singleList = ArticleListServer.getAuthorArticle(dataSource, rs.getString("id"));
-                result.add(singleList);
+                //singleList = ArticleListServer.getAuthorArticle(dataSource, rs.getString("id"));
+                //result.add(singleList);
+                list.addAll(ArticleListServer.getLightAuthorArticleList(dataSource, rs.getString("id")));
             }
             rs.close();
         }catch (SQLException e){
@@ -40,19 +43,22 @@ public class FuzzySearchServer {
                     conn.close();
                 }catch (SQLException ignored){}
             }
-            if(stmt != null){
+            if(pstmt != null){
                 try{
-                    stmt.close();
+                    pstmt.close();
                 }catch (SQLException ignored){}
             }
         }
 
-        return result;
+        return list;
     }
 
-    public static ArrayList<Article> searchArticleViaTitle(DataSource dataSource, String fragment, String userID){
-        singleList = new ArrayList<>();
+    public static ArrayList<ArticleListServer.LightArticle> searchArticleViaTitle(DataSource dataSource, String fragment, String userID){
+        //singleList = new ArrayList<>();
+        ArrayList<ArticleListServer.LightArticle> list = new ArrayList<>();
+        String frag = specHandle(fragment);
         Connection conn = null;
+        PreparedStatement pstmt = null;
         Statement stmt = null;
         Article temp;
         // step :
@@ -62,12 +68,16 @@ public class FuzzySearchServer {
         try{
             conn = dataSource.getConnection();
             stmt = conn.createStatement();
-            String sql = "SELECT articleID as id FROM article WHERE title like '%" + fragment + "%'";
-            ResultSet rs = stmt.executeQuery(sql);
+            pstmt = conn.prepareStatement("SELECT articleID as id FROM article WHERE title LIKE ? ESCAPE !");
+            //String sql = "SELECT articleID as id FROM article WHERE title like '%" + fragment + "%'";
+            //ResultSet rs = stmt.executeQuery(sql);
+            pstmt.setString(1, "%" + frag + "%");
+            ResultSet rs = pstmt.executeQuery();
 
             while(rs.next()){
-                temp = ArticleListServer.getSpecificArticle(dataSource, rs.getString("id"), userID).get(0);
-                singleList.add(temp);
+                //temp = ArticleListServer.getSpecificArticle(dataSource, rs.getString("id"), userID).get(0);
+                //singleList.add(temp);
+                list.add(ArticleListServer.getSpecLightArticle(dataSource, rs.getString("id")));
             }
             rs.close();
         }catch (SQLException e){
@@ -84,12 +94,15 @@ public class FuzzySearchServer {
                 }catch (SQLException ignored){}
             }
         }
-        return singleList;
+        return list;
     }
 
-    public static ArrayList<Article> searchArticleViaContent(DataSource dataSource, String fragment, String userID){
+    public static ArrayList<ArticleListServer.LightArticle> searchArticleViaContent(DataSource dataSource, String fragment, String userID){
         singleList = new ArrayList<>();
+        ArrayList<ArticleListServer.LightArticle> list = new ArrayList<>();
+        String frag = specHandle(fragment);
         Connection conn = null;
+        PreparedStatement pstmt = null;
         Statement stmt = null;
         Article temp;
         // step :
@@ -98,13 +111,17 @@ public class FuzzySearchServer {
 
         try{
             conn = dataSource.getConnection();
-            stmt = conn.createStatement();
-            String sql = "SELECT authorID as id FROM article WHERE description like '%" + fragment + "%'";
-            ResultSet rs = stmt.executeQuery(sql);
+            pstmt = conn.prepareStatement("SELECT authorID as id FROM article WHERE description like ? ESCAPE !");
+            pstmt.setString(1, "%" + frag + "%");
+            //stmt = conn.createStatement();
+            //String sql = "SELECT authorID as id FROM article WHERE description like '%" + fragment + "%'";
+            //ResultSet rs = stmt.executeQuery(sql);
+            ResultSet rs = pstmt.executeQuery();
 
             while(rs.next()){
-                temp = ArticleListServer.getSpecificArticle(dataSource, fragment, userID).get(0);
-                singleList.add(temp);
+                //temp = ArticleListServer.getSpecificArticle(dataSource, fragment, userID).get(0);
+                //singleList.add(temp);
+                list.add(ArticleListServer.getSpecLightArticle(dataSource, rs.getString("id")));
             }
             rs.close();
         }catch (SQLException e){
@@ -115,12 +132,56 @@ public class FuzzySearchServer {
                     conn.close();
                 }catch (SQLException ignored){}
             }
-            if(stmt != null){
+            if(pstmt != null){
                 try{
-                    stmt.close();
+                    pstmt.close();
                 }catch (SQLException ignored){}
             }
         }
-        return  singleList;
+        return list;
+    }
+
+    public static ArrayList<ArticleListServer.LightArticle> searchArticleBySingleTag(DataSource dataSource, String fragment){
+        // search tag in tag table -> get article id -> return light article content
+        ArrayList<ArticleListServer.LightArticle> list = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try{
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement("SELECT articleID as id FROM tag WHERE tagName like ? ESCAPE !");
+            pstmt.setString(1, "%" + specHandle(fragment) + "%");
+            rs = pstmt.executeQuery();
+            if(rs.next()){
+                list.add(ArticleListServer.getSpecLightArticle(dataSource, rs.getString("id")));
+            }
+
+            rs.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally {
+            if(conn != null){ try{ conn.close(); }catch (SQLException ignored){} }
+            if(pstmt != null){ try{ pstmt.close(); }catch (SQLException ignored){} }
+        }
+        return list;
+    }
+
+    public static String searchPatient(DataSource dataSource, String fragment){
+        // TODO : search patient user via id or name, notice return type
+        return null;
+    }
+
+    public static String searchDoctor(DataSource dataSource, String fragment){
+        // TODO : search doctor user via id or name, notice return type
+        return null;
+    }
+
+    protected static String specHandle(String input){
+        String out = input.replace("!", "!!")
+                          .replace("%", "!%")
+                          .replace("_", "!_")
+                          .replace("[", "![");
+        return out;
     }
 }
