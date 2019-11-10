@@ -25,7 +25,7 @@ public class FuzzySearchServer {
             conn = dataSource.getConnection();
             //stmt = conn.createStatement();
             //String sql = "SELECT userID as id FROM patient WHERE name like '%" + fragment + "%'";
-            pstmt = conn.prepareStatement("SELECT p.userID as id FROM patient as p WHERE p.name LIKE ? ESCAPE !");
+            pstmt = conn.prepareStatement("SELECT p.userID as id FROM patient as p WHERE p.name LIKE ? ESCAPE '!'");
             pstmt.setString(1, "%" + frag + "%");
             ResultSet rs = pstmt.executeQuery();
 
@@ -53,7 +53,7 @@ public class FuzzySearchServer {
         return list;
     }
 
-    public static ArrayList<ArticleListServer.LightArticle> searchArticleViaTitle(DataSource dataSource, String fragment, String userID){
+    public static ArrayList<ArticleListServer.LightArticle> searchArticleViaTitle(DataSource dataSource, String fragment){
         //singleList = new ArrayList<>();
         ArrayList<ArticleListServer.LightArticle> list = new ArrayList<>();
         String frag = specHandle(fragment);
@@ -68,7 +68,7 @@ public class FuzzySearchServer {
         try{
             conn = dataSource.getConnection();
             stmt = conn.createStatement();
-            pstmt = conn.prepareStatement("SELECT articleID as id FROM article WHERE title LIKE ? ESCAPE !");
+            pstmt = conn.prepareStatement("SELECT articleID as id FROM article WHERE title LIKE ? ESCAPE '!'");
             //String sql = "SELECT articleID as id FROM article WHERE title like '%" + fragment + "%'";
             //ResultSet rs = stmt.executeQuery(sql);
             pstmt.setString(1, "%" + frag + "%");
@@ -97,7 +97,7 @@ public class FuzzySearchServer {
         return list;
     }
 
-    public static ArrayList<ArticleListServer.LightArticle> searchArticleViaContent(DataSource dataSource, String fragment, String userID){
+    public static ArrayList<ArticleListServer.LightArticle> searchArticleViaContent(DataSource dataSource, String fragment){
         singleList = new ArrayList<>();
         ArrayList<ArticleListServer.LightArticle> list = new ArrayList<>();
         String frag = specHandle(fragment);
@@ -111,7 +111,7 @@ public class FuzzySearchServer {
 
         try{
             conn = dataSource.getConnection();
-            pstmt = conn.prepareStatement("SELECT authorID as id FROM article WHERE description like ? ESCAPE !");
+            pstmt = conn.prepareStatement("SELECT articleID as id FROM article WHERE description like ? ESCAPE '!'");
             pstmt.setString(1, "%" + frag + "%");
             //stmt = conn.createStatement();
             //String sql = "SELECT authorID as id FROM article WHERE description like '%" + fragment + "%'";
@@ -150,10 +150,10 @@ public class FuzzySearchServer {
 
         try{
             conn = dataSource.getConnection();
-            pstmt = conn.prepareStatement("SELECT articleID as id FROM tag WHERE tagName like ? ESCAPE !");
-            pstmt.setString(1, "%" + specHandle(fragment) + "%");
+            pstmt = conn.prepareStatement("SELECT articleID as id FROM tag WHERE tagName = ?");
+            pstmt.setString(1, fragment);
             rs = pstmt.executeQuery();
-            if(rs.next()){
+            while(rs.next()){
                 list.add(ArticleListServer.getSpecLightArticle(dataSource, rs.getString("id")));
             }
 
@@ -176,7 +176,7 @@ public class FuzzySearchServer {
         UserInfo temp;
         try{
             conn = dataSource.getConnection();
-            pstmt = conn.prepareStatement("SELECT p.name as n, p.userID as id, p.gender as g, p.introduction as intro FROM patient as p WHERE p.name like ? ESCAPE !");
+            pstmt = conn.prepareStatement("SELECT p.name as n, p.userID as id, p.gender as g, p.introduction as intro FROM patient as p WHERE p.name like ? ESCAPE '!'");
             pstmt.setString(1, "%" + specHandle(fragment) + "%");
             rs = pstmt.executeQuery();
             while(rs.next()){
@@ -205,12 +205,43 @@ public class FuzzySearchServer {
                 try{ pstmt.close(); }catch (SQLException ignored){}
             }
         }
-        return null;
+        return list;
     }
 
-    public static String searchDoctor(DataSource dataSource, String fragment){
-        // TODO : search doctor user via id or name, notice return type
-        return null;
+    public static ArrayList<DocInfo> searchDoctor(DataSource dataSource, String fragment){
+        // TODO : notice doctor data return type
+        ArrayList<DocInfo> list = new ArrayList<>();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        DocInfo temp;
+        try{
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement("SELECT d.name as n, d.doctorID as id, d.gender as g, d.department as dep FROM doctor as d WHERE d.name like ? ESCAPE '!'");
+            pstmt.setString(1, "%" + specHandle(fragment) + "%");
+            rs = pstmt.executeQuery();
+
+            while(rs.next()){
+                temp = new DocInfo(rs.getString("n"), rs.getString("id"), rs.getString("g"), rs.getString("dep"));
+                // make sure type of gender data is right
+                list.add(temp);
+            }
+            rs.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally {
+            if(pstmt != null){
+                try{
+                    pstmt.close();
+                }catch (SQLException ignored){}
+            }
+            if(conn != null){
+                try{
+                    conn.close();
+                }catch (SQLException ignored){}
+            }
+        }
+        return list;
     }
 
     protected static String specHandle(String input){
@@ -237,6 +268,23 @@ public class FuzzySearchServer {
             this.id = id;
             this.gender = gender;
             this.intro = intro;
+        }
+    }
+
+    static class DocInfo{
+        String name = "docName";
+        String id = "docID";
+        String gender = "tank";
+        String department = "NaN";
+
+        public void setGender(String gender){ this.gender = gender; }
+
+        DocInfo(){}
+        DocInfo(String name, String id, String gender, String department){
+            this.name = name;
+            this.id = id;
+            this.gender = gender;
+            this.department = department;
         }
     }
 }

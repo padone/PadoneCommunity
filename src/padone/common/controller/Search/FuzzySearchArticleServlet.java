@@ -30,12 +30,13 @@ public class FuzzySearchArticleServlet extends HttpServlet {
                 resp.getWriter().print(gson.toJson(FuzzySearchServer.searchArticleViaUserName(dataSource, fragment)));
                 break;
             case "title":
-                resp.getWriter().print(gson.toJson(FuzzySearchServer.searchArticleViaTitle(dataSource, fragment, userID)));
+                resp.getWriter().print(gson.toJson(FuzzySearchServer.searchArticleViaTitle(dataSource, fragment)));
                 break;
             case "content":
-                resp.getWriter().print(gson.toJson(FuzzySearchServer.searchArticleViaContent(dataSource, fragment, userID)));
+                resp.getWriter().print(gson.toJson(FuzzySearchServer.searchArticleViaContent(dataSource, fragment)));
                 break;
             case "tag":
+                resp.getWriter().print(gson.toJson(FuzzySearchServer.searchArticleBySingleTag(dataSource, fragment)));
                 break;
             default:
                 resp.getWriter().print("-- correct search pattern required --");
