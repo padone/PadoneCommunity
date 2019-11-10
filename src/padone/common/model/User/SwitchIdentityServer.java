@@ -13,7 +13,7 @@ public class SwitchIdentityServer
 		HashMap switchID = new HashMap();
 		Connection con = null;
 		String result = new String();
-		String reason = new String();
+		String reason = new String(); 
 
 		try
 		{
