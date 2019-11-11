@@ -72,7 +72,7 @@ public class FeedbackHandler {
 					"SELECT feedbackID, f.authorID as authorID, f.updateTime as updatetime, f.message as message, p.name as authorName FROM (SELECT * FROM feedback as t1 WHERE t1.articleID = '"
 							+ articleID + "') as f INNER JOIN patient as p ON p.userID = f.authorID");
 							*/
-			pstmt = con.prepareStatement("SELECT f.*, p.name as authorName FROM (SELECT * FROM feedback WHERE articleID = ?) as f INNER JOIN patient as p ON p.userID = f.authorID UNION SELECT f.*, d.name as authorName FROM (SELECT * FROM feedback WHERE articleID = ?) as f INNER JOIN doctor as d ON d.doctorID = f.authorID");
+			pstmt = con.prepareStatement("SELECT f.*, p.name as authorName FROM (SELECT * FROM feedback WHERE articleID = ?) as f INNER JOIN patient as p ON p.userID = f.authorID UNION SELECT f.*, d.name as authorName FROM (SELECT * FROM feedback WHERE articleID = ?) as f INNER JOIN doctor as d ON d.doctorID = f.authorID ORDER BY feedbackID ASC");
 			pstmt.setString(1, articleID);
 			pstmt.setString(2, articleID);
 			rs = pstmt.executeQuery();
