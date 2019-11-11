@@ -11,15 +11,16 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
 
-@WebServlet("/FuzzySearchUser")
-public class FuzzySearchUser extends HttpServlet{
+@WebServlet("/FuzzySearchDoctor")
+public class FuzzySearchDoctor extends HttpServlet {
+
     @Override
-    protected void doPost(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException{
-        response.setContentType("application/json; charset=utf-8");
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+        resp.setContentType("application/json; charset=utf-8");
         DataSource dataSource = (DataSource) getServletContext().getAttribute("db");
         Gson gson = new Gson();
-        String fragment = request.getParameter("keyword");
-        // search patient
-        response.getWriter().print(gson.toJson(FuzzySearchServer.searchPatient(dataSource, fragment)));
+        String fragment = req.getParameter("keyword");
+
+        resp.getWriter().print(gson.toJson(FuzzySearchServer.searchDoctor(dataSource, fragment)));
     }
 }
