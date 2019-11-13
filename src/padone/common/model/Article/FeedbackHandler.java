@@ -77,6 +77,7 @@ public class FeedbackHandler {
 			pstmt.setString(2, articleID);
 			rs = pstmt.executeQuery();
 
+			// union sql example:
 			//select ds.*, u1.name as name from dataset as ds inner join u1 on u1.id = ds.id
 			//UNION
 			//SELECT ds.*, u2.name as name from dataset as ds inner join u2 on u2.id = ds.id

@@ -380,30 +380,25 @@ public class ArticleListServer {
     }
     */
 
-    public static ArrayList<Article> getHospitalArticle(DataSource dataSource, String position){
+    public static ArrayList<LightArticle> getHospitalArticle(DataSource dataSource, String position){
+        ArrayList<LightArticle> list = new ArrayList<>();
         resultList = new ArrayList<>();
         Connection conn = null;
-        Statement stmt = null;
-        Article temp;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        LightArticle temp;
 
         try{
             conn = dataSource.getConnection();
-            stmt = conn.createStatement();
-            String sql = "SELECT articleID as aId, title, p.name as author, authorID, DATE(posttime) as post_time, department as category, description as content, image FROM article as a INNER JOIN patient as p WHERE a.hospital = '" + position + "' and a.authorID=p.userID ORDER BY posttime DESC";
-            ResultSet rs = stmt.executeQuery(sql);
+            //String sql = "SELECT articleID as aId, title, p.name as author, authorID, DATE(posttime) as post_time, department as category, description as content, image FROM article as a INNER JOIN patient as p WHERE a.hospital = '" + position + "' and a.authorID=p.userID ORDER BY posttime DESC";
+            pstmt = conn.prepareStatement("SELECT articleID as aID, p.name as authorName, title, description as content, posttime as postTime FROM article as a INNER JOIN patient as p ON p.userID = a.authorID and a.hospital = ? UNION SELECT articleID as aID, d.name as authorName, title, description as content, posttime as postTime FROM article as a INNER JOIN doctor as d ON d.doctorID = a.authorID and a.hospital = ?");
+            pstmt.setString(1, position);
+            pstmt.setString(2, position);
+            rs = pstmt.executeQuery();
 
             while(rs.next()){
-                temp = new Article();
-                temp.setArticleID(rs.getString("aId"));
-                temp.setTitle(rs.getString("title"));
-                temp.setAuthor(rs.getString("author"));
-                temp.setAuthorID(rs.getString("authorID"));
-                temp.setPostTime(rs.getString("post_time"));
-                temp.setDepartment(rs.getString("category"));
-                temp.setDescription(rs.getString("content"));
-                temp.setHospital(position);
-                temp.setImage(rs.getInt("image"));
-                resultList.add(temp);
+                temp = new LightArticle(rs.getString("aID"), rs.getString("authorName"), rs.getString("title"), rs.getString("content"), rs.getString("postTime"));
+                list.add(temp);
             }
             rs.close();
         }catch(SQLException e) {
@@ -414,16 +409,13 @@ public class ArticleListServer {
                     conn.close();
                 }catch (SQLException ignored){}
             }
-            if(stmt != null){
+            if(pstmt != null){
                 try{
-                    stmt.close();
+                    pstmt.close();
                 }catch (SQLException ignored){}
             }
         }
-        setImage(resultList, dataSource);
-        getGreatCount(resultList, dataSource);
-        setTag(resultList, dataSource);
-        return resultList;
+        return list;
     }
 
     private static void setImage(ArrayList<Article> list, DataSource dataSource){
