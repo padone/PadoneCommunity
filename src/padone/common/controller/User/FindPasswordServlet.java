@@ -50,24 +50,10 @@ public class FindPasswordServlet extends HttpServlet {
 		DataSource datasource = (DataSource) getServletContext().getAttribute("db");
 		FindPasswordServer finder=new FindPasswordServer();
 		String account=request.getParameter("account");
+		String mail=request.getParameter("mail");
 		String identity=request.getParameter("identity");
-		/*if(identity.equals("patient")||identity.equals("doctor")) {
-			/*try {
-				response.getWriter().println(finder.passwordFinder(datasource, account, identity));
-			} catch (AddressException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			} catch (MessagingException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			response.getWriter().println(finder.passwordFinder(datasource, account, identity));
-			
-		}
-		else {
-			response.getWriter().println("請選擇病患或是醫生");
-		}*/
-		response.getWriter().println(finder.passwordFinder(datasource, account, identity));
+		
+		response.getWriter().println(finder.passwordFinder(datasource, account,mail, identity));
 		
 	}
 

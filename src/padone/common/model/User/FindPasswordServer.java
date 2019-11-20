@@ -77,18 +77,16 @@ public class FindPasswordServer {
 		}
 		
 	}*/
-	public String passwordFinder(DataSource datasource,String account,String identity)  {
+	public String passwordFinder(DataSource datasource,String account,String mail,String identity)  {
 		Connection con = null;
 		try {
 			con = datasource.getConnection();
 			Statement st = con.createStatement();
-			String sql = "select * from " + identity + " where account = '" + account + "'";
-			String mail = "";
+			String sql = "select * from " + identity + " where account = '" + account + "' and mail='"+mail+"'";
 			String p = "";
 			System.out.println(sql);
 			ResultSet rs = st.executeQuery(sql);
 			while (rs.next()) {
-				mail = rs.getString("mail");
 				p = rs.getString("password");
 			}
 			st.close();// 關閉st
