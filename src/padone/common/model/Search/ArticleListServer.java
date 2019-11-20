@@ -146,7 +146,7 @@ public class ArticleListServer {
         return result;
     }
 
-    public static ArrayList<Article> getCategoryArticle(DataSource dataSource, String typ){
+    public static ArrayList<Article> getDepartmentArticle(DataSource dataSource, String typ){
         resultList = new ArrayList<>();
         Connection conn = null;
         Statement stmt = null;
@@ -190,6 +190,37 @@ public class ArticleListServer {
         getGreatCount(resultList, dataSource);
         setTag(resultList, dataSource);
         return resultList;
+    }
+
+    public static ArrayList<LightArticle> getLightDepartmentArticle(DataSource dataSource, String department){
+        ArrayList<LightArticle> result = new ArrayList<>();
+        LightArticle temp = null;
+        PreparedStatement pstmt = null;
+        Connection conn = null;
+        ResultSet rs = null;
+
+        try{
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement("SELECT articleID as aID, p.name as authorName, title, description as content, posttime as postTime FROM article as a INNER JOIN patient as p ON p.userID = a.authorID and a.department = ? UNION SELECT articleID as aID, d.name as authorName, title, description as content, posttime as postTime FROM article as a INNER JOIN doctor as d ON d.doctorID = a.authorID and a.department = ?");
+            pstmt.setString(1, department);
+            pstmt.setString(2, department);
+            rs = pstmt.executeQuery();
+
+            while (rs.next()){
+                temp = new LightArticle(rs.getString("aID"), rs.getString("authorName"), rs.getString("title"), rs.getString("content"), rs.getString("postTime"));
+                result.add(temp);
+            }
+
+            rs.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally {
+            if(pstmt != null)
+                try{ pstmt.close(); }catch (SQLException ignored){}
+            if(conn != null)
+                try{ conn.close(); }catch (SQLException ignored){}
+        }
+        return result;
     }
 
     public static ArrayList<Article> getSpecificArticle(DataSource dataSource, String articleID, String userID){

@@ -25,6 +25,6 @@ public class DepartmentArticleListServlet extends HttpServlet {
         String department = request.getParameter("department");
 
         gson = new Gson();
-        response.getWriter().print(gson.toJson(ArticleListServer.getCategoryArticle(dataSource, department)));
+        response.getWriter().print(gson.toJson(ArticleListServer.getLightDepartmentArticle(dataSource, department)));
     }
 }
