@@ -1,14 +1,11 @@
 package padone.common.model.Diary;
 
-import java.util.ArrayList;
-
 public class PatientDiary {
 	private String patientID;
 	private String familyID;
 	private String date;
 	private String familyDescription;
 	private String patientDescription;
-	private ArrayList<String> imageURL;
 	
 	public void SetFamilyID(String ID){
 		familyID=ID;
@@ -27,9 +24,7 @@ public class PatientDiary {
 		 patientDescription= Description;
 	}
 	
-	public void setImageURL(ArrayList<String> imageURL){
-		this.imageURL = imageURL;
-	}
+	
 	
 	/**********************************************************************************/
 	public String GetPatientID(){

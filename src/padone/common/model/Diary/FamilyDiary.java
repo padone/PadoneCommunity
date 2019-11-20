@@ -1,13 +1,10 @@
 package padone.common.model.Diary;
 
-import java.util.ArrayList;
-
 public class FamilyDiary {
 	private String familyID;
 	private String date;
 	private String description;
-	private ArrayList<String> imageURL;
-	
+	private String picture;
 	public void SetFamilyID(String ID){
 		familyID=ID;
 	}
@@ -17,10 +14,9 @@ public class FamilyDiary {
 	public void SetDescription(String des){
 		description=des;
 	}
-	public void setImageURL(ArrayList<String> imageURL){
-		this.imageURL = imageURL;
+	public void Setpicture(String picture){
+		this.picture=picture;
 	}
-	/***************************************************************************************************/
 	
 	public String GetFamilyID(){
 		return familyID;
@@ -31,9 +27,14 @@ public class FamilyDiary {
 	public String GetDescription(){
 		return description;
 	}
-	public void FamilyDiary(String userID,String date,String description) {
+	public String Getpicture(){
+		return picture;
+	}
+	
+	public void FamilyDiary(String userID,String date,String description,String picture) {
 		SetFamilyID(userID);
 		SetDescription(description);
+		Setpicture(picture);
 		SetDate(date);
 	}
 }

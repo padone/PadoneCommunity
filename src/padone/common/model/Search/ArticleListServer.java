@@ -69,6 +69,7 @@ public class ArticleListServer {
             String sql = "SELECT articleID as aId, p.name as author, title, DATE(posttime) as post_time, department as category, description as content, hospital, image FROM article as a INNER JOIN patient as p ON p.userID = '"+ authorID + "' and a.authorID = '" + authorID + "' ORDER BY posttime DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
+            //SELECT n.title, n.name as author, n.authorID, n.department, DATE(n.posttime) as post_time, n.description as content, n.hospital, n.image FROM (SELECT * FROM article as a INNER JOIN doctor as d ON a.authorID=d.doctorID) as n WHERE n.articleID = '" + articleID + "'
             while(rs.next()){
                 temp = new Article();
                 temp.setArticleID(rs.getString("aId"));
@@ -101,6 +102,48 @@ public class ArticleListServer {
         getGreatCount(resultList, datasource);
         setTag(resultList, datasource);
         return resultList;
+    }
+
+    public static ArrayList<LightArticle> getLightAuthorArticleList(DataSource dataSource, String authorID){
+        ArrayList<LightArticle> result = new ArrayList<>();
+        LightArticle temp = null;
+        PreparedStatement pstmt = null;
+        Connection conn = null;
+        ResultSet rs = null;
+        ResultSet nrs = null;
+        String name = "sb";
+
+        try{
+            conn = dataSource.getConnection();
+            if(amiadoctor(authorID))
+                pstmt = conn.prepareStatement("SELECT d.name as n FROM doctor as d WHERE d.doctorID = ?");
+            else
+                pstmt = conn.prepareStatement("SELECT p.name as n FROM patient as p WHERE p.userID = ?");
+            pstmt.setString(1, authorID);
+            nrs = pstmt.executeQuery();
+            if(nrs != null && nrs.next())
+                name = nrs.getString("n");
+
+            pstmt = conn.prepareStatement("SELECT title, description as des, posttime as pt FROM article WHERE authorID = ?");
+            pstmt.setString(1, authorID);
+            rs = pstmt.executeQuery();
+
+            while(rs != null && rs.next()){
+                temp = new LightArticle(authorID, name, rs.getString("title"), rs.getString("des"), rs.getString("pt"));
+                result.add(temp);
+            }
+
+            if(rs != null) rs.close();
+            if(nrs != null) nrs.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally {
+            if(pstmt != null)
+                try{ pstmt.close(); }catch (SQLException ignored){}
+            if(conn != null)
+                try{ conn.close(); }catch (SQLException ignored){}
+        }
+        return result;
     }
 
     public static ArrayList<Article> getCategoryArticle(DataSource dataSource, String typ){
@@ -224,6 +267,52 @@ public class ArticleListServer {
         return resultList;
     }
 
+    public static LightArticle getSpecLightArticle(DataSource dataSource, String articleID){
+        LightArticle result = new LightArticle();
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        ResultSet nrs = null;
+        boolean identity = false;
+        String aid = "";
+
+        try{
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement("SELECT authorID as aid, title, description as des, posttime as pt FROM article WHERE articleID = ?");
+            pstmt.setString(1, articleID);
+            rs = pstmt.executeQuery();
+
+            if(rs != null && rs.next()){
+                result = new LightArticle(articleID, "name", rs.getString("title"), rs.getString("des"), rs.getString("pt"));
+                aid = rs.getString("aid");
+                identity = amiadoctor(aid);
+            }
+
+            if(identity)
+                pstmt = conn.prepareStatement("SELECT d.name as n FROM doctor as d WHERE d.doctorID = ?");
+            else
+                pstmt = conn.prepareStatement("SELECT p.name as n FROM patient as p WHERE p.userID = ?");
+            pstmt.setString(1, aid);
+            nrs = pstmt.executeQuery();
+
+            if(nrs != null && nrs.next())
+                result.setAuthorName(nrs.getString("n"));
+
+            if(rs != null) rs.close();
+            if(nrs != null) nrs.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally {
+            if(conn != null){
+                try{ conn.close(); }catch (SQLException ignored){}
+            }
+            if(pstmt != null){
+                try{ pstmt.close(); }catch (SQLException ignored){}
+            }
+        }
+        return result;
+    }
+
     // lack of image information, great information and tag information
     // be careful using
     protected static Article getSpecArticle(DataSource dataSource, String id){
@@ -291,30 +380,25 @@ public class ArticleListServer {
     }
     */
 
-    public static ArrayList<Article> getHospitalArticle(DataSource dataSource, String position){
+    public static ArrayList<LightArticle> getHospitalArticle(DataSource dataSource, String position){
+        ArrayList<LightArticle> list = new ArrayList<>();
         resultList = new ArrayList<>();
         Connection conn = null;
-        Statement stmt = null;
-        Article temp;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+        LightArticle temp;
 
         try{
             conn = dataSource.getConnection();
-            stmt = conn.createStatement();
-            String sql = "SELECT articleID as aId, title, p.name as author, authorID, DATE(posttime) as post_time, department as category, description as content, image FROM article as a INNER JOIN patient as p WHERE a.hospital = '" + position + "' and a.authorID=p.userID ORDER BY posttime DESC";
-            ResultSet rs = stmt.executeQuery(sql);
+            //String sql = "SELECT articleID as aId, title, p.name as author, authorID, DATE(posttime) as post_time, department as category, description as content, image FROM article as a INNER JOIN patient as p WHERE a.hospital = '" + position + "' and a.authorID=p.userID ORDER BY posttime DESC";
+            pstmt = conn.prepareStatement("SELECT articleID as aID, p.name as authorName, title, description as content, posttime as postTime FROM article as a INNER JOIN patient as p ON p.userID = a.authorID and a.hospital = ? UNION SELECT articleID as aID, d.name as authorName, title, description as content, posttime as postTime FROM article as a INNER JOIN doctor as d ON d.doctorID = a.authorID and a.hospital = ?");
+            pstmt.setString(1, position);
+            pstmt.setString(2, position);
+            rs = pstmt.executeQuery();
 
             while(rs.next()){
-                temp = new Article();
-                temp.setArticleID(rs.getString("aId"));
-                temp.setTitle(rs.getString("title"));
-                temp.setAuthor(rs.getString("author"));
-                temp.setAuthorID(rs.getString("authorID"));
-                temp.setPostTime(rs.getString("post_time"));
-                temp.setDepartment(rs.getString("category"));
-                temp.setDescription(rs.getString("content"));
-                temp.setHospital(position);
-                temp.setImage(rs.getInt("image"));
-                resultList.add(temp);
+                temp = new LightArticle(rs.getString("aID"), rs.getString("authorName"), rs.getString("title"), rs.getString("content"), rs.getString("postTime"));
+                list.add(temp);
             }
             rs.close();
         }catch(SQLException e) {
@@ -325,16 +409,13 @@ public class ArticleListServer {
                     conn.close();
                 }catch (SQLException ignored){}
             }
-            if(stmt != null){
+            if(pstmt != null){
                 try{
-                    stmt.close();
+                    pstmt.close();
                 }catch (SQLException ignored){}
             }
         }
-        setImage(resultList, dataSource);
-        getGreatCount(resultList, dataSource);
-        setTag(resultList, dataSource);
-        return resultList;
+        return list;
     }
 
     private static void setImage(ArrayList<Article> list, DataSource dataSource){
@@ -454,5 +535,26 @@ public class ArticleListServer {
 
     private static boolean amiadoctor(String id){
         return id.contains("d");
+    }
+
+    public static class LightArticle{
+        String articleID = "init";
+        String authorName = "init";
+        String title = "init";
+        String description = "init";
+        String postTime = "initT";
+
+        private void setAuthorName(String authorName){
+            this.authorName = authorName;
+        }
+
+        LightArticle(String articleID, String authorName, String title, String description, String postTime){
+            this.articleID = articleID;
+            this.authorName = authorName;
+            this.title = title;
+            this.description = description;
+            this.postTime = postTime;
+        }
+        LightArticle(){}
     }
 }

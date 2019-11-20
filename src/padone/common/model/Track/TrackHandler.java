@@ -1,9 +1,6 @@
 package padone.common.model.Track;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 
@@ -12,24 +9,45 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 public class TrackHandler {
 	public boolean newTrackArticle(DataSource datasource, String articleID, String userID,String tableName) {
 		Connection con = null;
+		PreparedStatement pstmt = null;
+		Statement st = null;
+		String cmd = "";
+		ResultSet rs = null;
+		int updateLine;
 		try {
 			con = datasource.getConnection();
-			Statement st = con.createStatement();
-			
-			
+			//st = con.createStatement();
+			cmd = "SELECT * FROM " + tableName + " WHERE articleID = ? and userID = ?";
+			pstmt= con.prepareStatement(cmd);
+			pstmt.setString(1, articleID);
+			pstmt.setString(2, userID);
+			rs = pstmt.executeQuery();
+
+			if(rs.next()){
+				// tracked -> delete
+				cmd = "DELETE FROM " + tableName + " WHERE articleID = ? and userID = ?";
+			}else{
+				// not tracked -> add
+				cmd = "INSERT INTO " + tableName + " (articleID, userID) values (?, ?)";
+			}
+			pstmt = con.prepareStatement(cmd);
+			pstmt.setString(1, articleID);
+			pstmt.setString(2, userID);
+			updateLine = pstmt.executeUpdate();
+			/*
 			String check="select * from "+tableName+" where articleID = '"+articleID+"' and userID = '"+userID+"'";
 			System.out.println(check);
-			ResultSet rs =st.executeQuery(check);
+			rs =st.executeQuery(check);
 			if(rs.next())return true;
 			String result="insert into "+tableName+"(articleID,userID)values('" 
 			+ articleID +  "','"+userID+"' )";
 			System.out.println(result);
 			int articleInsert = st.executeUpdate(result);
+			*/
 			
-			
-		   
-		    st.close();//關閉st
-			if(articleInsert>0){
+		    rs.close();
+		    //st.close();//關閉st
+			if(updateLine>0){
 				return true;
 			}
 			else{
@@ -40,9 +58,12 @@ public class TrackHandler {
 			e.printStackTrace();
 			return false;
 		}finally {
-		      if (con!=null) try {con.close();}catch (Exception ignore) {
-		    	  return false;
-		      }
+		      if (con!=null) try {con.close();}catch (Exception ignore) {}
+		      if(pstmt != null){
+		      	try {
+		      		pstmt.close();
+				}catch (Exception ignored){}
+			  }
 		}
 		
 	}

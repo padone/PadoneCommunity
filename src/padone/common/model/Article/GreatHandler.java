@@ -10,39 +10,7 @@ public class GreatHandler {
 		PreparedStatement pstmt = null;
 		String cmd = "";
 		int result = 0;
-		/*
-		try {
-			con = datasource.getConnection();
-			Statement st = con.createStatement();
-			String check="select * from great where articleID = '"+articleID+"' and userID = '"+userID+"'";
-			ResultSet rs =st.executeQuery(check);
-			if(rs.next()) {
-				String del="delete from great where articleID ='"+articleID+"' and userID = '"+userID+"'";
-				st.executeUpdate(del);
-				st.close();
-				System.out.println(del);
-				return true;
-			}
-			String result="insert into great"+"(articleID,userID)values('" 
-				    + articleID + "','" +  userID+"' )";
-			System.out.println(result);
-			int insert = st.executeUpdate(result);
-			
-			
-		    
-		    st.close();//關閉st
-			if(insert>0){
-				return true;
-			}
-			else{
-				return false;
-			}
-		} catch (SQLException e) {
-			System.out.println("Exception :" + e.toString());
-			e.printStackTrace();
-		}finally {
-		      if (con!=null) try {con.close();}catch (Exception ignore) {}
-		}*/
+
 		try{
 		    if(ifEvaluated(datasource, articleID, userID)){
                 cmd = "DELETE FROM great WHERE articleID = ? AND userID = ?";

@@ -1,9 +1,6 @@
 package padone.common.model.Article;
 
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.Date;
 import org.apache.tomcat.jdbc.pool.DataSource;
@@ -64,14 +61,28 @@ public class FeedbackHandler {
 
 	public ArrayList<Feedback> getFeedback(DataSource datasource, String articleID) {
 		Connection con = null;
+		PreparedStatement pstmt = null;
+		ResultSet rs = null;
 		ArrayList<Feedback> result = new ArrayList();
 		try {
 			con = datasource.getConnection();
 			Statement st = con.createStatement();
+			/*
 			ResultSet rs = st.executeQuery(
 					"SELECT feedbackID, f.authorID as authorID, f.updateTime as updatetime, f.message as message, p.name as authorName FROM (SELECT * FROM feedback as t1 WHERE t1.articleID = '"
 							+ articleID + "') as f INNER JOIN patient as p ON p.userID = f.authorID");
-			// select * from feedback where articleID='"+articleID+"'
+							*/
+			pstmt = con.prepareStatement("SELECT f.*, p.name as authorName FROM (SELECT * FROM feedback WHERE articleID = ?) as f INNER JOIN patient as p ON p.userID = f.authorID UNION SELECT f.*, d.name as authorName FROM (SELECT * FROM feedback WHERE articleID = ?) as f INNER JOIN doctor as d ON d.doctorID = f.authorID ORDER BY feedbackID ASC");
+			pstmt.setString(1, articleID);
+			pstmt.setString(2, articleID);
+			rs = pstmt.executeQuery();
+
+			// union sql example:
+			//select ds.*, u1.name as name from dataset as ds inner join u1 on u1.id = ds.id
+			//UNION
+			//SELECT ds.*, u2.name as name from dataset as ds inner join u2 on u2.id = ds.id
+			//ORDER BY `uid` ASC
+
 			while (rs.next()) {
 				Feedback temp = new Feedback();
 				String author = rs.getString("authorID");
