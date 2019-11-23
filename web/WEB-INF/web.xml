@@ -21,6 +21,16 @@
         <listener-class>padone.db.controller.ServletListener</listener-class>
     </listener>
 
+    <!--
+    disable register for testing purpose
+    <listener>
+        <listener-class>padone.common.model.Notification.Listener</listener-class>
+    </listener>
+    -->
+    <listener>
+        <listener-class>padone.common.model.Notification.RequestListener</listener-class>
+    </listener>
+
     <context-param>
         <param-name>url</param-name>
         <param-value>jdbc:mysql://localhost:3306/</param-value>
