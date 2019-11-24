@@ -37,9 +37,11 @@ public final class NoticeServer {
             session.getUserProperties().put(SocketConstant.USER_ID, userID);
             if(NoticeManager.init(session)){
                 // notice user socket is open
-                NoticeManager.send(session, new Message((String) session.getUserProperties().get(SocketConstant.USER_ID), "server open socket for " + userID));
+                //NoticeManager.send(session, new Message((String) session.getUserProperties().get(SocketConstant.USER_ID), "server open socket for " + userID));
+                //NoticeManager.sendText(session, "server open socket for " + userID);
+                NoticeManager.send(session, new Message(154, session.getUserProperties().get(SocketConstant.USER_ID).toString(), "init result", "success", "now", true, null));
                 System.out.println("id: " + userID);
-                System.out.println("test id: " + session.getUserProperties().get(SocketConstant.USER_ID));
+                NoticeManager.checkoutNotice(session, db);
             }else{
                 throw new RegistFailedException("user id already taken, try another");
             }
@@ -50,7 +52,8 @@ public final class NoticeServer {
     public void close(final Session session){
         if(NoticeManager.remove(session)){
             System.out.println("Socket closed for "+ session.getUserProperties().get(SocketConstant.USER_ID));
-            NoticeManager.send(session, new Message((String) session.getUserProperties().get(SocketConstant.USER_ID), "<< socket closed by server"));
+            //NoticeManager.send(session, new Message((String) session.getUserProperties().get(SocketConstant.USER_ID), "<< socket closed by server"));
+            NoticeManager.sendText(session, "<< socket closed by server");
             System.out.println("leave onClose function");
         }
     }
@@ -61,6 +64,7 @@ public final class NoticeServer {
         //System.out.println(httpSession.getServletContext().getAttribute("db"));
         System.out.println(msg);
         String name = "init";
+
         try{
             //System.out.println(db);
 
@@ -73,20 +77,45 @@ public final class NoticeServer {
                 //System.out.println(name);
             }rs.close();
             pstmt.close();
+            conn.close();
 
         } catch (Exception e){
             e.printStackTrace();
         }
 
-        if(msg.equals("patientTest")){
-            NoticeManager.send(session, new Message((String) session.getUserProperties().get(SocketConstant.USER_ID), "string verify success"));
+
+        /*
+        if(msg.getRequest().equals("messageTest")){
+            //NoticeManager.send(session, new Message((String) session.getUserProperties().get(SocketConstant.USER_ID), "string verify success"));
+            //NoticeManager.sendText(session, "string verify success");
+            NoticeManager.send(session, new Message(200, session.getUserProperties().get(SocketConstant.USER_ID).toString(), "onMessage testing", "success", "now", true, null));
         }else{
-            NoticeManager.send(session, new Message((String) session.getUserProperties().get(SocketConstant.USER_ID), msg.toString()));
+            //NoticeManager.send(session, new Message((String) session.getUserProperties().get(SocketConstant.USER_ID), msg.toString()));
+            //NoticeManager.sendText(session, msg.toString());
+            NoticeManager.send(session, new Message(404, session.getUserProperties().get(SocketConstant.USER_ID).toString(), "onMessage testing", name, "now", true, null));
             System.out.println(name);
         }
-
-        // TODO: check if invitation already send
-        // TODO: send invitation
+        */
+        switch (msg.getRequest()){
+            case "getAll":
+                break;
+            case "noticeUser":
+                NoticeManager.sendOtherUser(db, session, msg);
+                break;
+            case "messageTest":
+                NoticeManager.send(session, new Message(200, session.getUserProperties().get(SocketConstant.USER_ID).toString(), "onMessage testing", "success", "now", true, null));
+                break;
+            case "databaseTest":
+                NoticeManager.send(session, new Message(200, session.getUserProperties().get(SocketConstant.USER_ID).toString(), "onMessage testing", name, "now", true, null));
+                break;
+            default:
+                NoticeManager.send(session, new Message(100, session.getUserProperties().get(SocketConstant.USER_ID).toString(), "switch failed", name, "now", true, null));
+                break;
+        }
+        // TODO: add user send notice to another user
+        // TODO: add system send notice to specific user
+        // TODO: add system send notice to all users
+        // TODO: add get all notice
     }
 
     @OnError

@@ -22,7 +22,8 @@ public class MessageDecoder implements Decoder.Text<Message> {
 
     @Override
     public boolean willDecode(String s) {
-        return s.contains(SocketConstant.USER_ID) && s.contains(SocketConstant.MESSAGE);
+        //return s.contains(SocketConstant.USER_ID) && s.contains(SocketConstant.MESSAGE);
+        return s.contains(SocketConstant.NOTICE_ID) && s.contains(SocketConstant.RECIPIENT_ID) && s.contains(SocketConstant.REQUEST) && s.contains(SocketConstant.CONTENT) && s.contains(SocketConstant.TIME) && s.contains(SocketConstant.IF_CHECKED) && s.contains(SocketConstant.SENDER_ID);
     }
 
     @Override
