@@ -34,16 +34,6 @@ public class TrackHandler {
 			pstmt.setString(1, articleID);
 			pstmt.setString(2, userID);
 			updateLine = pstmt.executeUpdate();
-			/*
-			String check="select * from "+tableName+" where articleID = '"+articleID+"' and userID = '"+userID+"'";
-			System.out.println(check);
-			rs =st.executeQuery(check);
-			if(rs.next())return true;
-			String result="insert into "+tableName+"(articleID,userID)values('" 
-			+ articleID +  "','"+userID+"' )";
-			System.out.println(result);
-			int articleInsert = st.executeUpdate(result);
-			*/
 			
 		    rs.close();
 		    //st.close();//關閉st
@@ -84,22 +74,39 @@ public class TrackHandler {
 		return true;
 	}
     
-    public boolean newTrackUser(DataSource datasource, String target, String follow) {
+    public boolean newTrackUser(DataSource datasource, String target, String follower) {
     	Connection con = null;
-		try {
+		String cmd="";
+		PreparedStatement pstmt=null;
+		ResultSet rs;
+    	try {
 			con = datasource.getConnection();
 			Statement st = con.createStatement();
 			
-			System.out.println("HI");
-			String result="insert into tracktarget(target,follow)values('" //SQL刪除
-			+ target + "','"+follow+"' )";
-			System.out.println(result);
-			int targetInsert = st.executeUpdate(result);
 			
+			
+			
+			cmd = "SELECT * FROM tracktarget WHERE target = ? and follower = ?";
+		    pstmt= con.prepareStatement(cmd);
+			pstmt.setString(1, target);
+			pstmt.setString(2, follower);
+			rs= pstmt.executeQuery();
+
+			if(rs.next()){
+				// tracked -> delete
+				cmd = "DELETE FROM tracktarget WHERE target = ? and follower = ?";
+			}else{
+				// not tracked -> add
+				cmd = "INSERT INTO tracktarget (target, follower) values (?, ?)";
+			}
+			pstmt = con.prepareStatement(cmd);
+			pstmt.setString(1, target);
+			pstmt.setString(2, follower);
+			int updateLine = pstmt.executeUpdate();
 			
 		   
 		    st.close();//關閉st
-			if(targetInsert>0){
+			if(updateLine>0){
 				return true;
 			}
 			else{
