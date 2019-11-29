@@ -97,7 +97,10 @@ public final class NoticeServer {
         }
         */
         switch (msg.getRequest()){
-            case "getAll":
+            case "getUnRead":
+                NoticeManager.checkoutNotice(session, db);
+                break;
+            case "noticeAll":
                 break;
             case "noticeUser":
                 NoticeManager.sendOtherUser(db, session, msg);

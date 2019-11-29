@@ -7,12 +7,6 @@ import java.util.Objects;
 
 public class Message {
 
-    /*
-    @JsonProperty("userID")
-    private final String userID;
-    @JsonProperty("message")
-    private final String message;
-    */
     @JsonProperty("noticeID")
     private final int noticeID;
     @JsonProperty("recipientID")
@@ -27,25 +21,6 @@ public class Message {
     private boolean checked = false;
     @JsonProperty("senderID")
     private String senderID = "";
-
-    /*
-    @JsonCreator
-    public Message(@JsonProperty("userID") final String userID, @JsonProperty("message") final String message){
-        Objects.requireNonNull(userID);
-        Objects.requireNonNull(message);
-
-        this.userID = userID;
-        this.message = message;
-    }
-
-    public String getUserID(){
-        return this.userID;
-    }
-
-    public String getMessage() {
-        return this.message;
-    }
-    */
 
     @JsonCreator
     public Message(@JsonProperty("noticeID") final int noticeID, @JsonProperty("recipientID") final String recipientID, @JsonProperty("request") final String request, @JsonProperty("content") final String content, @JsonProperty("time") final String time, @JsonProperty("checked") final boolean checked, @JsonProperty("senderID") final String senderID){
@@ -92,17 +67,6 @@ public class Message {
     public String getSenderID() {
         return senderID;
     }
-
-    /*
-    @Override
-    public String toString() {
-        String msg = "content: {";
-        msg = msg.concat("'userID': '" + userID);
-        msg = msg.concat("', 'message': '" + message + "'}");
-
-        return msg;
-    }
-    */
 
     @Override
     public String toString() {

@@ -1,25 +1,16 @@
 package padone.common.model.Notification;
 
-import com.google.gson.JsonParser;
-import org.json.JSONArray;
-
 import javax.sql.DataSource;
 import javax.websocket.CloseReason;
 import javax.websocket.EncodeException;
 import javax.websocket.Session;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileReader;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
-import java.util.concurrent.locks.Lock;
 import java.util.concurrent.locks.ReentrantLock;
 
 final class NoticeManager {
@@ -109,6 +100,62 @@ final class NoticeManager {
         // send
         //result = !SESSIONS.contains(session) && !SESSIONS.stream()
         //                    .filter(e -> ((String)e.getUserProperties().get(SocketConstant.USER_ID)).equals((String)session.getUserProperties().get(SocketConstant.USER_ID))).findFirst().isPresent() && SESSIONS.add(session);
+    }
+
+    public static void sendAll(DataSource dataSource, Session origin, final Message message){
+        ArrayList<String> list = new ArrayList<>();
+        Map<String, Message> noticeList = new HashMap<>();
+        Message msg;
+        Date date = new Date();
+        Object time = new java.sql.Timestamp(date.getTime());
+        int updateRow = 0;
+        int noticeID = 5555;
+
+        try{
+            Lock.lock();
+            // store all notice in db
+            Connection conn = dataSource.getConnection();
+            PreparedStatement pstmt = conn.prepareStatement("SELECT max(noticeID) as nid FROM notification");
+            ResultSet rs = pstmt.executeQuery();
+            if(rs.next()){
+                noticeID = rs.getInt("nid") + 1;
+            }
+            pstmt = conn.prepareStatement("SELECT userID as id FROM patient UNION SELECT doctorID as id FROM patient");
+            rs = pstmt.executeQuery();
+            while(rs.next()){
+                list.add(rs.getString("id"));
+            }
+            pstmt = conn.prepareStatement("INSERT INTO notification(noticeID, recipientID, request, content, time, checked, senderID) VALUES (?, ?, ?, ?, ?, ?, ?)");
+            for(String id : list){
+                pstmt.setInt(1, noticeID++);
+                pstmt.setString(2, id);
+                pstmt.setString(3, message.getRequest());
+                pstmt.setString(4, message.getContent());
+                pstmt.setString(5, time.toString());
+                pstmt.setBoolean(6, false);
+                pstmt.setString(7, message.getSenderID());
+                updateRow = pstmt.executeUpdate();
+                msg = new Message(noticeID, id, message.getRequest(), message.getContent(), time.toString(), false, message.getSenderID());
+                noticeList.put(id, msg);
+            }
+
+            for (Session s : SESSIONS) {
+                if (!s.equals(origin)) {
+                    try {
+                        //session.getBasicRemote().sendObject(new Message(noticeID.noticeID, session.getUserProperties().get(SocketConstant.USER_ID).toString(), message.getRequest(), message.getContent(), time.toString(), false, message.getSenderID()));
+                        s.getBasicRemote().sendObject(noticeList.get(s.getUserProperties().get(SocketConstant.USER_ID).toString()));
+                    } catch (IOException | EncodeException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally {
+            Lock.unlock();
+        }
+        // TODO : checkout table LOCK issue when multiple user are writing notification
+        // TODO: make sure if really need to lock
     }
 
     public static void checkoutNotice(final Session session, DataSource dataSource){
