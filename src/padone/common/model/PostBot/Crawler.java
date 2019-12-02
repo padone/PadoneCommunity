@@ -1,18 +1,45 @@
 package padone.common.model.PostBot;
 
+import java.util.ArrayList;
+
 public abstract class Crawler
 {
-	private Article article;
+	private ArrayList<News> articleList = new ArrayList<News>();
+	private News article;
 	private String keyWord = null;
 	
-	public Article search(String keyWord)
+	public ArrayList<News> search(String keyWord)
 	{
 		return null;
+	}
+	
+	public void clearArticleList() 
+	{
+		articleList.clear();
 	}
 	
 	public abstract void getItem(String url);
 	
 	public abstract void getInside(String url);
+	
+	public ArrayList<News> getArticleList()
+	{
+		return articleList;
+	}
+
+	public void setNewsList(ArrayList<News> newsList)
+	{
+		this.articleList = newsList;
+	}
+	
+	public News getArticle() {
+		return article;
+	}
+
+	public void setArticle(News article)
+	{
+		this.article = article;
+	}
 
 	public String getKeyWord()
 	{
@@ -22,14 +49,5 @@ public abstract class Crawler
 	public void setKeyWord(String keyWord)
 	{
 		this.keyWord = keyWord;
-	}
-
-	public Article getArticle() {
-		return article;
-	}
-
-	public void setArticle(Article article)
-	{
-		this.article = article;
 	}
 }
