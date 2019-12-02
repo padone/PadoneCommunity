@@ -23,16 +23,16 @@ public class RelationshipServer
 			if (isExistingUser(userID2, datasource))
 			{
 				/************************************
-				 *建立連結(開始)
+				 * 建立連結(開始)
 				 *****************************************************/
 				String insertdbSQL = null;
 
 				if (identity.equals("病患"))
-					insertdbSQL = "insert into patientrelationship(userID, familyID)" + "values ('" + userID1 + "', '"
-							+ userID2 + "');";
+					insertdbSQL = "insert into patientrelationship(familyID, patientID)" + "values ('" + userID1
+							+ "', '" + userID2 + "');";
 				else if (identity.equals("醫生"))
-					insertdbSQL = "insert into doctorrelationship(doctorID, userID)" + "values ('" + userID1 + "', '"
-							+ userID2 + "');";
+					insertdbSQL = "insert into doctorrelationship(doctorID, secretaryID)" + "values ('" + userID1
+							+ "', '" + userID2 + "');";
 
 				int userSetting = st.executeUpdate(insertdbSQL);
 				st.close();
@@ -50,6 +50,9 @@ public class RelationshipServer
 			}
 		} catch (SQLException e)
 		{
+			System.out.println("familyID = " + userID1 + "\n"
+							 + "patientID = " + userID2 + "\n"
+							 + "identity = " + identity + "\n");
 			System.out.println("RegisterServer registerAdd Exception :" + e.toString());
 			e.printStackTrace();
 		} finally

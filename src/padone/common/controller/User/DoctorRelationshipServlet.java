@@ -64,14 +64,14 @@ public class DoctorRelationshipServlet extends HttpServlet
 		RelationshipServer relationship = new RelationshipServer();
 		/*******************************************************************************************/
 		String doctorID = request.getParameter("doctorID");
-		String userID = request.getParameter("userID");
+		String secretaryID = request.getParameter("secretaryID");
 		String identity = "醫生";
 		/*******************************************************************************************/
 		@SuppressWarnings("rawtypes")
 		HashMap relationshipSet = new HashMap();
 		/*******************************************************************************************/
 
-		relationshipSet = relationship.setRelationship(datasource, doctorID, userID, identity);
+		relationshipSet = relationship.setRelationship(datasource, doctorID, secretaryID, identity);
 
 		System.out.println("在servlet中的relationshipSet: " + relationshipSet);
 

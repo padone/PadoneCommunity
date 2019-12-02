@@ -63,15 +63,15 @@ public class PatientRelationshipServlet extends HttpServlet
 		DataSource datasource = (DataSource) getServletContext().getAttribute("db");
 		RelationshipServer relationship = new RelationshipServer();
 		/*******************************************************************************************/
-		String userID = request.getParameter("userID");
 		String familyID = request.getParameter("familyID");
+		String patientID = request.getParameter("patientID");
 		String identity = "病患";
 		/*******************************************************************************************/
 		@SuppressWarnings("rawtypes")
 		HashMap relationshipSet = new HashMap();
 		/*******************************************************************************************/
 
-		relationshipSet = relationship.setRelationship(datasource, userID, familyID, identity);
+		relationshipSet = relationship.setRelationship(datasource, familyID, patientID, identity);
 
 		System.out.println("在servlet中的relationshipSet: " + relationshipSet);
 
