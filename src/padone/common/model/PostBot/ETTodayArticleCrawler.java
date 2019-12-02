@@ -8,37 +8,46 @@ import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class ETTodayNewsCrawler extends Crawler
+public class ETTodayArticleCrawler extends Crawler
 {	
-	public ETTodayNewsCrawler()
+	public ETTodayArticleCrawler()
 	{
 	}
 	
-	public Article search(String keyWord)
+	public ArrayList<News> search(String keyWord)
 	{
 		this.setKeyWord(keyWord);
-		String url = new String("https://www.ettoday.net/news_search/doSearch.php?keywords=" + keyWord);
+		clearArticleList();
+		String url = new String("https://www.ettoday.net/news_search/doSearch.php?keywords=" + getKeyWord());
 
 		getItem(url);
 
-		return getArticle();
+		return getArticleList();
 	}
 	
 	public void getItem(String url)
 	{
 		try
         {
-            Document doc = Jsoup.connect(url)
+            @SuppressWarnings("deprecation")
+			Document doc = Jsoup.connect(url)
                                 .userAgent("\"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36")
                                 .validateTLSCertificates(false)
                                 .get();
-            Elements list = doc.getElementsByClass("box_2").select("h2 > a");
+            Elements list = doc.getElementsByClass("box_2");
 
-            setArticle(new Article());
-            getArticle().setTitle(list.get(0).text());
-            getArticle().setWebUrl(list.get(0).attr("abs:href"));
-            getInside(list.get(0).attr("abs:href"));
+            int listLength = list.size();
 
+          	for(int i = 0; i < listLength; i++)
+            {
+	            setArticle(new News());
+	            getArticle().setTitle(list.get(i).select("h2 > a").get(0).text());
+	            getArticle().setWebUrl(list.get(i).select("h2 > a").get(0).attr("abs:href"));
+	            
+	            getInside(getArticle().getWebUrl());
+	            //System.out.println(getArticle().toString());
+	            getArticleList().add(getArticle());
+            }
         }
 		catch (IOException e)
 		{
@@ -47,6 +56,7 @@ public class ETTodayNewsCrawler extends Crawler
 		}
 	}
 	
+	@SuppressWarnings("deprecation")
 	public void getInside(String url)
 	{
 		try
@@ -56,13 +66,13 @@ public class ETTodayNewsCrawler extends Crawler
 								.validateTLSCertificates(false)
 								.get();
 		
-			Elements info = doc.getElementsByClass("story").select("p, div > div");
+			Elements info = doc.getElementsByClass("story").select("p, div > div, h2 > span > span > strong");
 			
 			int length = info.size();
 			String article = "";
 			for(int i = 0; i < length; i++)
 			{
-				if(info.get(i).text().startsWith("▲") || info.get(i).text().startsWith("▼") || info.get(i).text().startsWith("（圖／") || info.get(i).text().startsWith("►"))
+				if(info.get(i).text().startsWith("▲") || info.get(i).text().startsWith("▼") || info.get(i).text().startsWith("（圖／") || info.get(i).text().startsWith("►") || info.get(i).text().startsWith("請繼續往下閱讀") || info.get(i).text().startsWith("【"))
 				{
 					continue;
 				}
@@ -73,27 +83,17 @@ public class ETTodayNewsCrawler extends Crawler
 			}
 			if(article.startsWith("\n"))
 				article = article.replaceFirst("\n", "");
+			if(article.contains("'"))
+				article = article.replace("'", " ");
 			getArticle().setArticle(article);
 			
 			Elements date = doc.getElementsByClass("date");
-			getArticle().setSendTime(date.text());
+			getArticle().setSendTime(date.get(0).text());
 			
 			Elements img = doc.getElementsByClass("story").select("p > img");
-			int k = 0;
 			for(Element image: img)
 			{
-				if(k == 0)
-				{
-					getArticle().setHeadPhotoUrl(image.attr("src"));
-					getArticle().setHeadPhotoDescription(image.attr("alt"));
-				}
-				else
-				{
-					getArticle().setPhotoUrl(image.attr("src"));
-					getArticle().setPhotoDescription(image.attr("alt"));
-				}
-				
-				k++;
+				getArticle().setPhotoUrl(image.attr("src"));
 			}
 		}
 		catch (IOException e)
