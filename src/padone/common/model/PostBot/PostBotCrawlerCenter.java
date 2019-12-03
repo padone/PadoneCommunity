@@ -10,16 +10,21 @@ import org.apache.tomcat.jdbc.pool.DataSource;
 
 public class PostBotCrawlerCenter
 {
-	synchronized public News setCrawler(DataSource datasource, String keyWord, String website, String frequency)
+	synchronized public News setCrawler(DataSource datasource, String botID)
 	{
 		News crawlerNews = new News();
+		PostBot postBot = getPostBot(datasource, botID);
+		
+		String keyword = postBot.getKeyword();
+		String website = postBot.getWebsite();
+		String frequency = postBot.getFrequency();
 		
 		switch(website)
 		{
 			case "東森新聞":
 			{
 				EbcArticleCrawler crawler = new EbcArticleCrawler();
-				ArrayList<News> article_Ebc = crawler.search(keyWord);
+				ArrayList<News> article_Ebc = crawler.search(keyword);
 
 				for(News s: article_Ebc)
 				{
@@ -30,6 +35,7 @@ public class PostBotCrawlerCenter
 						crawlerNews.setWebUrl(s.getWebUrl());
 						crawlerNews.setArticle(s.getArticle());
 						crawlerNews.setAllPhotoUrl(s.getPhotoUrl());
+						crawlerNews.setKeyword(keyword);
 						
 						break;
 					}
@@ -41,7 +47,7 @@ public class PostBotCrawlerCenter
 			case "ETToday":
 			{
 				ETTodayArticleCrawler crawler = new ETTodayArticleCrawler();
-				ArrayList<News> article_ETToday = crawler.search(keyWord);
+				ArrayList<News> article_ETToday = crawler.search(keyword);
 
 				for(News s: article_ETToday)
 				{
@@ -52,6 +58,7 @@ public class PostBotCrawlerCenter
 						crawlerNews.setWebUrl(s.getWebUrl());
 						crawlerNews.setArticle(s.getArticle());
 						crawlerNews.setAllPhotoUrl(s.getPhotoUrl());
+						crawlerNews.setKeyword(keyword);
 						
 						break;
 					}
@@ -63,7 +70,7 @@ public class PostBotCrawlerCenter
 			case "TVBS":
 			{
 				TvbsArticleCrawler crawler = new TvbsArticleCrawler();
-				ArrayList<News> article_Tvbs = crawler.search(keyWord);
+				ArrayList<News> article_Tvbs = crawler.search(keyword);
 				
 				for(News s: article_Tvbs)
 				{
@@ -74,6 +81,7 @@ public class PostBotCrawlerCenter
 						crawlerNews.setWebUrl(s.getWebUrl());
 						crawlerNews.setArticle(s.getArticle());
 						crawlerNews.setAllPhotoUrl(s.getPhotoUrl());
+						crawlerNews.setKeyword(keyword);
 						
 						break;
 					}
@@ -125,5 +133,45 @@ public class PostBotCrawlerCenter
 			}
 		}
 		return true;
+	}
+	
+	public PostBot getPostBot(DataSource datasource, String botID)
+	{
+		PostBot postBot = new PostBot();
+		
+		Connection con = null;
+		try
+		{
+			con = datasource.getConnection();
+			Statement st = con.createStatement();
+			ResultSet rs = st.executeQuery("select * from postbot where botID = '" + botID + "' ");
+
+			while (rs.next())
+			{
+				postBot.setKeyword(rs.getString("keyword"));
+				postBot.setWebsite(rs.getString("website"));
+				postBot.setFrequency(rs.getString("frequency"));
+			}
+			rs.close();// 關閉rs
+
+			st.close();// 關閉st
+		} catch (SQLException e)
+		{
+			System.out.println("PostBotCrawlerCenter getPostBot Exception :" + e.toString());
+			e.printStackTrace();
+		} finally
+		{
+			if (con != null)
+			{
+				try
+				{
+					con.close();
+				} catch (Exception ignore)
+				{
+				}
+			}
+		}
+		
+		return postBot;
 	}
 }

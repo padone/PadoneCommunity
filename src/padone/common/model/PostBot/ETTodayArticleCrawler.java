@@ -29,14 +29,14 @@ public class ETTodayArticleCrawler extends Crawler
 	{
 		try
         {
-            @SuppressWarnings("deprecation")
-			Document doc = Jsoup.connect(url)
+            Document doc = Jsoup.connect(url)
                                 .userAgent("\"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36")
                                 .validateTLSCertificates(false)
                                 .get();
             Elements list = doc.getElementsByClass("box_2");
 
-            int listLength = list.size();
+            //int listLength = list.size();
+            int listLength = 5;
 
           	for(int i = 0; i < listLength; i++)
             {
@@ -56,7 +56,6 @@ public class ETTodayArticleCrawler extends Crawler
 		}
 	}
 	
-	@SuppressWarnings("deprecation")
 	public void getInside(String url)
 	{
 		try

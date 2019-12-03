@@ -4,6 +4,7 @@ import java.util.ArrayList;
 
 public class News
 {
+	private String keyword = null;
 	private String webUrl = null;
 	private String title = null;
 	private String sendTime = null;
@@ -15,6 +16,11 @@ public class News
 
 	}
 
+	public void setKeyword(String keyword)
+	{
+		this.keyword = keyword;
+	}
+	
 	public void setWebUrl(String webUrl)
 	{
 		this.webUrl = webUrl;
@@ -43,6 +49,11 @@ public class News
 	public void setAllPhotoUrl(ArrayList<String> photoUrl)
 	{
 		this.photoUrl = photoUrl;
+	}
+
+	public String getKeyword()
+	{
+		return keyword;
 	}
 
 	public String getWebUrl()
@@ -76,13 +87,14 @@ public class News
 		
 		return photoUrlArray;
 	}
-
+	
 	public String toString()
 	{
 		String output = "文章標題: " + title + "\r\n"
 				+ "文章網址: " + webUrl + "\r\n"
 				+ "發布時間: " + sendTime + "\r\n"
-				+ "文章內容: " + article + "\r\n";
+				+ "文章內容: " + article + "\r\n"
+				+ "關鍵字" + keyword + "\r\n";
 
 		int count = 1;
 
