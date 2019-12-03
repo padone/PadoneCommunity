@@ -26,7 +26,7 @@ public class PostBotCreateServlet extends HttpServlet
 {
 	private static final long serialVersionUID = 1L;
 
-	public PostBotCreateServlet()
+	public PostBotCreateServlet() 
 	{
 		super();
 	}
@@ -67,16 +67,14 @@ public class PostBotCreateServlet extends HttpServlet
 		ArticleHandler handler = new ArticleHandler();
 		Boolean newArticle = false;
 		/*******************************************************************************************/
-		String keyWord = request.getParameter("keyword");
-		String website = request.getParameter("website");
-		String frequency = request.getParameter("frequency");
+		String botID = request.getParameter("botID");
 		/*******************************************************************************************/
 		News crawlerNews = new News();
 		/*******************************************************************************************/
 
-		crawlerNews = crawler.setCrawler(datasource, keyWord, website, frequency);
+		crawlerNews = crawler.setCrawler(datasource, botID);
 		newArticle = handler.newArticle(datasource, crawlerNews.getTitle(), "6684", "其他或健康運動資訊", crawlerNews.getArticle(),
-				crawlerNews.getArrayPhotoUrl(), keyWord, "無");
+				crawlerNews.getArrayPhotoUrl(), crawlerNews.getKeyword(), "無");
 
 		System.out.println("在servlet中的crawlerNews: " + crawlerNews);
 		System.out.println("在servlet中的newArticle: " + newArticle);
