@@ -81,11 +81,25 @@ public class News
 		return this.photoUrl;
 	}
 	
-	public String[] getArrayPhotoUrl()
+	public String getArrayPhotoUrl()
 	{
-		String[] photoUrlArray = this.photoUrl.toArray(new String[this.photoUrl.size()]);
+		int count = 0;
 		
-		return photoUrlArray;
+		String photoUrlList = "[\"";
+
+		for (String s : photoUrl)
+		{
+			if(count == 0)
+				photoUrlList += s + "\"";
+			else
+				photoUrlList += ",\"" + s + "\"";
+			
+			count++;
+		};
+		
+		photoUrlList += "]";
+		
+		return photoUrlList;
 	}
 	
 	public String toString()
