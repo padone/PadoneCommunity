@@ -1,26 +1,28 @@
 package padone.common.model.PostBot;
 
 import java.io.IOException;
+import java.util.ArrayList;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class EbcNewsCrawler extends Crawler
+public class EbcArticleCrawler extends Crawler
 {
-	public EbcNewsCrawler()
+	public EbcArticleCrawler()
 	{
 	}
 	
-	public Article search(String keyWord)
+	public ArrayList<News> search(String keyWord)
 	{
 		this.setKeyWord(keyWord);
-		String url = new String("https://news.ebc.net.tw/Search/Result?type=keyword&value=" + keyWord);
+		clearArticleList();
+		String url = new String("https://news.ebc.net.tw/Search/Result?type=keyword&value=" + getKeyWord());
 		
 		getItem(url);
 		
-		return getArticle();
+		return getArticleList();
 	}
 
 	public void getItem(String url)
@@ -30,19 +32,23 @@ public class EbcNewsCrawler extends Crawler
             Document doc = Jsoup.connect(url)
                                 .userAgent("\"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36")
                                 .get();
-            Elements list = doc.getElementsByClass("style1 white-box").select("a > div > div > span");
-            Elements web = doc.getElementsByClass("style1 white-box").select("div > a");
-            Elements time = doc.getElementsByClass("small-gray-text");
+			
+            Elements list = doc.getElementsByClass("style1 white-box");
+            
+            int listLength = list.size();
+            //int listLength = 1;
 
-            setArticle(new Article());
-            getArticle().setTitle(list.get(0).text());
-            getArticle().setWebUrl(web.get(0).attr("abs:href"));
-            if (time.size() > 0)
-            	getArticle().setSendTime(time.get(0).text());
-            else
-            	getArticle().setSendTime("");
-            getInside(web.get(0).attr("abs:href"));
-
+          	for(int i = 0; i < listLength; i++)
+            {
+	            setArticle(new News());
+	            getArticle().setTitle(list.get(i).select("a > div > div > span").get(0).text());
+	            getArticle().setWebUrl(list.get(i).select("a").get(0).attr("abs:href"));
+	            getArticle().setSendTime(list.get(i).select("a > div > span").get(0).text());
+	            
+	            getInside(getArticle().getWebUrl());
+	            //System.out.println(getArticle().toString());
+	            getArticleList().add(getArticle());
+            }
         }
 		catch (IOException e)
 		{
@@ -64,23 +70,20 @@ public class EbcNewsCrawler extends Crawler
 			String article = "";
 			for(int i = 0; i < length; i++)
 			{
-				if(info.get(i).text().startsWith("▲") || info.get(i).text().startsWith("▼") || info.get(i).text().startsWith("★") || info.get(i).text().startsWith("【") || info.get(i).text().startsWith("\n"));
+				if(info.get(i).text().startsWith("▲") || info.get(i).text().startsWith("▼") || info.get(i).text().startsWith("★") || info.get(i).text().startsWith("【") || info.get(i).text().startsWith("\n") || info.get(i).text().startsWith("（") || info.get(i).text().startsWith("●"));
 				else
 					article += info.get(i).text() + "\n";
 			}
 			
-			String[] articleSplit = article.split("往下看更多新聞");
-			getArticle().setArticle(articleSplit[0]);
+			getArticle().setArticle(article);
 			
 			Elements headImage = doc.getElementsByClass("news-cover").select("img");
-			getArticle().setHeadPhotoUrl(headImage.attr("src"));
-			getArticle().setHeadPhotoDescription(headImage.attr("alt"));
+			getArticle().setPhotoUrl(headImage.attr("src"));
 			
 			Elements img = info.select("img");
 			for(Element image: img)
 			{
 				getArticle().setPhotoUrl(image.attr("src"));
-				getArticle().setPhotoDescription(image.attr("alt"));
 			}
 		}
 		catch (IOException e)

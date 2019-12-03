@@ -1,11 +1,11 @@
-package padone.common.controller.User;
+package padone.common.controller.PostBot;
 
-import java.io.*;
+import java.io.IOException;
+import java.io.PrintWriter;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.HashMap;
 
 import javax.servlet.ServletException;
 import javax.servlet.annotation.WebServlet;
@@ -14,23 +14,26 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 import org.apache.tomcat.jdbc.pool.DataSource;
+
 import com.google.gson.Gson;
 
-import padone.common.model.User.RelationshipServer;
+import padone.common.model.Article.ArticleHandler;
+import padone.common.model.PostBot.News;
+import padone.common.model.PostBot.PostBotCrawlerCenter;
 
-@SuppressWarnings("serial")
-@WebServlet("/DoctorRelationshipServlet")
-
-public class DoctorRelationshipServlet extends HttpServlet
+@WebServlet("/PostBotCreateServlet")
+public class PostBotCreateServlet extends HttpServlet
 {
-	public DoctorRelationshipServlet()
+	private static final long serialVersionUID = 1L;
+
+	public PostBotCreateServlet()
 	{
 		super();
 	}
 
 	protected void doGet(HttpServletRequest request, HttpServletResponse response) throws ServletException, IOException
 	{
-		response.getWriter().write("doctor relationship testing\n");
+		response.getWriter().write("switch identity testing\n");
 
 		DataSource dataSource = (DataSource) getServletContext().getAttribute("db");
 		try
@@ -59,22 +62,26 @@ public class DoctorRelationshipServlet extends HttpServlet
 		response.setContentType("text/html;charset=UTF-8");
 		response.setHeader("Access-Control-Allow-Origin", "*");
 		Gson gson = new Gson();
-		// 連接資料庫
 		DataSource datasource = (DataSource) getServletContext().getAttribute("db");
-		RelationshipServer relationship = new RelationshipServer();
+		PostBotCrawlerCenter crawler = new PostBotCrawlerCenter();
+		ArticleHandler handler = new ArticleHandler();
+		Boolean newArticle = false;
 		/*******************************************************************************************/
-		String doctorID = request.getParameter("doctorID");
-		String secretaryID = request.getParameter("secretaryID");
-		String identity = "醫生";
+		String keyWord = request.getParameter("keyword");
+		String website = request.getParameter("website");
+		String frequency = request.getParameter("frequency");
 		/*******************************************************************************************/
-		@SuppressWarnings("rawtypes")
-		HashMap relationshipSet = new HashMap();
+		News crawlerNews = new News();
 		/*******************************************************************************************/
 
-		relationshipSet = relationship.setRelationship(datasource, doctorID, secretaryID, identity);
+		crawlerNews = crawler.setCrawler(datasource, keyWord, website, frequency);
+		newArticle = handler.newArticle(datasource, crawlerNews.getTitle(), "6684", "其他或健康運動資訊", crawlerNews.getArticle(),
+				crawlerNews.getArrayPhotoUrl(), keyWord, "無");
 
-		System.out.println("在servlet中的relationshipSet: " + relationshipSet);
+		System.out.println("在servlet中的crawlerNews: " + crawlerNews);
+		System.out.println("在servlet中的newArticle: " + newArticle);
 
-		response.getWriter().write(gson.toJson(relationshipSet));
+		response.getWriter().write(gson.toJson(newArticle));
+		//response.getWriter().write(gson.toJson(crawlerNews));
 	}
 }

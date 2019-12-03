@@ -13,7 +13,7 @@ public class SwitchIdentityServer
 		HashMap switchID = new HashMap();
 		Connection con = null;
 		String result = new String();
-		String reason = new String(); 
+		String reason = new String();
 
 		try
 		{
@@ -32,7 +32,7 @@ public class SwitchIdentityServer
 					}
 				case "家屬":
 					{
-						ResultSet rs = st.executeQuery("select userID from patientrelationship where userID = '" + userID + "' ");
+						ResultSet rs = st.executeQuery("select familyID from patientrelationship where familyID = '" + userID + "' ");
 						int check = 0;
 						while(rs.next())
 						{
@@ -45,25 +45,6 @@ public class SwitchIdentityServer
 						{
 							result = "失敗";
 							reason = "沒有找到家屬關係";
-						}
-						rs.close();// 關閉rs
-						break;
-					}
-				case "助理":
-					{
-						ResultSet rs = st.executeQuery("select userID from doctorrelationship where userID = '" + userID + "' ");
-						int check = 0;
-						while(rs.next())
-						{
-							check = 1;
-							result = "成功";
-							reason = "成功找到助理身分";
-						}
-						
-						if(check == 0)
-						{
-							result = "失敗";
-							reason = "沒有找到助理關係";
 						}
 						rs.close();// 關閉rs
 						break;

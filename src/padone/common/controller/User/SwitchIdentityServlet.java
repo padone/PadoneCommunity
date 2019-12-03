@@ -24,7 +24,7 @@ import padone.common.model.User.SwitchIdentityServer;;
 public class SwitchIdentityServlet extends HttpServlet
 {
 	public SwitchIdentityServlet()
-	{ 
+	{
 		super();
 	}
 

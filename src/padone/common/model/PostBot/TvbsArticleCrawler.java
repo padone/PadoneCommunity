@@ -5,23 +5,23 @@ import java.util.ArrayList;
 
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
-import org.jsoup.nodes.Element;
 import org.jsoup.select.Elements;
 
-public class TvbsNewsCrawler extends Crawler
+public class TvbsArticleCrawler extends Crawler
 { 
-	public TvbsNewsCrawler()
+	public TvbsArticleCrawler()
 	{
 	}
 	
-	public Article search(String keyWord)
+	public ArrayList<News> search(String keyWord)
 	{
-		this.setKeyWord(keyWord);
-		String url = new String("https://news.tvbs.com.tw/news/searchresult/news/1/?search_text=" + keyWord);
+		setKeyWord(keyWord);
+		clearArticleList();
+		String url = new String("https://news.tvbs.com.tw/news/searchresult/news/?search_text=" + getKeyWord());
 
 		getItem(url);
 		
-		return getArticle();
+		return getArticleList();
 	}
 
 	public void getItem(String url)
@@ -31,19 +31,20 @@ public class TvbsNewsCrawler extends Crawler
             Document doc = Jsoup.connect(url)
                                 .userAgent("\"Mozilla/5.0 (Windows NT 6.1) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/41.0.2228.0 Safari/537.36")
                                 .get();
-            Elements list = doc.getElementsByClass("search_list_txt");
-            Elements web = doc.getElementsByClass("search_list_box");
-            Elements time = doc.getElementsByClass("icon_time");
+            Elements list = doc.getElementsByClass("search_list_div").select("ul > li");
+            
+            int listLength = list.size();
 
-            int length = list.size();
-
-            for(int i = 0; i < length; i++)
+          	for(int i = 0; i < listLength; i++)
             {
-                setArticle(new Article());
-                getArticle().setTitle(list.get(i).text());
-                getArticle().setWebUrl(web.get(i).attr("abs:href"));
-                getInside(web.get(i).attr("abs:href"));
-                getArticle().setSendTime(time.get(i).text());
+	            setArticle(new News());
+	            getArticle().setTitle(list.get(i).getElementsByClass("search_list_txt").get(0).text());
+	            getArticle().setWebUrl(list.get(i).select("a").get(0).attr("abs:href"));
+	            getArticle().setSendTime(list.get(i).getElementsByClass("icon_time").get(0).text());
+	            
+	            getInside(getArticle().getWebUrl());
+	            //System.out.println(getArticle().toString());
+	            getArticleList().add(getArticle());
             }
         }
 		catch (IOException e)
@@ -66,8 +67,8 @@ public class TvbsNewsCrawler extends Crawler
 			String[] articleSplit = article.split("最HOT話題在這");
 			getArticle().setArticle(articleSplit[0]);
 			
-			Elements img = doc.getElementsByClass("img margin_b20").select("div > img");	
-			getArticle().setHeadPhotoUrl(img.attr("src"));
+			Elements img = doc.getElementsByClass("img margin_b20").select("img");	
+			getArticle().setPhotoUrl(img.attr("src"));
 		}
 		catch (IOException e)
 		{
