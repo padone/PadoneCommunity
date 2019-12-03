@@ -5,6 +5,11 @@ public class FamilysPatient
 	private String patientID = null;
 	private String patientName = null;
 	
+	public FamilysPatient()
+	{
+
+	}
+	
 	public void setPatientID(String patientID)
 	{
 		this.patientID = patientID;
