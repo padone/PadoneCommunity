@@ -20,7 +20,8 @@ public class ArticleListServer {
         try{
             conn = datasource.getConnection();
             stmt = conn.createStatement();
-            String sql = "SELECT articleID as aId, title, p.name as author, authorID, DATE(posttime) as post_time, department as category, description as content, hospital, image FROM article as a INNER JOIN patient as p ON a.authorID=p.userID ORDER BY posttime DESC";
+            //String sql = "SELECT articleID as aId, title, p.name as author, authorID, DATE(posttime) as post_time, department as category, description as content, hospital, image FROM article as a INNER JOIN patient as p ON a.authorID=p.userID ORDER BY posttime DESC";
+            String sql = "SELECT articleID as aId, title, p.name as author, authorID, DATE(posttime) as post_time, a.department as category, description as content, a.hospital, image FROM article as a INNER JOIN patient as p ON a.authorID=p.userID UNION SELECT articleID as aId, title, d.name as author, authorID, DATE(posttime) as post_time, a.department as category, description as content, a.hospital, image FROM article as a INNER JOIN doctor as d ON a.authorID=d.doctorID ORDER BY post_time DESC";
             ResultSet rs = stmt.executeQuery(sql);
 
             while(rs.next()){
