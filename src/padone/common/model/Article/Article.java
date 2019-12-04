@@ -17,6 +17,8 @@ public class Article {
 	private int great = 0;
 	private boolean ifEvaluted = false;
 	private boolean ifTracked = false;
+	private boolean ifSuggestedByFamily = false;
+	private boolean ifSuggestedByDoctor = false;
   
 	private String hospital;
 	public void setArticleID(String articleID) {
@@ -59,6 +61,12 @@ public class Article {
 	}
 	public void setIfTracked(boolean ifTracked){
 		this.ifTracked = ifTracked;
+	}
+	public void setIfSuggestedByFamily(boolean ifSuggestedByFamily) {
+		this.ifSuggestedByFamily = ifSuggestedByFamily;
+	}
+	public void setIfSuggestedByDoctor(boolean ifSuggestedByDoctor) {
+		this.ifSuggestedByDoctor = ifSuggestedByDoctor;
 	}
 
 	public String getArticleID() {

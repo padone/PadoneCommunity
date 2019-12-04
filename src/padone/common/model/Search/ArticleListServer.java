@@ -230,6 +230,7 @@ public class ArticleListServer {
         Statement stmt = null;
         PreparedStatement gStmt = null;
         ResultSet grs = null, trs = null;
+        ResultSet frs = null, drs = null;
         Article temp = new Article();
         String sql;
 
@@ -249,6 +250,15 @@ public class ArticleListServer {
             gStmt.setString(1, articleID);
             gStmt.setString(2, userID);
             trs = gStmt.executeQuery();
+            gStmt = conn.prepareStatement("SELECT COUNT(DISTINCT articleID) as num FROM suggestArticle WHERE articleID = ? AND userID = ?");
+            gStmt.setString(1, articleID);
+            gStmt.setString(2, userID);
+            frs = gStmt.executeQuery();
+
+            gStmt = conn.prepareStatement("SELECT COUNT(DISTINCT articleID) as num FROM recommend WHERE articleID = ? AND userID = ?");
+            gStmt.setString(1, articleID);
+            gStmt.setString(2, userID);
+            drs = gStmt.executeQuery();
 
             if(grs.next()){
                 if (grs.getInt("num") > 0) temp.setIfEvaluted(true);
@@ -257,6 +267,14 @@ public class ArticleListServer {
             if(trs.next()){
                 if (trs.getInt("num") > 0) temp.setIfTracked(true);
                 else temp.setIfTracked(false);
+            }
+            if(frs.next()){
+                if (frs.getInt("num") > 0) temp.setIfSuggestedByFamily(true);
+                else temp.setIfSuggestedByFamily(false);
+            }
+            if(drs.next()){
+                if (drs.getInt("num") > 0) temp.setIfSuggestedByDoctor(true);
+                else temp.setIfSuggestedByDoctor(false);
             }
             if(rs.next()){
                 temp.setArticleID(articleID);
@@ -274,6 +292,8 @@ public class ArticleListServer {
 
             grs.close();
             trs.close();
+            frs.close();
+            drs.close();
         }catch (SQLException e){
             e.printStackTrace();
         }finally {

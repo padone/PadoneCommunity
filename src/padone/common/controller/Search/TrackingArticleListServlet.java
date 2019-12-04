@@ -26,6 +26,10 @@ public class TrackingArticleListServlet extends HttpServlet {
         String userID = req.getParameter("id");
         String tableName = req.getParameter("tableName");
 
-        resp.getWriter().print(gson.toJson(TrackingTargetServer.getTrackingArticle(dataSource, userID, tableName)));
+        //resp.getWriter().print(gson.toJson(TrackingTargetServer.getTrackingArticle(dataSource, userID, tableName)));
+        if(tableName.contains("track"))
+            resp.getWriter().print(gson.toJson(TrackingTargetServer.getTrackingArticle(dataSource, userID, tableName)));
+        else if(tableName.contains("suggest"))
+            resp.getWriter().print(gson.toJson(TrackingTargetServer.getSuggestArticleFromOther(dataSource, userID)));
     }
 }
