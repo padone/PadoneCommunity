@@ -30,6 +30,7 @@ public class PostBotCrawlerCenter
 				{
 					if(isNotExistingTitle(s.getTitle(), datasource))
 					{
+						crawlerNews = new News();
 						crawlerNews.setTitle(s.getTitle());
 						crawlerNews.setSendTime(s.getSendTime());
 						crawlerNews.setWebUrl(s.getWebUrl());
@@ -53,6 +54,7 @@ public class PostBotCrawlerCenter
 				{
 					if(isNotExistingTitle(s.getTitle(), datasource))
 					{
+						crawlerNews = new News();
 						crawlerNews.setTitle(s.getTitle());
 						crawlerNews.setSendTime(s.getSendTime());
 						crawlerNews.setWebUrl(s.getWebUrl());
@@ -76,6 +78,7 @@ public class PostBotCrawlerCenter
 				{
 					if(isNotExistingTitle(s.getTitle(), datasource))
 					{
+						crawlerNews = new News();
 						crawlerNews.setTitle(s.getTitle());
 						crawlerNews.setSendTime(s.getSendTime());
 						crawlerNews.setWebUrl(s.getWebUrl());
