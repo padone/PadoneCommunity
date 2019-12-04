@@ -5,7 +5,7 @@ import java.util.ArrayList;
 public class News
 {
 	private String keyword = null;
-	private String webUrl = null;
+	private String webUrl = null; 
 	private String title = null;
 	private String sendTime = null;
 	private String article = null;
