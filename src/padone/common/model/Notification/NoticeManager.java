@@ -12,6 +12,7 @@ import java.sql.SQLException;
 import java.util.*;
 import java.util.concurrent.CopyOnWriteArraySet;
 import java.util.concurrent.locks.ReentrantLock;
+import com.google.gson.Gson;
 
 final class NoticeManager {
     private static final java.util.concurrent.locks.Lock Lock = new ReentrantLock();
@@ -155,12 +156,14 @@ final class NoticeManager {
             Lock.unlock();
         }
         // TODO : checkout table LOCK issue when multiple user are writing notification
-        // TODO: make sure if really need to lock
     }
 
     public static void checkoutNotice(final Session session, DataSource dataSource){
-        ArrayList<Message> list;
+        ArrayList<Message> list = new ArrayList<>();
         Message msg;
+        Date date = new Date();
+        Object time = new java.sql.Timestamp(date.getTime());
+        Gson gson = new Gson();
 
         try{
             Connection conn = dataSource.getConnection();
@@ -169,15 +172,22 @@ final class NoticeManager {
             pstmt.setBoolean(2, false);
             ResultSet rs = pstmt.executeQuery();
 
-            if(rs.next()){
-                SESSIONS.stream().filter(s -> s.equals(session))
-                        .forEach(s -> {
-                            try{
-                                s.getBasicRemote().sendObject(new Message(rs.getInt("noticeID"), rs.getString("recipientID"), rs.getString("request"), rs.getString("content"), rs.getString("time"), rs.getBoolean("checked"), rs.getString("senderID")));
-                            }catch (SQLException | EncodeException | IOException e){
-                                e.printStackTrace();
-                            }
-                        });
+            // add all message in one message structure
+            while(rs.next()){
+                msg = new Message(rs.getInt("noticeID"), session.getUserProperties().get(SocketConstant.USER_ID).toString(), rs.getString("request"), rs.getString("content"), rs.getString("time"), false, rs.getString("senderID"));
+                list.add(msg);
+            }
+            msg = new Message(0, session.getUserProperties().get(SocketConstant.USER_ID).toString(), "unread_message", gson.toJson(list), time.toString(), false,"system");
+
+            for (Session s : SESSIONS) {
+                if (s.equals(session)) {
+                    try {
+                        //s.getBasicRemote().sendObject(new Message(rs.getInt("noticeID"), rs.getString("recipientID"), rs.getString("request"), rs.getString("content"), rs.getString("time"), rs.getBoolean("checked"), rs.getString("senderID")));
+                        s.getBasicRemote().sendObject(msg);
+                    } catch (EncodeException | IOException e) {
+                        e.printStackTrace();
+                    }
+                }
             }
             conn.close();
             pstmt.close();
