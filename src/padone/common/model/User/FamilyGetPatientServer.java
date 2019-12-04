@@ -16,7 +16,7 @@ public class FamilyGetPatientServer
 		Connection con = null;
 		PreparedStatement pstmt = null;
 		ResultSet rs = null;
-		FamilysPatient user = new FamilysPatient();
+		FamilysPatient user; 
 
 		try
 		{
@@ -29,16 +29,7 @@ public class FamilyGetPatientServer
 
 			while (rs.next())
 			{
-				/*
-				String patientID = rs.getString("patientID");
-				ResultSet rs2 = st.executeQuery("select name FROM patient WHERE userID = '" + patientID + "'");
-				String patientName = null;
-				
-				if(rs2.next())
-				{
-					patientName = rs2.getString("name");
-				}
-				*/
+				user = new FamilysPatient();
 				user.setPatientID(rs.getString("id"));
 				user.setPatientName(rs.getString("Name"));
 
