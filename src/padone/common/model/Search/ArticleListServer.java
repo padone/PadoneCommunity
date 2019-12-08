@@ -252,9 +252,10 @@ public class ArticleListServer {
             gStmt.setString(2, userID);
             trs = gStmt.executeQuery();
 
-            gStmt = conn.prepareStatement("SELECT COUNT(DISTINCT articleID) as num FROM suggestArticle INNER JOIN (SELECT familyID FROM patientrelationship WHERE patientID = ?) as p ON userID = p.familyID and articleID = ?");
-            gStmt.setString(2, articleID);
-            gStmt.setString(1, userID);
+            //gStmt = conn.prepareStatement("SELECT COUNT(DISTINCT articleID) as num FROM suggestArticle INNER JOIN (SELECT familyID FROM patientrelationship WHERE patientID = ?) as p ON userID = p.familyID and articleID = ?");
+            gStmt = conn.prepareStatement("SELECT COUNT(DISTINCT articleID) as num FROM suggestArticle WHERE articleID = ? AND userID = ?");
+            gStmt.setString(1, articleID);
+            gStmt.setString(2, userID);
             frs = gStmt.executeQuery();
 
             gStmt = conn.prepareStatement("SELECT COUNT(DISTINCT articleID) as num FROM recommend WHERE articleID = ? AND userID = ?");

@@ -30,6 +30,9 @@
     <listener>
         <listener-class>padone.common.model.Notification.RequestListener</listener-class>
     </listener>
+    <listener>
+        <listener-class>padone.common.model.Test.BackGroundTest</listener-class>
+    </listener>
 
     <context-param>
         <param-name>url</param-name>
@@ -46,5 +49,10 @@
     <context-param>
         <param-name>password</param-name>
         <param-value>bbdp2</param-value>
+    </context-param>
+
+    <context-param>
+        <param-name>rate</param-name>
+        <param-value>8763</param-value>
     </context-param>
 </web-app>
