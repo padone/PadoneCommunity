@@ -122,7 +122,7 @@ public class TrackingTargetServer {
             pstmt.setString(1, userID);
             pstmt.setString(2, userID);
             rs = pstmt.executeQuery();
-            if(rs.next()){
+            while(rs.next()){
                 temp = new ArticleListServer.LightArticle(rs.getString("articleID"), rs.getString("authorName"), rs.getString("title"), rs.getString("description"), rs.getString("posttime"));
                 list.add(temp);
             }
