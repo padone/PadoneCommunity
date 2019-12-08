@@ -21,8 +21,6 @@ public class FamilyGetPatientServer
 		try
 		{
 			con = datasource.getConnection();
-			//Statement st = con.createStatement();
-			//rs = st.executeQuery("select patientID FROM patientrelationship WHERE familyID = '" + userID + "'");
 			pstmt = con.prepareStatement("SELECT ps.patientID as id, p.name as Name FROM patientrelationship as ps INNER JOIN patient as p ON p.userID = ps.patientID and ps.familyID = ?");
 			pstmt.setString(1, familyID);
 			rs = pstmt.executeQuery();
@@ -39,7 +37,7 @@ public class FamilyGetPatientServer
 			if(pstmt != null) pstmt.close();
 		} catch (SQLException e)
 		{
-			System.out.println("ProfileSettingServer isExistingUser Exception :" + e.toString());
+			System.out.println("FamilyGetPatientServer getPatient Exception :" + e.toString());
 			e.printStackTrace();
 		} finally
 		{
