@@ -112,7 +112,8 @@ public final class NoticeServer {
                 NoticeManager.send(session, new Message(200, session.getUserProperties().get(SocketConstant.USER_ID).toString(), "onMessage testing", name, "now", true, null));
                 break;
             default:
-                NoticeManager.send(session, new Message(100, session.getUserProperties().get(SocketConstant.USER_ID).toString(), "switch failed", name, "now", true, null));
+                //NoticeManager.send(session, new Message(100, session.getUserProperties().get(SocketConstant.USER_ID).toString(), "switch failed", name, "now", true, null));
+                NoticeManager.send(session, new Message(404, session.getUserProperties().get(SocketConstant.USER_ID).toString(), "unavailable request", "unknown request pattern", "now", true, "system"));
                 break;
         }
         // TODO: add user send notice to another user

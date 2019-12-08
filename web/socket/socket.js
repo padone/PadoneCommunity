@@ -14,8 +14,8 @@ function connectSocket(id) {
 
     console.log(id);
     userID = id;
-    websocket = new WebSocket('ws://localhost:8080/PadoneCommunity/notice/' + userID);
-    //websocket = new WebSocket('ws://140.121.196.23:3390/PadoneCommunity/notice' + userID);
+    //websocket = new WebSocket('ws://localhost:8080/PadoneCommunity/notice/' + userID);
+    websocket = new WebSocket('ws://140.121.196.23:3390/PadoneCommunity/notice/' + userID);
 
     websocket.onopen = function (ev) {
         console.log("socket connected");
@@ -26,7 +26,7 @@ function connectSocket(id) {
         // check message request type
         // single message, multiple message, notice number count ?
         var msg = JSON.parse(ev.data);
-        console.table(msg);
+        //console.table(msg);
         parseMessage(msg);
         // handle message posting
         // return json value
