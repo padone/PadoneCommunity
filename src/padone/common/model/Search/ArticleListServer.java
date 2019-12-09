@@ -237,11 +237,20 @@ public class ArticleListServer {
         try{
             conn = dataSource.getConnection();
             stmt = conn.createStatement();
+            /*
             if(amiadoctor(userID))
-                sql = "SELECT n.title, n.name as author, n.authorID, n.department, DATE(n.posttime) as post_time, n.description as content, n.hospital, n.image FROM (SELECT * FROM article as a INNER JOIN doctor as d ON a.authorID=d.doctorID) as n WHERE n.articleID = '" + articleID + "'";
+                //sql = "SELECT n.title, n.name as author, n.authorID, n.department, DATE(n.posttime) as post_time, n.description as content, n.hospital, n.image FROM (SELECT * FROM article as a INNER JOIN doctor as d ON a.authorID=d.doctorID) as n WHERE n.articleID = '" + articleID + "'";
+                sql = "SELECT a.*, d.name as author FROM article as a INNER JOIN doctor as d ON a.authorID = d.doctorID and a.articleID = ?";
             else
-                sql = "SELECT n.title, n.name as author, n.authorID, n.department, DATE(n.posttime) as post_time, n.description as content, n.hospital, n.image FROM (SELECT * FROM article as a INNER JOIN patient as p ON a.authorID=p.userID) as n WHERE n.articleID = '" + articleID + "'";
-            ResultSet rs = stmt.executeQuery(sql);
+                //sql = "SELECT n.title, n.name as author, n.authorID, n.department, DATE(n.posttime) as post_time, n.description as content, n.hospital, n.image FROM (SELECT * FROM article as a INNER JOIN patient as p ON a.authorID=p.userID) as n WHERE n.articleID = '" + articleID + "'";
+                sql = "SELECT a.*, p.name as author FROM article as a INNER JOIN patient as p ON a.authorID = p.userID and a.articleID = ?";
+            */
+            gStmt = conn.prepareStatement("SELECT a.*, d.name as author FROM article as a INNER JOIN doctor as d ON a.authorID = d.doctorID and a.articleID = ? UNION SELECT a.*, p.name as author FROM article as a INNER JOIN patient as p ON a.authorID = p.userID and a.articleID = ?");
+            gStmt.setString(1, articleID);
+            gStmt.setString(2, articleID);
+            //ResultSet rs = stmt.executeQuery(sql);
+            ResultSet rs = gStmt.executeQuery();
+
             gStmt = conn.prepareStatement("SELECT COUNT(DISTINCT userID) as num FROM great WHERE articleID = ? AND userID = ?");
             gStmt.setString(1, articleID);
             gStmt.setString(2, userID);
@@ -285,8 +294,8 @@ public class ArticleListServer {
                 temp.setAuthor(rs.getString("author"));
                 temp.setAuthorID(rs.getString("authorID"));
                 temp.setDepartment(rs.getString("department"));
-                temp.setPostTime(rs.getString("post_time"));
-                temp.setDescription(rs.getString("content"));
+                temp.setPostTime(rs.getString("posttime"));
+                temp.setDescription(rs.getString("description"));
                 temp.setHospital(rs.getString("hospital"));
                 temp.setImage(rs.getInt("image"));
                 resultList.add(temp);
