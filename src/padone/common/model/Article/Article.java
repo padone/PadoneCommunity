@@ -81,6 +81,10 @@ public class Article {
 		return great;
 	}
 
+	public ArrayList<String> getTag(){
+		return this.tag;
+	}
+
 	public Article() {
 		
 	}

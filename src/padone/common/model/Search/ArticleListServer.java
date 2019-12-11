@@ -562,18 +562,22 @@ public class ArticleListServer {
         int length = list.size();
         Connection conn = null;
         Statement stmt = null;
+        PreparedStatement pstmt = null;
         String cmd;
         ResultSet rs;
         Article temp;
-        ArrayList<String> tag;
+        ArrayList<String> tag = new ArrayList<>();
 
+        /*
         for(int i=0; i< length; i++){
+            tag.clear();
+            System.out.println("tag setting start, size = " + tag.size());
             temp = list.get(i);
-            tag = new ArrayList<>();
             try{
                 conn = dataSource.getConnection();
                 stmt = conn.createStatement();
                 cmd = "SELECT tagName as t FROM tag WHERE articleID = '" + temp.getArticleID() + "'";
+                System.out.println(temp.getArticleID());
                 rs = stmt.executeQuery(cmd);
 
                 while(rs.next()){ tag.add(rs.getString("t")); }
@@ -592,8 +596,33 @@ public class ArticleListServer {
                     }catch (SQLException ignored){}
                 }
             }
+            System.out.println(tag);
             temp.setTag(tag);
-            list.set(i, temp);
+            System.out.println(temp.getTag());
+            //list.set(i, temp);
+        }
+        */
+        try{
+            conn = dataSource.getConnection();
+            for(Article element : list){
+                tag = new ArrayList<>();
+                pstmt = conn.prepareStatement("SELECT tagName as t FROM tag WHERE articleID = ?");
+                pstmt.setString(1, element.getArticleID());
+                rs = pstmt.executeQuery();
+                while (rs.next()){
+                    tag.add(rs.getString("t"));
+                }
+                element.setTag(tag);
+                rs.close();
+            }
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally {
+            if(conn != null){
+                try{ conn.close(); }catch (Exception ignored){}
+            }
+            if(pstmt != null)
+                try{ pstmt.close(); }catch (Exception ignored){}
         }
     }
 

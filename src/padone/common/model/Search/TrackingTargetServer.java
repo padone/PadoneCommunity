@@ -166,4 +166,36 @@ public class TrackingTargetServer {
         }
         return  list;
     }
+
+    public static ArrayList<ArticleListServer.LightArticle> getMyRecommendArticle(DataSource dataSource, String doctorID){
+        ArrayList<ArticleListServer.LightArticle> list = new ArrayList<>();
+        ArticleListServer.LightArticle temp;
+        Connection conn = null;
+        PreparedStatement pstmt = null;
+        ResultSet rs = null;
+
+        try{
+            conn = dataSource.getConnection();
+            pstmt = conn.prepareStatement("SELECT a.*, p.name as authorName FROM article as a INNER JOIN (SELECT DISTINCT articleID FROM recommend WHERE userID = ?) as t ON a.articleID = t.articleID INNER JOIN patient as p ON p.userID = a.authorID UNION SELECT a.*, d.name as authorName FROM article as a INNER JOIN (SELECT DISTINCT articleID FROM recommend WHERE userID = ?) as t ON a.articleID = t.articleID INNER JOIN doctor as d ON d.doctorID = a.authorID");
+            pstmt.setString(1, doctorID);
+            pstmt.setString(2, doctorID);
+            rs = pstmt.executeQuery();
+
+            while(rs.next()){
+                temp = new ArticleListServer.LightArticle(rs.getString("articleID"), rs.getString("authorName"), rs.getString("title"), rs.getString("description"), rs.getString("posttime"));
+                list.add(temp);
+            }
+            rs.close();
+        }catch (SQLException e){
+            e.printStackTrace();
+        }finally {
+            if(conn != null){
+                try{ conn.close(); }catch (SQLException ignored){}
+            }
+            if(pstmt != null){
+                try{ pstmt.close(); }catch (SQLException ignored){}
+            }
+        }
+        return list;
+    }
 }

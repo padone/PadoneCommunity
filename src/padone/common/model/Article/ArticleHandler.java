@@ -14,6 +14,8 @@ public class ArticleHandler {
 		JSONArray jImg, jTag;
 		int imageNum = 0, tagNum = 0;
 		PreparedStatement pStmt = null;
+		PreparedStatement dStmt = null;
+		int drs;
 		try {
 			con = datasource.getConnection();
 			Statement st = con.createStatement();
@@ -26,6 +28,11 @@ public class ArticleHandler {
 				articleID = (rs.getInt(1)) + 1;
 				System.out.println(articleID);
 			}
+
+			// delete all tag data just to make sure tag is empty
+			dStmt = con.prepareStatement("DELETE FROM tag WHERE articleID = ?");
+			dStmt.setInt(1, articleID);
+			drs = dStmt.executeUpdate();
 
 			jImg = new JSONArray(image);
 			jTag = new JSONArray(tag);
@@ -93,11 +100,13 @@ public class ArticleHandler {
 			String sqlArticle = "delete from article where articleID = '" + articleID + "'";
 			String sqlImage = "delete from picture where source = 'article' and sourceID = '" + articleID + "'";
 			String deleteTrack="delete from trackarticle where articleID = '"+articleID+"'";
+			String deleteTag = "DELETE FROM tag WHERE articleID = '" + articleID + "'";
       
 			System.out.println(sqlArticle);
 			st.executeUpdate(sqlArticle);
 			st.executeUpdate(deleteTrack);
 			st.executeUpdate(sqlImage);
+			st.executeUpdate(deleteTag);
 		} catch (SQLException e) {
 			System.out.println("PatientInstructionServer newInstruction Exception :" + e.toString());
 			e.printStackTrace();
