@@ -45,7 +45,7 @@ function connectSocket(id) {
 
 }
 
-function send(request, content, target) {
+function send(userID, request, content, target) {
     var message = createMessage(userID, request, content, target);
     console.log("send this: " + JSON.stringify(message));
     websocket.send(JSON.stringify(message));
@@ -67,6 +67,7 @@ function createMessage(senderID, req, cont, target){
 function parseMessage(message){
     var request = message.request;
     var content;
+    /*
     switch (request) {
         case 'unread_message':
             // multiple message
@@ -80,6 +81,12 @@ function parseMessage(message){
             // single message
             content = message;
             console.table(message);
+    }
+    */
+    content = JSON.parse(message.content);
+    console.log(content.length + "messages received");
+    for(var i=0; i < content.length; i++){
+        console.table(i);
     }
     receiver(content);
 }

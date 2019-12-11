@@ -60,11 +60,13 @@ final class NoticeManager {
 
     public static void sendOtherUser(DataSource dataSource, Session origin, final Message message){
         // store notice in database
+        ArrayList<Message> list = new ArrayList<>();
         Message msg;
         int noticeID = 999;
         int updateRow;
         Date date = new Date();
         Object time = new java.sql.Timestamp(date.getTime());
+        Gson gson = new Gson();
         try{
             Connection conn = dataSource.getConnection();
             PreparedStatement pstmt = conn.prepareStatement("SELECT max(noticeID) as nid FROM notification");
@@ -82,15 +84,18 @@ final class NoticeManager {
             pstmt.setString(7, message.getRecipientID());
             updateRow = pstmt.executeUpdate();
             msg = new Message(noticeID, message.getRecipientID(), message.getRequest(), message.getContent(), time.toString(), false, origin.getUserProperties().get(SocketConstant.USER_ID).toString());
+            list.add(msg);
+            msg = new Message(0, origin.getUserProperties().get(SocketConstant.USER_ID).toString(), "send_from_other", gson.toJson(list), time.toString(), false,"system");
 
             if(updateRow < 0){ throw new RuntimeException("notification update failed"); }
             conn.close();
             pstmt.close();
             rs.close();
+            Message finalMsg = msg;
             SESSIONS.stream().filter(session -> session.getUserProperties().get(SocketConstant.USER_ID).toString().equals(message.getRecipientID()))
                     .forEach(session -> {
                         try{
-                            session.getBasicRemote().sendObject(msg);
+                            session.getBasicRemote().sendObject(finalMsg);
                         }catch (IOException | EncodeException e){
                             e.getStackTrace();
                         }
