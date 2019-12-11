@@ -32,6 +32,7 @@ public class PostBotCreate implements Runnable
 				crawlerNews.getArrayPhotoUrl(), "[" + crawlerNews.getKeyword() + "]", "無");
 
 		System.out.println("在servlet中的crawlerNews: " + crawlerNews);
+		System.out.println("在servlet中的crawlerNews的圖片: " + crawlerNews.getArrayPhotoUrl());
 		System.out.println("在servlet中的newArticle: " + newArticle);
 	}
 	

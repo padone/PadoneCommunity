@@ -2,6 +2,7 @@ package padone.common.model.PostBot;
 
 public class PostBot
 {
+	String botID = null;
 	String keyword = null;
 	String website = null;
 	String frequency = null;
@@ -25,6 +26,11 @@ public class PostBot
 	{
 		this.frequency = frequency;
 	}
+	
+	public void setBotID(String botID)
+	{
+		this.botID = botID;
+	}
 
 	public String getKeyword()
 	{
@@ -39,5 +45,10 @@ public class PostBot
 	public String getFrequency()
 	{
 		return frequency;
+	}
+	
+	public String getBotID()
+	{
+		return botID;
 	}
 }

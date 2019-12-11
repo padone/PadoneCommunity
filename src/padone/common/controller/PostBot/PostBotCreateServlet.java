@@ -74,12 +74,13 @@ public class PostBotCreateServlet extends HttpServlet
 
 		crawlerNews = crawler.setCrawler(datasource, botID);
 		newArticle = handler.newArticle(datasource, crawlerNews.getTitle(), "6684", "其他或健康運動資訊", crawlerNews.getArticle(),
-				crawlerNews.getArrayPhotoUrl(), crawlerNews.getKeyword(), "無");
+				crawlerNews.getArrayPhotoUrl(), "[" + crawlerNews.getKeyword() + "]", "無");
 
 		System.out.println("在servlet中的crawlerNews: " + crawlerNews);
+		System.out.println("在servlet中的crawlerNews的搜尋網址: " + crawlerNews.getSourceUrl());
+		System.out.println("在servlet中的crawlerNews的圖片: " + crawlerNews.getArrayPhotoUrl());
 		System.out.println("在servlet中的newArticle: " + newArticle);
 
 		response.getWriter().write(gson.toJson(newArticle));
-		//response.getWriter().write(gson.toJson(crawlerNews));
 	}
 }

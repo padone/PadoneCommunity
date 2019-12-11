@@ -6,6 +6,7 @@ public class News
 {
 	private String keyword = null;
 	private String webUrl = null;
+	private String sourceUrl = null;
 	private String title = null;
 	private String sendTime = null;
 	private String article = null;
@@ -24,6 +25,11 @@ public class News
 	public void setWebUrl(String webUrl)
 	{
 		this.webUrl = webUrl;
+	}
+	
+	public void setSourceUrl(String sourceUrl)
+	{
+		this.sourceUrl = sourceUrl;
 	}
 
 	public void setTitle(String title)
@@ -60,6 +66,11 @@ public class News
 	{
 		return webUrl;
 	}
+	
+	public String getSourceUrl()
+	{
+		return sourceUrl;
+	}
 
 	public String getTitle()
 	{
@@ -92,7 +103,7 @@ public class News
 			if(count == 0)
 				photoUrlList += s + "\"";
 			else
-				photoUrlList += ",\"" + s + "\"";
+				photoUrlList += ", \"" + s + "\"";
 			
 			count++;
 		};
@@ -106,6 +117,7 @@ public class News
 	{
 		String output = "文章標題: " + title + "\r\n"
 				+ "文章網址: " + webUrl + "\r\n"
+				+ "搜尋網址:" + sourceUrl + "\r\n"
 				+ "發布時間: " + sendTime + "\r\n"
 				+ "文章內容: " + article + "\r\n"
 				+ "關鍵字" + keyword + "\r\n";

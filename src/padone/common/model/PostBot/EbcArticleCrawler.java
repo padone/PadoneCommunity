@@ -43,6 +43,7 @@ public class EbcArticleCrawler extends Crawler
 	            setArticle(new News());
 	            getArticle().setTitle(list.get(i).select("a > div > div > span").get(0).text());
 	            getArticle().setWebUrl(list.get(i).select("a").get(0).attr("abs:href"));
+	            getArticle().setSourceUrl(url);
 	            getArticle().setSendTime(list.get(i).select("a > div > span").get(0).text());
 	            
 	            getInside(getArticle().getWebUrl());

@@ -18,7 +18,7 @@ public class ETTodayArticleCrawler extends Crawler
 	{
 		this.setKeyWord(keyWord);
 		clearArticleList();
-		String url = new String("https://www.ettoday.net/news_search/doSearch.php?keywords=" + getKeyWord());
+		String url = new String("https://www.ettoday.net/news_search/doSearch.php?keywords=" + keyWord + "&kind=21&idx=1");
 
 		getItem(url);
 
@@ -35,14 +35,15 @@ public class ETTodayArticleCrawler extends Crawler
                                 .get();
             Elements list = doc.getElementsByClass("box_2");
 
-            //int listLength = list.size();
-            int listLength = 5;
+            int listLength = list.size();
+            //int listLength = 10;
 
           	for(int i = 0; i < listLength; i++)
             {
 	            setArticle(new News());
 	            getArticle().setTitle(list.get(i).select("h2 > a").get(0).text());
 	            getArticle().setWebUrl(list.get(i).select("h2 > a").get(0).attr("abs:href"));
+	            getArticle().setSourceUrl(url);
 	            
 	            getInside(getArticle().getWebUrl());
 	            //System.out.println(getArticle().toString());

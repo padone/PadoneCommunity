@@ -40,6 +40,7 @@ public class TvbsArticleCrawler extends Crawler
 	            setArticle(new News());
 	            getArticle().setTitle(list.get(i).getElementsByClass("search_list_txt").get(0).text());
 	            getArticle().setWebUrl(list.get(i).select("a").get(0).attr("abs:href"));
+	            getArticle().setSourceUrl(url);
 	            getArticle().setSendTime(list.get(i).getElementsByClass("icon_time").get(0).text());
 	            
 	            getInside(getArticle().getWebUrl());

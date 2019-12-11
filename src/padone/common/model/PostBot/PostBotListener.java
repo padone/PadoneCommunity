@@ -23,7 +23,7 @@ public class PostBotListener implements ServletContextListener
 		DataSource datasource = (DataSource) sc.getAttribute("db");
 		
 		scheduler = Executors.newSingleThreadScheduledExecutor();
-		scheduler.scheduleAtFixedRate(new PostBotCreate(1, datasource), 0, 12, TimeUnit.HOURS);
+		//scheduler.scheduleAtFixedRate(new PostBotCreate(1, datasource), 0, 12, TimeUnit.HOURS);
 	}
 	
 	@Override
