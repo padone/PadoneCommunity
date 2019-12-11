@@ -6,7 +6,7 @@ public abstract class Crawler
 {
 	private ArrayList<News> articleList = new ArrayList<News>();
 	private News article;
-	private String keyWord = null;
+	private String keyWord = null; 
 	
 	public ArrayList<News> search(String keyWord)
 	{
