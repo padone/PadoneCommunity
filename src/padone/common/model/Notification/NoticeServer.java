@@ -101,6 +101,7 @@ public final class NoticeServer {
                 NoticeManager.checkoutNotice(session, db);
                 break;
             case "noticeAll":
+                NoticeManager.sendAll(db, session, msg);
                 break;
             case "noticeUser":
                 NoticeManager.sendOtherUser(db, session, msg);
