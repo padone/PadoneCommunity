@@ -25,6 +25,6 @@ public class AuthorArticleListServlet extends HttpServlet {
         String authorID = request.getParameter("id");
 
         gson = new Gson();
-        response.getWriter().print(gson.toJson(ArticleListServer.getAuthorArticle(dataSource, authorID)));
+        response.getWriter().print(gson.toJson(ArticleListServer.getLightAuthorArticleList(dataSource, authorID)));
     }
 }
